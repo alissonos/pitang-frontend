@@ -1,20 +1,25 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
-import { routes } from './app/app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { AuthInterceptor } from './app/auth.interceptor';
+import { routes } from './app/app.routes'; // Importe suas rotas
+import { AuthInterceptor } from './app/auth.interceptor'; // Ajuste o caminho conforme sua estrutura
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
-    provideAnimations(),
     {
-      provide: 'HTTP_INTERCEPTORS',
+      provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true
+      multi: true,
     },
+    provideAnimations(),
+    // Remova o provider manual de HTTP_INTERCEPTORS se estiver usando withInterceptors
   ],
-});
+}).catch((err) => console.error(err));

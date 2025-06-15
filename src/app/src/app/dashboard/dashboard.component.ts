@@ -4,15 +4,16 @@ import { User } from '../../../../models/user.model';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../auth.service';
 import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router'; // Adicione esta linha
 
 @Component({
-  selector: 'app-user-list',
+  selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.css'],
+  imports: [CommonModule, RouterModule],
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css'],
 })
-export class UserListComponent implements OnInit {
+export class DashboardComponent implements OnInit {
   users: User[] = [];
   darkMode = false;
 
@@ -37,7 +38,7 @@ export class UserListComponent implements OnInit {
   toggleDarkMode() {
     this.darkMode = !this.darkMode;
     const container = this.elementRef.nativeElement.querySelector(
-      '.user-list-container'
+      '.dashboard-container'
     );
     if (container) {
       if (this.darkMode) {
@@ -53,7 +54,7 @@ export class UserListComponent implements OnInit {
   private checkDarkModePreference() {
     const darkModePref = localStorage.getItem('userListDarkMode');
     const container = this.elementRef.nativeElement.querySelector(
-      '.user-list-container'
+      '.dashboard-container'
     );
     if (darkModePref === 'enabled' && container) {
       this.darkMode = true;

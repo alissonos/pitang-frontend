@@ -1,15 +1,37 @@
-import { Component } from '@angular/core';
-import { provideRouter, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { DashboardComponent } from './src/app/dashboard/dashboard.component';
 import { LoginComponent } from './src/app/login/login.component';
-import { UserListComponent } from './src/app/user-list/user-list.component';
-import { AuthGuard } from './auth.guard';
 import { SignupComponent } from './src/app/signup/signup.component';
+import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
-  { path: 'signup', component: SignupComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'users', component: UserListComponent, canActivate: [AuthGuard] },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+  },
+  {
+    path: 'signup',
+    component: SignupComponent,
+  },
+  {
+    path: '',
+    redirectTo: '/login', // Redireciona para login como página inicial
+    pathMatch: 'full',
+  },
+  {
+    path: '**',
+    redirectTo: '/login', // Páginas não encontradas vão para login
+  },
 ];
 
-export const AppRoutes = provideRouter(routes);
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}

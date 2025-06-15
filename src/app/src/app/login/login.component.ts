@@ -25,8 +25,8 @@ export class LoginComponent {
   onSubmit(): void {
     this.authService.login(this.usernameOrEmail, this.password).subscribe({
       next: (response) => {
-        console.log('Redirecionando para /users...', response);
-        this.router.navigate(['/users']); // Redireciona explicitamente
+        console.log('Redirecionando para /dashboard...', response);
+        this.router.navigate(['/dashboard']); // Redireciona explicitamente
       },
       error: (err) => {
         console.error('Erro no login:', err);
