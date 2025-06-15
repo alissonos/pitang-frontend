@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -13,18 +14,25 @@ import { AuthService } from '../../../auth.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  username: string = '';
+  usernameOrEmail: string = '';
   password: string = '';
-  error: string | undefined;
+  errorMessage: string | undefined;
+  http: any;
+  private apiUrl = 'http://localhost:8081/api/v1/auth';
 
   constructor(private router: Router, private authService: AuthService) {}
 
-  login() {
-    if (this.authService.login(this.username, this.password)) {
-      this.router.navigate(['/users']);
-    } else {
-      this.error = 'Usuário ou senha inválidos';
-    }
+  onSubmit(): void {
+    this.authService.login(this.usernameOrEmail, this.password).subscribe({
+      next: (response) => {
+        console.log('Redirecionando para /users...', response);
+        this.router.navigate(['/users']); // Redireciona explicitamente
+      },
+      error: (err) => {
+        console.error('Erro no login:', err);
+        this.errorMessage = 'Credenciais inválidas';
+      },
+    });
   }
 
   navigateToSignup() {
