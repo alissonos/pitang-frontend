@@ -1,0 +1,31 @@
+<div class="split-section">
+  <div class="left-section">
+    <div class="content-placeholder">
+      <h2>Cadastre-se</h2>
+      <p>Junte-se à nossa plataforma</p>
+    </div>
+  </div>
+
+  <div class="right-section">
+    <div class="signup-container">
+      <h2>Criar Conta</h2>
+      <form (ngSubmit)="onSubmit()" #signupForm="ngForm">
+        <div>
+          <label for="username">Nome de Usuário</label>
+          <input id="username" name="username" [(ngModel)]="signupData.username" required>
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" type="email" name="email" [(ngModel)]="signupData.email" required>
+        </div>
+        <div>
+          <label for="password">Senha</label>
+          <input id="password" type="password" name="password" [(ngModel)]="signupData.password" required>
+        </div>
+        <button type="submit" [disabled]="!signupForm.valid">Cadastrar</button>
+      </form>
+      <p (click)="navigateToLogin()" class="login-link">Já tem conta? <a routerLink="/login"><i class="icon-login"></i>
+          Faça login</a></p>
+    </div>
+  </div>
+</div>

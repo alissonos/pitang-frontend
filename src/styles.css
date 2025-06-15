@@ -1,1 +1,103 @@
 /* You can add global styles to this file, and also import other style files */
+/* Estilo dark mode no body */
+body.dark-mode {
+  background-color: #0d0d0d;
+  color: #cfcfcf;
+}
+
+/* Login container em modo dark */
+body.dark-mode .login-container {
+  background-color: #1e1e1e;
+  color: #ccc;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .login-container h2 {
+  color: #ccc;
+}
+
+body.dark-mode label {
+  color: #aaa;
+}
+
+body.dark-mode input {
+  background-color: #333;
+  border-color: #555;
+  color: #eee;
+}
+
+body.dark-mode input::placeholder {
+  color: #bbb;
+}
+
+body.dark-mode button[type="submit"] {
+  background-color: #0057b7;
+  color: white;
+}
+
+body.dark-mode button[type="submit"]:hover {
+  background-color: #003d7a;
+}
+
+/* Estilos padrão da sua login-container */
+.login-container {
+  max-width: 400px;
+  margin: 160px auto;
+  padding: 30px 40px;
+  background-color: transparent;
+  color: inherit;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Outros estilos padrão */
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+form div {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #555;
+}
+
+input {
+  padding: 10px 12px;
+  border: 1.8px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+  transition: border-color 0.3s ease, background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+input:focus {
+  border-color: #0066cc;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
+}
+
+button[type="submit"] {
+  width: 100%;
+  background-color: #0066cc;
+  color: white;
+  font-weight: 700;
+  padding: 12px 0;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #004a99;
+}

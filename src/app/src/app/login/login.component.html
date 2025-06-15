@@ -1,0 +1,30 @@
+<section class="split-section">
+  <div class="left-section">
+    <!-- Espaço para conteúdo futuro -->
+    <div class="content-placeholder">
+      <h2>Bem-vindo</h2>
+      <p>Aqui você pode adicionar qualquer conteúdo</p>
+    </div>
+  </div>
+
+  <div class="right-section">
+    <div class="login-container">
+      <h2>Login</h2>
+      <form (ngSubmit)="login()">
+        <div>
+          <label for="username">Usuário</label>
+          <input id="username" [(ngModel)]="username" name="username" required>
+        </div>
+        <div>
+          <label for="password">Senha</label>
+          <input id="password" type="password" [(ngModel)]="password" name="password" required>
+        </div>
+        <button type="submit">Entrar</button>
+      </form>
+      <p class="signup-link">
+        Não tem uma conta?
+        <a (click)="navigateToSignup()" class="signup-button">Cadastre-se</a>
+      </p>
+    </div>
+  </div>
+</section>
