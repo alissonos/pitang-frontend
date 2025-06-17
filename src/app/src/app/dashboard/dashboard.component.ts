@@ -1,17 +1,33 @@
-import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../services/user.service';
 import { User } from '../../../../models/user.model';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../auth.service';
-import { Router } from '@angular/router';
-import { RouterModule } from '@angular/router'; // Adicione esta linha
+import { Router, RouterModule } from '@angular/router';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatListModule,
+    MatMenuModule,
+    MatCardModule,
+  ],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   users: User[] = [];
@@ -20,9 +36,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private userService: UserService,
     private authservice: AuthService,
-    private router: Router,
-    private renderer: Renderer2,
-    private elementRef: ElementRef
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -37,28 +51,11 @@ export class DashboardComponent implements OnInit {
 
   toggleDarkMode() {
     this.darkMode = !this.darkMode;
-    const container = this.elementRef.nativeElement.querySelector(
-      '.dashboard-container'
-    );
-    if (container) {
-      if (this.darkMode) {
-        this.renderer.addClass(container, 'dark-mode');
-        localStorage.setItem('userListDarkMode', 'enabled');
-      } else {
-        this.renderer.removeClass(container, 'dark-mode');
-        localStorage.setItem('userListDarkMode', 'disabled');
-      }
-    }
+    localStorage.setItem('darkMode', this.darkMode ? 'enabled' : 'disabled');
   }
 
   private checkDarkModePreference() {
-    const darkModePref = localStorage.getItem('userListDarkMode');
-    const container = this.elementRef.nativeElement.querySelector(
-      '.dashboard-container'
-    );
-    if (darkModePref === 'enabled' && container) {
-      this.darkMode = true;
-      this.renderer.addClass(container, 'dark-mode');
-    }
+    const darkModePref = localStorage.getItem('darkMode');
+    this.darkMode = darkModePref === 'enabled';
   }
 }

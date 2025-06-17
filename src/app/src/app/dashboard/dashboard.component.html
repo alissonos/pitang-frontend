@@ -1,40 +1,91 @@
-<div class="dashboard-container">
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="logo">Seu Logo</div>
-    <nav class="nav-menu">
-      <ul>
-        <li><a class="active"><i class="icon">📊</i> Dashboard</a></li>
-        <li><a><i class="icon">👤</i> Perfil</a></li>
-        <li><a><i class="icon">⚙️</i> Configurações</a></li>
-        <li><a routerLink="/logout"><i class="icon">🚪</i> Sair</a></li>
-      </ul>
-    </nav>
-  </div>
+<div class="dashboard-container" [class.dark-mode]="darkMode">
+  <!-- Sidebar usando Angular Material -->
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" opened class="sidebar" fixedInViewport="true">
+      <div class="logo">
+        <span>Seu Logo</span>
+      </div>
 
-  <!-- Área Principal -->
-  <div class="main-content">
-    <header class="top-bar">
-      <h1>Bem-vindo ao Painel</h1>
-      <div class="user-info">
-        <span>Olá, Usuário</span>
-        <div class="avatar">U</div>
-      </div>
-    </header>
+      <mat-nav-list class="nav-menu">
+        <a mat-list-item routerLinkActive="active">
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span matListItemTitle>Dashboard</span>
+        </a>
 
-    <div class="content">
-      <div class="card">
-        <h3>Visão Geral</h3>
-        <p>Resumo do sistema</p>
+        <a mat-list-item routerLinkActive="active">
+          <mat-icon matListItemIcon>person</mat-icon>
+          <span matListItemTitle>Perfil</span>
+        </a>
+
+        <a mat-list-item routerLinkActive="active">
+          <mat-icon matListItemIcon>settings</mat-icon>
+          <span matListItemTitle>Configurações</span>
+        </a>
+
+        <a mat-list-item (click)="logout()">
+          <mat-icon matListItemIcon>logout</mat-icon>
+          <span matListItemTitle>Sair</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <!-- Área Principal -->
+    <mat-sidenav-content class="main-content">
+      <mat-toolbar class="top-bar">
+        <button mat-icon-button (click)="sidenav.toggle()" class="menu-button">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <h1 class="title">Bem-vindo ao Painel</h1>
+
+        <span class="spacer"></span>
+
+        <div class="user-info">
+          <span>Olá, Usuário</span>
+          <button mat-icon-button [matMenuTriggerFor]="userMenu" class="avatar">
+            <mat-icon>account_circle</mat-icon>
+          </button>
+          <mat-menu #userMenu="matMenu">
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span>Sair</span>
+            </button>
+            <button mat-menu-item (click)="toggleDarkMode()">
+              <mat-icon>{{ darkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
+              <span>{{ darkMode ? 'Modo Claro' : 'Modo Escuro' }}</span>
+            </button>
+          </mat-menu>
+        </div>
+      </mat-toolbar>
+
+      <div class="content">
+        <mat-card class="card">
+          <mat-card-header>
+            <mat-card-title>Visão Geral</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>Resumo do sistema</p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="card">
+          <mat-card-header>
+            <mat-card-title>Estatísticas</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>Dados importantes</p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="card">
+          <mat-card-header>
+            <mat-card-title>Atividades Recentes</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>Últimas ações</p>
+          </mat-card-content>
+        </mat-card>
       </div>
-      <div class="card">
-        <h3>Estatísticas</h3>
-        <p>Dados importantes</p>
-      </div>
-      <div class="card">
-        <h3>Atividades Recentes</h3>
-        <p>Últimas ações</p>
-      </div>
-    </div>
-  </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>
