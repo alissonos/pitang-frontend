@@ -31,6 +31,7 @@ import { MatCardModule } from '@angular/material/card';
 })
 export class DashboardComponent implements OnInit {
   users: User[] = [];
+  user: string = 'Usuário';
   darkMode = false;
   private isBrowser: boolean | undefined;
   routerOutlet: any;
@@ -45,6 +46,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => (this.users = data));
     this.checkDarkModePreference();
+    this.authservice.nomeUsuario$.subscribe((fullName) => {
+      this.user = fullName;
+    });
   }
 
   logout() {

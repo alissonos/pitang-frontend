@@ -1,27 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { ConfigService } from '../config/config.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8081/api/v1/auth';
-
-  constructor(private http: HttpClient) {}
-
-  /* login(username: string, password: string): boolean {
-    if (username === 'admin' && password === '1234') {
-      localStorage.setItem('isLoggedIn', 'true');
-      return true;
-    }
-    return false;
-  }*/
+  constructor(private http: HttpClient, private config: ConfigService) {}
 
   login(usernameOrEmail: string, password: string): Observable<any> {
     const body = { usernameOrEmail, password };
-    return this.http.post(`${this.apiUrl}/login`, body).pipe(
+    return this.http.post(`${this.config.apiUrl}/auth/login`, body).pipe(
       tap((response: any) => {
         localStorage.setItem('authToken', response.token); // Armazena o token
         localStorage.setItem('currentUser', JSON.stringify(response.user)); // Dados do usuário
@@ -29,9 +20,24 @@ export class AuthService {
     );
   }
 
+  private nomeUsuarioSubject = new BehaviorSubject<string>(
+    localStorage.getItem('nomeUsuario') || 'Usuário'
+  );
+  nomeUsuario$ = this.nomeUsuarioSubject.asObservable();
+
+  setNomeUsuario(fullName: string) {
+    localStorage.setItem('nomeUsuario', fullName);
+    this.nomeUsuarioSubject.next(fullName);
+  }
+
+  getNomeUsuario() {
+    return localStorage.getItem('nomeUsuario') || 'Usuário';
+  }
+
   logout(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('nomeUsuario');
   }
 
   isLoggedIn(): boolean {
@@ -43,6 +49,6 @@ export class AuthService {
   }
 
   signup(userData: any) {
-    return this.http.post(`${this.apiUrl}/signup`, userData);
+    return this.http.post(`${this.config.apiUrl}/auth/signup`, userData);
   }
 }

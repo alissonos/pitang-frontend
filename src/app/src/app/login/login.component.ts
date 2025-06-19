@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,6 +11,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { CarouselModule } from 'ngx-owl-carousel-o';
+import { HttpClient } from '@angular/common/http';
+import { ConfigService } from '../../../../config/config.service';
 
 @Component({
   selector: 'app-login',
@@ -37,9 +40,15 @@ export class LoginComponent {
   showValidation: any;
   showPassword: any;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private snackBar: MatSnackBar,
+    private config: ConfigService,
+    private http: HttpClient
+  ) {}
 
-  onSubmit(): void {
+  fazerLogin(): void {
     if (!this.usernameOrEmail.trim() || !this.password.trim()) {
       this.errorMessage = 'Preencha as credenciais';
       return;
@@ -50,8 +59,28 @@ export class LoginComponent {
 
     this.authService.login(this.usernameOrEmail, this.password).subscribe({
       next: (response) => {
-        this.loading = false;
-        this.router.navigate(['/dashboard']);
+        // Após login bem-sucedido, buscar dados do usuário
+        this.http
+          .get<any>(
+            `${this.config.apiUrl}/users/username/${this.usernameOrEmail}`
+          )
+          .subscribe({
+            next: (user) => {
+              localStorage.setItem('nomeUsuario', user.fullName);
+              this.authService.setNomeUsuario(user.fullName);
+
+              this.router.navigate(['/dashboard']);
+              this.loading = false;
+            },
+            error: () => {
+              this.snackBar.open('Erro ao buscar usuário', 'Fechar', {
+                duration: 3000,
+                verticalPosition: 'top',
+                panelClass: ['error-snackbar'],
+              });
+              this.loading = false;
+            },
+          });
       },
       error: (err) => {
         console.error('Erro no login:', err);
