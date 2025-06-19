@@ -1,5 +1,4 @@
 <div class="dashboard-container" [class.dark-mode]="darkMode">
-  <!-- Sidebar usando Angular Material -->
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #sidenav mode="side" opened class="sidebar" fixedInViewport="true">
       <div class="logo">
@@ -7,9 +6,14 @@
       </div>
 
       <mat-nav-list class="nav-menu">
-        <a mat-list-item routerLinkActive="active">
+        <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
           <mat-icon matListItemIcon>dashboard</mat-icon>
           <span matListItemTitle>Dashboard</span>
+        </a>
+
+        <a mat-list-item routerLink="/dashboard/users" routerLinkActive="active">
+          <mat-icon matListItemIcon>people</mat-icon>
+          <span matListItemTitle>Usuários</span>
         </a>
 
         <a mat-list-item routerLinkActive="active">
@@ -29,7 +33,6 @@
       </mat-nav-list>
     </mat-sidenav>
 
-    <!-- Área Principal -->
     <mat-sidenav-content class="main-content">
       <mat-toolbar class="top-bar">
         <button mat-icon-button (click)="sidenav.toggle()" class="menu-button">
@@ -58,34 +61,8 @@
         </div>
       </mat-toolbar>
 
-      <div class="content">
-        <mat-card class="card">
-          <mat-card-header>
-            <mat-card-title>Visão Geral</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <p>Resumo do sistema</p>
-          </mat-card-content>
-        </mat-card>
-
-        <mat-card class="card">
-          <mat-card-header>
-            <mat-card-title>Estatísticas</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <p>Dados importantes</p>
-          </mat-card-content>
-        </mat-card>
-
-        <mat-card class="card">
-          <mat-card-header>
-            <mat-card-title>Atividades Recentes</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <p>Últimas ações</p>
-          </mat-card-content>
-        </mat-card>
-      </div>
+      <!-- Aqui o conteúdo dos filhos será carregado -->
+      <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>

@@ -4,30 +4,23 @@ import { DashboardComponent } from './src/app/dashboard/dashboard.component';
 import { LoginComponent } from './src/app/login/login.component';
 import { SignupComponent } from './src/app/signup/signup.component';
 import { AuthGuard } from './auth.guard';
+import { UsersComponent } from './src/app/users/users.component';
+import { DashboardHomeComponent } from './src/app/dashboard/dashboard-home/dashboard-home.component';
 
 export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard],
+    children: [
+      { path: '', component: DashboardHomeComponent, canActivate: [AuthGuard] }, // ROTA PADRÃO
+      { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
+    ],
   },
-  {
-    path: 'login',
-    component: LoginComponent,
-  },
-  {
-    path: 'signup',
-    component: SignupComponent,
-  },
-  {
-    path: '',
-    redirectTo: '/login', // Redireciona para login como página inicial
-    pathMatch: 'full',
-  },
-  {
-    path: '**',
-    redirectTo: '/login', // Páginas não encontradas vão para login
-  },
+  { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '**', redirectTo: '/login' },
 ];
 
 @NgModule({

@@ -1,0 +1,23 @@
+/* Área de conteúdo principal da dashboard-home */
+.content {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* Estilo para os cards */
+.card {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Suporte ao modo escuro herdado */
+.dark-mode .card {
+  background-color: #424242;
+  color: white;
+}
