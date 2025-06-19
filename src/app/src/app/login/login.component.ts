@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { CarouselModule } from 'ngx-owl-carousel-o';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatCardModule,
     MatIconModule,
+    CarouselModule,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
@@ -33,10 +35,9 @@ export class LoginComponent {
   loading: boolean = false;
   darkMode: boolean = false;
   showValidation: any;
+  showPassword: any;
 
-  constructor(private router: Router, private authService: AuthService) {
-    this.checkDarkModePreference();
-  }
+  constructor(private router: Router, private authService: AuthService) {}
 
   onSubmit(): void {
     if (!this.usernameOrEmail.trim() || !this.password.trim()) {
@@ -64,16 +65,6 @@ export class LoginComponent {
     this.router.navigate(['/signup']);
   }
 
-  toggleDarkMode() {
-    this.darkMode = !this.darkMode;
-    localStorage.setItem('darkMode', this.darkMode ? 'enabled' : 'disabled');
-  }
-
-  private checkDarkModePreference() {
-    const darkModePref = localStorage.getItem('darkMode');
-    this.darkMode = darkModePref === 'enabled';
-  }
-
   validateFields(): void {
     const userFilled = this.usernameOrEmail.trim().length > 0;
     const passFilled = this.password.trim().length > 0;
@@ -83,4 +74,18 @@ export class LoginComponent {
       this.errorMessage = undefined;
     }
   }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  customOptions = {
+    loop: true,
+    autoplay: true,
+    dots: false,
+    nav: false,
+    items: 1,
+    autoplayTimeout: 3000,
+    autoplayHoverPause: true,
+  };
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { UserService } from '../../../../services/user.service';
 import { User } from '../../../../models/user.model';
 import { CommonModule } from '@angular/common';
@@ -32,11 +32,13 @@ import { MatCardModule } from '@angular/material/card';
 export class DashboardComponent implements OnInit {
   users: User[] = [];
   darkMode = false;
+  private isBrowser: boolean | undefined;
 
   constructor(
     private userService: UserService,
     private authservice: AuthService,
-    private router: Router
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
@@ -51,11 +53,15 @@ export class DashboardComponent implements OnInit {
 
   toggleDarkMode() {
     this.darkMode = !this.darkMode;
-    localStorage.setItem('darkMode', this.darkMode ? 'enabled' : 'disabled');
+    if (this.isBrowser) {
+      localStorage.setItem('darkMode', this.darkMode ? 'enabled' : 'disabled');
+    }
   }
 
   private checkDarkModePreference() {
-    const darkModePref = localStorage.getItem('darkMode');
-    this.darkMode = darkModePref === 'enabled';
+    if (this.isBrowser) {
+      const darkModePref = localStorage.getItem('darkMode');
+      this.darkMode = darkModePref === 'enabled';
+    }
   }
 }
