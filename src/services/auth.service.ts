@@ -45,7 +45,7 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('authToken');
+    return typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   }
 
   signup(userData: any) {

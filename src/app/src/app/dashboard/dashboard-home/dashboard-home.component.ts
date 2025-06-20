@@ -10,7 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterModule } from '@angular/router';
 import { User } from '../../../../../models/user.model';
 import { UserService } from '../../../../../services/user.service';
-import { AuthService } from '../../../../auth.service';
+import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard-home',

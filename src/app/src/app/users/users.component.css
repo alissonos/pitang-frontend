@@ -1,0 +1,57 @@
+/* Container geral */
+h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin: 1.2rem 0;
+  color: #2c3e50;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  position: relative;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  max-width: 800px; /* largura máxima da lista */
+  margin: 0 10px; /* centralizar a lista */
+}
+
+/* Estilo de cada item de usuário */
+li {
+  background-color: #fff;
+  padding: 1rem 1.5rem;
+  margin-bottom: 0.75rem; /* espaço entre itens */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease-in-out;
+  border-left: 4px solid #4285f4; /* linha lateral azul */
+}
+
+li:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Nome do usuário */
+li strong {
+  font-size: 1.1rem;
+  color: #333;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* Email */
+li {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* Mensagem de carregamento */
+p {
+  font-size: 1rem;
+  color: #666;
+  text-align: center;
+  padding: 2rem;
+}
