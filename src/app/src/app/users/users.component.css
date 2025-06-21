@@ -21,7 +21,8 @@ ul {
 /* Estilo de cada item de usuário */
 li {
   background-color: #fff;
-  padding: 1rem 1.5rem;
+  width: 100%; /* ocupa toda a largura do contêiner */
+  padding: 1rem 2.5rem;
   margin-bottom: 0.75rem; /* espaço entre itens */
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);

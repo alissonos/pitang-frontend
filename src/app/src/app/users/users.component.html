@@ -2,7 +2,13 @@
 
 <ul *ngIf="users.length > 0; else loading">
   <li *ngFor="let user of users">
-    <strong>{{ user.username }}</strong> - {{ user.email }}
+    <strong>{{ user.username }}</strong> {{ user.email }}
+
+    <!-- Botão para mostrar o formulário de edição -->
+    <button (click)="selectUser(user.id)">Editar</button>
+
+    <!-- Exibe o formulário de edição se o user for o selecionado -->
+    <app-user-edit *ngIf="selectedUserId === user.id" [userId]="user.id"></app-user-edit>
   </li>
 </ul>
 
