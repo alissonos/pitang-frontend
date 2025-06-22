@@ -20,5 +20,8 @@
     </label>
 
     <button type="submit" [disabled]="userForm.invalid">Atualizar</button>
+    <p *ngIf="successMessage" class="successMessage">
+      {{ successMessage }}
+    </p>
   </form>
 </div>

@@ -29,6 +29,7 @@ import { User } from '../../../../../models/user.model';
 export class UserEditComponent implements OnInit, OnChanges {
   user: User | null = null;
   isLoading: boolean = true;
+  successMessage: string = '';
 
   userForm: FormGroup;
   isModalOpen = false;
@@ -91,6 +92,10 @@ export class UserEditComponent implements OnInit, OnChanges {
       next: (updatedUser) => {
         console.log('Usuário atualizado com sucesso:', updatedUser);
         // Aqui você pode emitir um evento para o pai ou fechar o modal
+        this.successMessage = 'Usuário atualizado com sucesso!';
+        setTimeout(() => {
+          this.dialogRef.close();
+        }, 2000);
       },
       error: (err) => {
         console.error('Erro ao atualizar o usuário:', err);
