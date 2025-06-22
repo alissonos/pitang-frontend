@@ -1,8 +1,8 @@
 <!-- Fundo escurecido por trás da modal -->
-<div class="modal-backdrop"></div>
+<div class="modal-backdrop" (click)="closeModal()"></div>
 
 <!-- Modal com o formulário -->
-<div class="modal-form">
+<div class="modal-form" (click)="$event.stopPropagation()">
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
     <label>
       Nome Completo:

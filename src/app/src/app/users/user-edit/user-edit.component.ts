@@ -14,6 +14,7 @@ import {
 } from '@angular/forms';
 import { Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 
 import { UserService } from '../../../../../services/user.service';
 import { User } from '../../../../../models/user.model';
@@ -30,11 +31,12 @@ export class UserEditComponent implements OnInit, OnChanges {
   isLoading: boolean = true;
 
   userForm: FormGroup;
-
+  isModalOpen = false;
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    @Inject(MAT_DIALOG_DATA) public data: { userId: number }
+    @Inject(MAT_DIALOG_DATA) public data: { userId: number },
+    private dialogRef: MatDialogRef<UserEditComponent>
   ) {
     this.userForm = this.fb.group({
       fullName: ['', Validators.required],
@@ -94,5 +96,10 @@ export class UserEditComponent implements OnInit, OnChanges {
         console.error('Erro ao atualizar o usuário:', err);
       },
     });
+  }
+
+  closeModal() {
+    // Lógica para fechar a modal, por exemplo:
+    this.dialogRef.close();
   }
 }
