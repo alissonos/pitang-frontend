@@ -1,69 +1,98 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Necessário para diretivas comuns do Angular
-import { FormBuilder, FormsModule, Validators } from '@angular/forms'; // Necessário para two-way data binding com ngModel
+import {
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { UserService } from '../../../../../services/user.service';
 import { User } from '../../../../../models/user.model';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-user-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './user-edit.component.html',
   styleUrl: './user-edit.component.css',
 })
-export class UserEditComponent implements OnInit {
-  @Input() userId: number | null = null;
+export class UserEditComponent implements OnInit, OnChanges {
   user: User | null = null;
   isLoading: boolean = true;
-  userForm: any;
 
-  constructor(private fb: FormBuilder, private userService: UserService) {
+  userForm: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    private userService: UserService,
+    @Inject(MAT_DIALOG_DATA) public data: { userId: number }
+  ) {
     this.userForm = this.fb.group({
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: [''], // pode ser opcional
+      password: [''],
+    });
+
+    this.data.userId = data.userId;
+  }
+
+  ngOnInit(): void {
+    console.log('ngOnInit - userId:', this.data.userId);
+    // IMPORTANTE: não faz nada aqui porque userId pode ser null no início
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['userId'] && changes['userId'].currentValue !== null) {
+      const newUserId = changes['userId'].currentValue;
+      console.log('ngOnChanges - Novo userId recebido:', newUserId);
+      this.loadUserData(newUserId);
+    }
+  }
+
+  loadUserData(userId: number): void {
+    this.isLoading = true;
+    this.userService.getUserById(userId).subscribe({
+      next: (user) => {
+        this.user = user;
+        this.userForm.patchValue({
+          fullName: user.fullName,
+          email: user.email,
+          password: '',
+        });
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar usuário:', err);
+        this.isLoading = false;
+      },
     });
   }
 
   onSubmit(): void {
-    if (this.userForm.invalid || this.userId === null) return;
-
-    const userData = this.userForm.value;
-
-    this.userService.updateUser(this.userId, userData).subscribe({
-      next: (updatedUser) => {
-        console.log('Usuário atualizado com sucesso:', updatedUser);
-        // Aqui você pode emitir um evento para o pai recarregar a lista ou esconder o formulário
-      },
-      error: (err) => {
-        console.error('Erro ao atualizar o usuário:', err);
-      },
-    });
-  }
-
-  ngOnInit(): void {
-    if (this.userForm.invalid) return;
-
-    if (this.userId === null) {
-      console.error('userId is null. Cannot update user.');
+    if (this.userForm.invalid || this.data.userId === null) {
+      console.warn('Formulário inválido ou userId nulo.');
       return;
     }
 
     const userData = this.userForm.value;
 
-    this.userService.updateUser(this.userId, userData).subscribe({
+    this.userService.updateUser(this.data.userId, userData).subscribe({
       next: (updatedUser) => {
         console.log('Usuário atualizado com sucesso:', updatedUser);
-        // ex: this.router.navigate(['/usuarios']);
+        // Aqui você pode emitir um evento para o pai ou fechar o modal
       },
       error: (err) => {
         console.error('Erro ao atualizar o usuário:', err);
       },
     });
-
-    console.log('ID recebido:', this.userId);
   }
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { User } from '../../../../models/user.model';
 import { UserService } from '../../../../services/user.service';
 import { UserEditComponent } from './user-edit/user-edit.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-users',
@@ -16,7 +17,7 @@ export class UsersComponent implements OnInit {
   selectedUserId: number | null = null;
   isLoading: boolean = true;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -37,6 +38,13 @@ export class UsersComponent implements OnInit {
   }
 
   selectUser(id: number): void {
-    this.selectedUserId = id;
+    this.selectedUserId = this.selectedUserId === id ? null : id;
+  }
+
+  openEditDialog(userId: number) {
+    this.dialog.open(UserEditComponent, {
+      data: { userId },
+      width: '600px',
+    });
   }
 }

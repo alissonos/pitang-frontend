@@ -56,3 +56,30 @@ p {
   text-align: center;
   padding: 2rem;
 }
+
+/* --- Estilos para o botão EDITAR --- */
+.edit-button {
+  display: flex; /* Flexbox para centralizar o conteúdo */
+  align-items: center; /* Alinha verticalmente */
+  justify-content: space-between;
+  margin-left: auto; /* Empurra o botão para a direita */
+  background-color: #007bff; /* Uma cor azul padrão para botões de ação */
+  color: white; /* Texto branco */
+  border: none; /* Sem borda */
+  padding: 8px 15px; /* Preenchimento interno */
+  border-radius: 5px; /* Bordas arredondadas */
+  cursor: pointer; /* Muda o cursor para indicar clicável */
+  font-size: 0.9rem; /* Tamanho da fonte */
+  font-weight: 500; /* Peso da fonte */
+  transition: background-color 0.2s ease, transform 0.2s ease; /* Transição suave */
+}
+
+.edit-button:hover {
+  background-color: #0056b3; /* Cor mais escura ao passar o mouse */
+  transform: translateY(-1px); /* Pequeno efeito de elevação */
+}
+
+.edit-button:active {
+  background-color: #004085; /* Cor ainda mais escura ao clicar */
+  transform: translateY(0); /* Volta à posição original ao clicar */
+}
