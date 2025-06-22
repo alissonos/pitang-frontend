@@ -2,7 +2,7 @@
 
 <ul *ngIf="users.length > 0; else loading">
   <li *ngFor="let user of users">
-    <strong>{{ user.username }}</strong> {{ user.email }} {{ user.fullName}}
+    <strong>{{ user.fullName}}</strong>
 
     <!-- Botão para mostrar o formulário de edição -->
     <button (click)="openEditDialog(user.id)" class="edit-button">Editar</button>
