@@ -26,4 +26,13 @@ export class UserService {
 
     return this.http.put(`${this.apiUrl}/${userId}`, userData, { headers });
   }
+
+  deleteUser(userId: number) {
+    const token = this.authService?.getToken(); // método que retorna o JWT do localStorage ou variável
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    console.log('Token enviado para delete:', token);
+
+    return this.http.delete(`${this.apiUrl}/${userId}`, { headers });
+  }
 }

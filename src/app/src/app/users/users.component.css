@@ -60,6 +60,12 @@ p {
   padding: 2rem;
 }
 
+/* --- Estilos para o container de botões de ação --- */
+.action-buttons {
+  display: flex;
+  gap: 10px; /* Espaço entre os botões */
+}
+
 /* --- Estilos para o botão EDITAR --- */
 .edit-button {
   display: flex; /* Flexbox para centralizar o conteúdo */
@@ -85,4 +91,22 @@ p {
 .edit-button:active {
   background-color: #004085; /* Cor ainda mais escura ao clicar */
   transform: translateY(0); /* Volta à posição original ao clicar */
+}
+
+/* --- Estilos para o botão DELETAR --- */
+.delete-button {
+  background-color: #ae1d29;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.delete-button:hover {
+  background-color: #c70000;
+  transform: translateY(-1px);
 }

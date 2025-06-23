@@ -5,7 +5,10 @@
     <strong>{{ user.fullName}}</strong>
 
     <!-- Botão para mostrar o formulário de edição -->
-    <button (click)="openEditDialog(user.id)" class="edit-button">Editar</button>
+    <div class="action-buttons">
+      <button (click)="openEditDialog(user.id)" class="edit-button">Editar</button>
+      <button (click)="deleteUser(user.id)" class="delete-button">Deletar</button>
+    </div>
   </li>
 </ul>
 

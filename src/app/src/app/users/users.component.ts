@@ -47,4 +47,20 @@ export class UsersComponent implements OnInit {
       width: '600px',
     });
   }
+
+  deleteUser(userId: number): void {
+    if (!confirm('Tem certeza que deseja deletar este usuário?')) {
+      return;
+    }
+
+    this.userService.deleteUser(userId).subscribe({
+      next: () => {
+        console.log('Usuário deletado com sucesso');
+        this.users = this.users.filter((user) => user.id !== userId); // Atualiza a lista localmente
+      },
+      error: (err) => {
+        console.error('Erro ao deletar o usuário:', err);
+      },
+    });
+  }
 }
