@@ -16,8 +16,8 @@ import { Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { UserService } from '../../../../../services/user.service';
-import { User } from '../../../../../models/user.model';
+import { UserService } from '../../../services/user.service';
+import { User } from '../../../models/user.model';
 
 @Component({
   selector: 'app-user-edit',

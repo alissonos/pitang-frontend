@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { User } from '../../../../models/user.model';
-import { UserService } from '../../../../services/user.service';
+import { User } from '../../models/user.model';
+import { UserService } from '../../services/user.service';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -52,7 +52,6 @@ export class UsersComponent implements OnInit {
     if (!confirm('Tem certeza que deseja deletar este usuário?')) {
       return;
     }
-
     this.userService.deleteUser(userId).subscribe({
       next: () => {
         console.log('Usuário deletado com sucesso');

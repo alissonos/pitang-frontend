@@ -1,19 +1,19 @@
-import { CommonModule } from '@angular/common';
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user.model';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
+import { Router, RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router, RouterModule } from '@angular/router';
-import { User } from '../../../../../models/user.model';
-import { UserService } from '../../../../../services/user.service';
-import { AuthService } from '../../../../../services/auth.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-dashboard-home',
+  selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
@@ -26,11 +26,12 @@ import { AuthService } from '../../../../../services/auth.service';
     MatMenuModule,
     MatCardModule,
   ],
-  templateUrl: './dashboard-home.component.html',
-  styleUrl: './dashboard-home.component.css',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardHomeComponent {
+export class DashboardComponent implements OnInit {
   users: User[] = [];
+  user: string = 'Usuário';
   darkMode = false;
   private isBrowser: boolean | undefined;
   routerOutlet: any;
@@ -45,6 +46,9 @@ export class DashboardHomeComponent {
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => (this.users = data));
     this.checkDarkModePreference();
+    this.authservice.nomeUsuario$.subscribe((fullName) => {
+      this.user = fullName;
+    });
   }
 
   logout() {
