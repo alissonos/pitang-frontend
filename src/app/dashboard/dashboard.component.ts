@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { UserService } from '../../../../services/user.service';
-import { User } from '../../../../models/user.model';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user.model';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AuthService } from '../../../auth.service';
+import { AuthService } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';

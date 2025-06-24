@@ -1,0 +1,17 @@
+<h2>Lista de Usuários</h2>
+
+<ul *ngIf="users.length > 0; else loading">
+  <li *ngFor="let user of users">
+    <strong>{{ user.fullName}}</strong>
+
+    <!-- Botão para mostrar o formulário de edição -->
+    <div class="action-buttons">
+      <button (click)="openEditDialog(user.id)" class="edit-button">Editar</button>
+      <button (click)="deleteUser(user.id)" class="delete-button">Deletar</button>
+    </div>
+  </li>
+</ul>
+
+<ng-template #loading>
+  <p>Carregando usuários...</p>
+</ng-template>

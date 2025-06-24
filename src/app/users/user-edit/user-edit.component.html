@@ -1,0 +1,27 @@
+<!-- Fundo escurecido por trás da modal -->
+<div class="modal-backdrop" (click)="closeModal()"></div>
+
+<!-- Modal com o formulário -->
+<div class="modal-form" (click)="$event.stopPropagation()">
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <label>
+      Nome Completo:
+      <input formControlName="fullName" type="text" />
+    </label>
+
+    <label>
+      E-mail:
+      <input formControlName="email" type="email" />
+    </label>
+
+    <label>
+      Nova Senha:
+      <input formControlName="password" type="password" />
+    </label>
+
+    <button type="submit" [disabled]="userForm.invalid">Atualizar</button>
+    <p *ngIf="successMessage" class="successMessage">
+      {{ successMessage }}
+    </p>
+  </form>
+</div>
