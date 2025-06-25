@@ -1,11 +1,123 @@
-/* You can add global styles to this file, and also import other style files */
-/* Estilo dark mode no body */
+/* ================== */
+/* 🌐 Variáveis Globais */
+/* ================== */
+:root {
+  /* Cores Primárias (Já existentes e boas) */
+  --primary-color: #6515f8; /* Roxo principal para botões, links, ícones */
+  --primary-color-dark: #560ee0; /* Roxo mais escuro para hover, estados ativos */
+  --primary-color-light: #bca6f7; /* Roxo mais claro para fundos sutis, bordas */
+  --primary-color-lighter: #e5d9fb; /* Um roxo ainda mais claro, quase branco, para realces muito leves */
+
+  /* Cores Secundárias (para realces, gráficos, etc.) */
+  --secondary-color: #00bcd4; /* Exemplo: Um azul turquesa para contraste */
+  --secondary-color-dark: #008ba3;
+  --secondary-color-light: #62efff;
+
+  /* Cores Neutras / Tons de Cinza (para texto, bordas, fundos) */
+  --text-color: #333333; /* Cor padrão do texto (já existe) */
+  --text-color-light: #f0f0f0; /* Cor do texto para modo escuro (já existe) */
+  --text-color-secondary: #666666; /* Texto secundário, como legendas, descrições */
+  --text-color-disabled: #aaaaaa; /* Texto para elementos desabilitados */
+
+  --border-color: #cccccc; /* Cor padrão para bordas de inputs, cards */
+  --border-color-dark: #999999;
+  --border-color-light: #eeeeee;
+
+  --bg-light: #f6f2ff; /* Fundo claro principal (já existe) */
+  --bg-dark: #121212; /* Fundo escuro principal (já existe) */
+  --bg-secondary-light: #ffffff; /* Fundo branco para elementos como cards, modais */
+  --bg-secondary-dark: #1e1e1e; /* Fundo escuro secundário (já existe) */
+
+  /* Cores de Feedback (Erros, Sucesso, Alerta) */
+  --success-color: #28a745; /* Verde para mensagens de sucesso */
+  --success-bg: #d4edda;
+  --success-border: #c3e6cb;
+  --success-text: #155724;
+
+  --error-color: #dc3545; /* Vermelho para erros (já existe no CSS) */
+  --error-bg: #f8d7da; /* (já existe) */
+  --error-border: #f5c2c7; /* (já existe) */
+  --error-text: #842029; /* (já existe) */
+
+  --warning-color: #ffc107; /* Laranja para alertas/atenção */
+  --warning-bg: #fff3cd;
+  --warning-border: #ffeeba;
+  --warning-text: #664d03;
+
+  --info-color: #17a2b8; /* Azul claro para informações */
+  --info-bg: #d1ecf1;
+  --info-border: #bee5eb;
+  --info-text: #0c5460;
+
+  /* Tipografia (Fontes e Tamanhos) */
+  --font-family-base: "Segoe UI", sans-serif; /* Fonte padrão (já existe no body) */
+  --font-family-heading: "Segoe UI", sans-serif; /* Se quiser uma fonte diferente para títulos */
+
+  --font-size-base: 16px;
+  --font-size-sm: 14px; /* Tamanho menor para texto secundário */
+  --font-size-lg: 18px; /* Tamanho maior */
+  --font-size-h1: 32px; /* Tamanhos para seus h1, h2, etc. */
+  --font-size-h2: 24px; /* (já existe para h2 no login-container) */
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500; /* (já existe para error-message) */
+  --font-weight-semibold: 600; /* (já existe para botões e links) */
+  --font-weight-bold: 700;
+
+  --line-height-base: 1.5; /* Espaçamento entre linhas */
+
+  /* Espaçamento (Margens e Paddings) */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px; /* Útil para padding de inputs/botões */
+  --spacing-md: 16px;
+  --spacing-lg: 24px; /* Útil para margens maiores */
+  --spacing-xl: 32px;
+  --spacing-xxl: 40px; /* Útil para padding de containers (já existe) */
+
+  /* Bordas e Sombras */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px; /* (já existe para botões) */
+  --border-radius-lg: 16px; /* (já existe para login-container) */
+  --border-radius-xl: 20px;
+
+  --box-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --box-shadow-md: 0 6px 24px rgba(0, 0, 0, 0.1); /* (já existe para login-container) */
+  --box-shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+  /* Transições */
+  --transition-speed-fast: 0.2s;
+  --transition-speed-normal: 0.3s; /* (já existe para botões e body) */
+  --transition-speed-slow: 0.5s;
+  --transition-ease: ease;
+  --transition-ease-in-out: ease-in-out;
+
+  /* Larguras Máximas de Conteúdo */
+  --max-width-sm: 600px;
+  --max-width-md: 960px;
+  --max-width-lg: 1200px;
+
+  /* Alturas */
+  --header-height: 60px; /* Se tiver um cabeçalho fixo */
+  --footer-height: 80px; /* Se tiver um rodapé */
+
+  /* Modo Escuro (Variáveis específicas que podem ser redefinidas em .dark-mode) */
+  /* Algumas já existem, outras podem ser adicionadas para maior controle */
+  --input-bg-dark: #333333; /* (já existe) */
+  --input-border-dark: #444444;
+  --input-text-dark: #ffffff;
+  --toggle-password-icon-dark: #9d6aff;
+}
+
+/* ================== */
+/* 🌙 Dark Mode Styles */
+/* ================== */
 body.dark-mode {
   background-color: #0d0d0d;
   color: #cfcfcf;
 }
 
-/* Login container em modo dark */
 body.dark-mode .login-container {
   background-color: #1e1e1e;
   color: #ccc;
@@ -39,7 +151,19 @@ body.dark-mode button[type="submit"]:hover {
   background-color: #003d7a;
 }
 
-/* Estilos padrão da sua login-container */
+/* ================== */
+/* 📦 Layout Base */
+/* ================== */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* ================== */
+/* 🔐 Login Container */
+/* ================== */
 .login-container {
   max-width: 400px;
   margin: 160px auto;
@@ -51,13 +175,15 @@ body.dark-mode button[type="submit"]:hover {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Outros estilos padrão */
 .login-container h2 {
   text-align: center;
   margin-bottom: 25px;
   color: #333;
 }
 
+/* ================== */
+/* 📝 Formulário Login */
+/* ================== */
 form div {
   margin-bottom: 18px;
   display: flex;
@@ -75,19 +201,24 @@ input {
   border: 1.8px solid #ccc;
   border-radius: 5px;
   font-size: 15px;
+  background-color: var(--input-bg-light);
   transition: border-color 0.3s ease, background-color 0.3s ease,
     color 0.3s ease;
 }
 
 input:focus {
-  border-color: #0066cc;
+  border-color: var(--primary-color);
   outline: none;
-  box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
+  box-shadow: 0 0 5px rgba(101, 21, 248, 0.4);
 }
 
-button[type="submit"] {
+/* ================== */
+/* 🔘 Botões Gerais */
+/* ================== */
+button[type="submit"],
+.login-button {
   width: 100%;
-  background-color: #0066cc;
+  background-color: var(--primary-color);
   color: white;
   font-weight: 700;
   padding: 12px 0;
@@ -95,12 +226,37 @@ button[type="submit"] {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
-button[type="submit"]:hover {
-  background-color: #004a99;
+button[type="submit"]:hover,
+.login-button:hover {
+  background-color: var(--primary-color-light);
+  color: white;
+  box-shadow: 0 4px 12px rgba(188, 166, 247, 0.5);
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* ================== */
+/* 🧭 Links e Cadastro */
+/* ================== */
+.signup-link {
+  text-align: center;
+  margin-top: 24px;
+  color: #777;
+  font-size: 14px;
+}
+
+.signup-button {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 4px;
+  cursor: pointer;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.signup-button:hover {
+  color: var(--primary-color-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
