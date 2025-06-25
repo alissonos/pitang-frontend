@@ -26,13 +26,14 @@ import { User } from '../../../models/user.model';
   templateUrl: './user-edit.component.html',
   styleUrl: './user-edit.component.css',
 })
-export class UserEditComponent implements OnInit, OnChanges {
+export class UserEditComponent implements OnInit {
   user: User | null = null;
   isLoading: boolean = true;
   successMessage: string = '';
 
   userForm: FormGroup;
   isModalOpen = false;
+
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -49,33 +50,42 @@ export class UserEditComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    console.log('ngOnInit - userId:', this.data.userId);
-    // IMPORTANTE: não faz nada aqui porque userId pode ser null no início
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['userId'] && changes['userId'].currentValue !== null) {
-      const newUserId = changes['userId'].currentValue;
-      console.log('ngOnChanges - Novo userId recebido:', newUserId);
-      this.loadUserData(newUserId);
+    console.log(
+      'UserEditComponent ngOnInit - userId recebido:',
+      this.data.userId
+    );
+    // IMPORTANTE: Chamar loadUserData aqui, pois o userId já está disponível do MAT_DIALOG_DATA
+    if (this.data.userId) {
+      this.loadUserData(this.data.userId);
+    } else {
+      console.warn(
+        'UserEditComponent: userId não fornecido via MAT_DIALOG_DATA.'
+      );
+      this.isLoading = false; // Parar o carregamento se não houver userId
     }
   }
 
   loadUserData(userId: number): void {
     this.isLoading = true;
+    console.log('UserEditComponent: Carregando dados para userId:', userId);
     this.userService.getUserById(userId).subscribe({
       next: (user) => {
         this.user = user;
         this.userForm.patchValue({
           fullName: user.fullName,
           email: user.email,
-          password: '',
+          password: '', // Importante: não preencher a senha existente
         });
         this.isLoading = false;
+        console.log(
+          'UserEditComponent: Dados do usuário carregados e form preenchido.',
+          user
+        );
       },
       error: (err) => {
-        console.error('Erro ao carregar usuário:', err);
+        console.error('UserEditComponent: Erro ao carregar usuário:', err);
         this.isLoading = false;
+        // Opcional: Exibir uma mensagem de erro ou fechar o modal em caso de falha no carregamento
       },
     });
   }

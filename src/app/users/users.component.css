@@ -60,10 +60,29 @@ p {
   padding: 2rem;
 }
 
-/* --- Estilos para o container de botões de ação --- */
-.action-buttons {
-  display: flex;
-  gap: 10px; /* Espaço entre os botões */
+/* Estilos para o novo contêiner */
+.users-header {
+  display: flex; /* Transforma o contêiner em um flex container */
+  justify-content: space-between; /* Distribui os itens: um no início, outro no final */
+  align-items: center; /* Alinha verticalmente no centro */
+  margin-bottom: 20px; /* Espaço abaixo do cabeçalho */
+}
+
+/* Seus estilos para o .create-button */
+.create-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  /* margin-left: 10px; -- Não é mais necessário com justify-content: space-between */
+}
+
+.create-button:hover {
+  background-color: #0056b3;
 }
 
 /* --- Estilos para o botão EDITAR --- */

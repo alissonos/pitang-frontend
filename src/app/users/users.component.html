@@ -1,5 +1,7 @@
-<h2>Lista de Usuários</h2>
-
+<div class="users-header">
+  <h2>Lista de Usuários</h2>
+  <button class="create-button">Criar Usuário</button>
+</div>
 <ul *ngIf="users.length > 0; else loading">
   <li *ngFor="let user of users">
     <strong>{{ user.fullName}}</strong>
