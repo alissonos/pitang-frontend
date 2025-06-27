@@ -1,3 +1,4 @@
+// user-edit.component.ts
 import {
   Component,
   Input,
@@ -21,6 +22,13 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user.model';
 
+// Definir as roles/permissões disponíveis
+export interface Role {
+  id: number;
+  name: string;
+  displayName: string;
+}
+
 @Component({
   selector: 'app-user-edit',
   standalone: true,
@@ -36,6 +44,16 @@ export class UserEditComponent implements OnInit {
   userForm: FormGroup;
   isModalOpen = false;
 
+  // Lista de roles/permissões disponíveis
+  availableRoles: Role[] = [
+    { id: 1, name: 'SUPER_ADMIN', displayName: 'Super Administrador' },
+    { id: 2, name: 'ADMIN', displayName: 'Administrador' },
+    { id: 3, name: 'MANAGER', displayName: 'Gerente' },
+    { id: 4, name: 'EMPLOYEE', displayName: 'Funcionário' },
+    { id: 5, name: 'USER', displayName: 'Usuário' },
+    { id: 6, name: 'GUEST', displayName: 'Visitante' },
+  ];
+
   @Output() save = new EventEmitter<any>();
   showPassword: boolean = false;
 
@@ -49,7 +67,7 @@ export class UserEditComponent implements OnInit {
       fullName: ['', Validators.required],
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      role: ['', Validators.required],
+      role: ['', Validators.required], // Corrigido: usar 'role' em vez de 'permissao'
       password: [''],
     });
 
@@ -61,20 +79,35 @@ export class UserEditComponent implements OnInit {
       'UserEditComponent ngOnInit - userId recebido:',
       this.data.userId
     );
-    // IMPORTANTE: Chamar loadUserData aqui, pois o userId já está disponível do MAT_DIALOG_DATA
+
+    // Carregar as roles do backend (opcional)
+    this.loadRoles();
+
     if (this.data.userId) {
       this.loadUserData(this.data.userId);
     } else {
       console.warn(
         'UserEditComponent: userId não fornecido via MAT_DIALOG_DATA.'
       );
-      this.isLoading = false; // Parar o carregamento se não houver userId
+      this.isLoading = false;
     }
+  }
+
+  // Método para carregar roles do backend (opcional)
+  loadRoles(): void {
+    // Se você tiver um serviço para buscar roles do backend:
+    // this.userService.getRoles().subscribe({
+    //   next: (roles) => {
+    //     this.availableRoles = roles;
+    //   },
+    //   error: (err) => console.error('Erro ao carregar roles:', err)
+    // });
   }
 
   loadUserData(userId: number): void {
     this.isLoading = true;
     console.log('UserEditComponent: Carregando dados para userId:', userId);
+
     this.userService.getUserById(userId).subscribe({
       next: (user) => {
         this.user = user;
@@ -82,19 +115,15 @@ export class UserEditComponent implements OnInit {
           fullName: user.fullName,
           username: user.username,
           email: user.email,
-          role: user.role ? user.role.id : '', // Certifique-se de que o ID do papel está correto
-          password: '', // Importante: não preencher a senha existente
+          role: user.role ? user.role.id : '', // Usar o ID da role
+          password: '', // Não preencher senha existente
         });
         this.isLoading = false;
-        console.log(
-          'UserEditComponent: Dados do usuário carregados e form preenchido.',
-          user
-        );
+        console.log('UserEditComponent: Dados do usuário carregados:', user);
       },
       error: (err) => {
         console.error('UserEditComponent: Erro ao carregar usuário:', err);
         this.isLoading = false;
-        // Opcional: Exibir uma mensagem de erro ou fechar o modal em caso de falha no carregamento
       },
     });
   }
@@ -103,8 +132,8 @@ export class UserEditComponent implements OnInit {
     if (this.userForm.invalid) return;
 
     const userData = this.userForm.value;
-    this.save.emit(userData); // Emite para o componente pai
-    this.dialogRef.close(); // Fecha o dialog
+    this.save.emit(userData);
+    this.dialogRef.close();
   }
 
   onSubmit(): void {
@@ -113,7 +142,7 @@ export class UserEditComponent implements OnInit {
     const userData = this.userForm.value;
 
     if (this.data.userId) {
-      // Atualiza
+      // Atualiza usuário existente
       this.userService.updateUser(this.data.userId, userData).subscribe({
         next: () => this.dialogRef.close(true),
         error: (err) => console.error(err),
@@ -128,7 +157,6 @@ export class UserEditComponent implements OnInit {
   }
 
   closeModal() {
-    // Lógica para fechar a modal, por exemplo:
     this.dialogRef.close();
   }
 

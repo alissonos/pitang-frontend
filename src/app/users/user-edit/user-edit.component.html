@@ -1,31 +1,67 @@
+<!-- user-edit.component.html -->
+
 <!-- Fundo escurecido por trás da modal -->
 <div class="modal-backdrop" (click)="closeModal()"></div>
 
 <!-- Modal com o formulário -->
 <div class="modal-form" (click)="$event.stopPropagation()">
-  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+  <!-- Loading spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <p>Carregando dados do usuário...</p>
+  </div>
+
+  <!-- Formulário -->
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+    <h2>{{ data.userId ? 'Editar Usuário' : 'Novo Usuário' }}</h2>
+
     <label>
       Login:
-      <input formControlName="username" type="text" />
+      <input formControlName="username" type="text" placeholder="Digite o login"
+        [class.error]="userForm.get('username')?.invalid && userForm.get('username')?.touched" />
+      <div *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched" class="error-message">
+        Login é obrigatório
+      </div>
     </label>
+
     <label>
       Nome Completo:
-      <input formControlName="fullName" type="text" />
+      <input formControlName="fullName" type="text" placeholder="Digite o nome completo"
+        [class.error]="userForm.get('fullName')?.invalid && userForm.get('fullName')?.touched" />
+      <div *ngIf="userForm.get('fullName')?.invalid && userForm.get('fullName')?.touched" class="error-message">
+        Nome completo é obrigatório
+      </div>
     </label>
+
     <label>
       E-mail:
-      <input formControlName="email" type="email" />
+      <input formControlName="email" type="email" placeholder="Digite o e-mail"
+        [class.error]="userForm.get('email')?.invalid && userForm.get('email')?.touched" />
+      <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="error-message">
+        <span *ngIf="userForm.get('email')?.errors?.['required']">E-mail é obrigatório</span>
+        <span *ngIf="userForm.get('email')?.errors?.['email']">E-mail deve ter um formato válido</span>
+      </div>
     </label>
+
+    <!-- CORRIGIDO: Campo de Permissão como SELECT em vez de INPUT -->
     <label>
       Permissão:
-      <input formControlName="permissao" type="text" />
+      <select formControlName="role" [class.error]="userForm.get('role')?.invalid && userForm.get('role')?.touched">
+        <option value="" disabled>Selecione uma permissão</option>
+        <option *ngFor="let role of availableRoles" [value]="role.id">
+          {{ role.displayName }}
+        </option>
+      </select>
+      <div *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched" class="error-message">
+        Permissão é obrigatória
+      </div>
     </label>
 
     <label class="password-label">
-      Nova Senha:
+      {{ data.userId ? 'Nova Senha (opcional):' : 'Nova Senha:' }}
       <div class="password-wrapper">
         <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="password-input"
-          aria-label="Senha" />
+          [placeholder]="data.userId ? 'Deixe em branco para manter atual' : 'Digite a senha'" aria-label="Senha" />
 
         <button type="button" (click)="togglePasswordVisibility()" class="toggle-password-btn"
           aria-label="Mostrar ou esconder senha">
@@ -43,11 +79,18 @@
       </div>
     </label>
 
-    <button type="submit" [disabled]="userForm.invalid">
-      {{ data.userId ? 'Atualizar' : 'Criar' }}
-    </button>
+    <!-- Botões de ação -->
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" (click)="closeModal()">
+        Cancelar
+      </button>
+      <button type="submit" class="btn-submit" [disabled]="userForm.invalid">
+        {{ data.userId ? 'Atualizar' : 'Criar' }}
+      </button>
+    </div>
   </form>
 
+  <!-- Mensagem de sucesso -->
   <p *ngIf="successMessage" class="successMessage">
     {{ successMessage }}
   </p>

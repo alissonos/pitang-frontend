@@ -1,5 +1,5 @@
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,6 +13,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from '../../config/config.service';
+
+interface CarouselSlide {
+  background?: string;
+  image?: string;
+}
 
 @Component({
   selector: 'app-login',
@@ -31,14 +36,44 @@ import { ConfigService } from '../../config/config.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
+  // Form variables
   usernameOrEmail: string = '';
   password: string = '';
   errorMessage: string | undefined;
   loading: boolean = false;
-  darkMode: boolean = false;
-  showValidation: any;
-  showPassword: any;
+  showValidation: boolean = false;
+  showPassword: boolean = false;
+
+  // Carousel variables
+  currentSlide: number = 0;
+  carouselSlides: CarouselSlide[] = [
+    {
+      image: 'assets/carousel/image1.png', // ou URL completa
+    },
+    {
+      image: 'assets/carousel/image2.png', // ou URL completa
+    },
+    {
+      image: 'assets/carousel/image3.png', // ou URL completa
+    },
+  ];
+  private carouselInterval: any;
+
+  // Theme variables
+  isDarkMode: boolean = false;
+  darkMode: boolean = false; // Mantendo compatibilidade com código existente
+
+  // Owl Carousel options
+  customOptions = {
+    loop: true,
+    autoplay: true,
+    dots: false,
+    nav: false,
+    items: 1,
+    autoplayTimeout: 3000,
+    autoplayHoverPause: true,
+  };
 
   constructor(
     private router: Router,
@@ -48,6 +83,16 @@ export class LoginComponent {
     private http: HttpClient
   ) {}
 
+  ngOnInit(): void {
+    this.loadTheme();
+    this.startCarousel();
+  }
+
+  ngOnDestroy(): void {
+    this.stopCarousel();
+  }
+
+  // Login method (mantendo sua implementação original)
   fazerLogin(): void {
     if (!this.usernameOrEmail.trim() || !this.password.trim()) {
       this.errorMessage = 'Preencha as credenciais';
@@ -90,10 +135,12 @@ export class LoginComponent {
     });
   }
 
-  navigateToSignup() {
+  // Navigation method (mantendo sua implementação original)
+  navigateToSignup(): void {
     this.router.navigate(['/signup']);
   }
 
+  // Validation method (mantendo sua implementação original)
   validateFields(): void {
     const userFilled = this.usernameOrEmail.trim().length > 0;
     const passFilled = this.password.trim().length > 0;
@@ -101,20 +148,79 @@ export class LoginComponent {
     if (userFilled && passFilled) {
       this.showValidation = false;
       this.errorMessage = undefined;
+    } else {
+      this.showValidation = true;
     }
   }
 
-  togglePasswordVisibility() {
+  // Password visibility toggle (mantendo sua implementação original)
+  togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
-  customOptions = {
-    loop: true,
-    autoplay: true,
-    dots: false,
-    nav: false,
-    items: 1,
-    autoplayTimeout: 3000,
-    autoplayHoverPause: true,
-  };
+  // Carousel methods
+  startCarousel(): void {
+    this.carouselInterval = setInterval(() => {
+      this.nextSlide();
+    }, 4000);
+  }
+
+  stopCarousel(): void {
+    if (this.carouselInterval) {
+      clearInterval(this.carouselInterval);
+    }
+  }
+
+  nextSlide(): void {
+    const nextIndex = (this.currentSlide + 1) % this.carouselSlides.length;
+    this.goToSlide(nextIndex);
+  }
+
+  goToSlide(index: number): void {
+    if (index >= 0 && index < this.carouselSlides.length) {
+      this.currentSlide = index;
+    }
+  }
+
+  // Theme methods
+  toggleTheme(): void {
+    this.isDarkMode = !this.isDarkMode;
+    this.darkMode = this.isDarkMode; // Sincronizando com variável existente
+
+    if (this.isDarkMode) {
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+    }
+  }
+
+  private loadTheme(): void {
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme === 'dark') {
+      this.isDarkMode = true;
+      this.darkMode = true;
+      document.body.classList.add('dark-mode');
+    } else {
+      this.isDarkMode = false;
+      this.darkMode = false;
+      document.body.classList.remove('dark-mode');
+    }
+  }
+
+  // Utility methods
+  clearError(): void {
+    this.errorMessage = undefined;
+  }
+
+  resetForm(): void {
+    this.usernameOrEmail = '';
+    this.password = '';
+    this.showPassword = false;
+    this.showValidation = false;
+    this.errorMessage = undefined;
+    this.loading = false;
+  }
 }

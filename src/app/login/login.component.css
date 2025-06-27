@@ -1,10 +1,23 @@
+:root {
+  --primary-color: #6515f8;
+  --primary-color-dark: #5a0fe6;
+  --bg-light: #ffffff;
+  --bg-dark: #121212;
+  --text-color: #333333;
+  --text-light: #ffffff;
+  --input-bg-light: #ffffff;
+  --input-bg-dark: #2a2a2a;
+  --error-bg: #ffe6e6;
+  --error-text: #d32f2f;
+  --error-border: #ffcdd2;
+}
+
 /* Layout principal */
 .split-section {
   display: flex;
   height: 100vh;
   overflow: hidden;
-  background-color: var(--primary-color-dark); /* roxo claro direto */
-  /* ou: background-color: var(--bg-light); se a variável estiver certa */
+  background-color: var(--primary-color-dark);
 }
 
 .left-section {
@@ -15,6 +28,7 @@
   padding: 20px;
   background-color: var(--primary-color);
   overflow: hidden;
+  position: relative;
 }
 
 .right-section {
@@ -43,6 +57,14 @@
   color: var(--text-color);
 }
 
+/* Labels */
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
 /* Inputs */
 input {
   width: 100%;
@@ -51,14 +73,13 @@ input {
   border: 1px solid #ccc;
   font-size: 16px;
   box-sizing: border-box;
-  margin-top: 4px;
   margin-bottom: 16px;
   background-color: var(--input-bg-light);
   transition: border-color 0.3s ease;
 }
 
 input:focus {
-  border-color: #a58ee6; /* roxo claro suave */
+  border-color: #a58ee6;
   outline: none;
 }
 
@@ -67,41 +88,43 @@ input:focus {
 }
 
 /* Botões */
-/* Botões */
 button[type="submit"],
 .login-button {
+  width: 100%;
   color: white;
   font-weight: 600;
   text-decoration: none;
-  margin-left: 4px;
   border: 2px solid var(--primary-color);
-  padding: 10px 20px;
+  padding: 12px 20px;
   border-radius: 6px;
   cursor: pointer;
-  background-color: var(--primary-color); /* roxo principal */
+  background-color: var(--primary-color);
   transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   font-size: 1rem;
   user-select: none;
 }
 
-/* Hover moderno */
-button[type="submit"]:hover,
+button[type="submit"]:hover:not(:disabled),
 .login-button:hover {
-  background-color: var(--primary-color-dark); /* roxo suave */
+  background-color: var(--primary-color-dark);
   color: white;
   border-color: #bca6f7;
-  box-shadow: 0 4px 12px rgba(188, 166, 247, 0.5); /* sombra roxa clara */
+  box-shadow: 0 4px 12px rgba(188, 166, 247, 0.5);
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Link para cadastro */
 .signup-link {
   text-align: center;
   margin-top: 24px;
-  color: #777; /* tom mais suave que #666 */
+  color: #777;
   font-size: 14px;
 }
 
-/* Botão de cadastro */
 .signup-button {
   color: var(--primary-color);
   font-weight: 600;
@@ -114,7 +137,7 @@ button[type="submit"]:hover,
 .signup-button:hover {
   color: var(--primary-color-dark);
   text-decoration: underline;
-  text-underline-offset: 2px; /* sublinha com espaçamento mais moderno */
+  text-underline-offset: 2px;
 }
 
 /* Mensagem de erro */
@@ -145,23 +168,23 @@ button[type="submit"]:hover,
   box-sizing: border-box;
   background-color: var(--input-bg-light);
   transition: border-color 0.2s ease;
+  margin-bottom: 16px;
 }
 
 .password-input:focus {
-  border-color: var(--primary-color);
-  border-color: #a58ee6; /* roxo claro suave */
+  border-color: #a58ee6;
   outline: none;
 }
 
 .toggle-password-btn {
   position: absolute;
-  top: 63%;
+  top: 50%;
   right: 12px;
   transform: translateY(-50%);
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0;
+  padding: 4px;
   font-size: 20px;
   color: var(--primary-color);
   transition: color 0.2s ease;
@@ -173,77 +196,151 @@ button[type="submit"]:hover,
 
 /* Carrossel */
 .carousel-wrapper {
-  max-width: 90%;
+  position: relative;
   width: 100%;
-  max-height: 100%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 12px;
 }
 
-.carousel-image,
-.owl-carousel .owl-item img {
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.carousel-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+}
+
+.carousel-slide:nth-child(1) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.carousel-slide:nth-child(2) {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.carousel-slide:nth-child(3) {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.carousel-image {
   width: 100%;
   height: 300px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
-.owl-carousel,
-.owl-carousel .owl-stage-outer {
-  min-height: 300px;
+.slide-title {
+  margin-top: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.indicator.active {
+  background-color: white;
+}
+
+/* Dark mode toggle */
+.theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  color: white;
+  font-size: 20px;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
 }
 
 /* Dark mode */
-body.dark-mode {
-  background-color: var(--bg-dark);
-  color: var(--text-light);
-}
-
-body.dark-mode .split-section {
+:host-context(body.dark-mode) .split-section {
   background-color: var(--bg-dark);
 }
 
-body.dark-mode .right-section,
-body.dark-mode .login-container {
+:host-context(body.dark-mode) .right-section,
+:host-context(body.dark-mode) .login-container {
   background-color: #1e1e1e;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-body.dark-mode .login-container h2 {
+:host-context(body.dark-mode) .login-container h2,
+:host-context(body.dark-mode) label {
   color: var(--text-light);
 }
 
-body.dark-mode input {
+:host-context(body.dark-mode) input,
+:host-context(body.dark-mode) .password-input {
   background-color: var(--input-bg-dark);
   color: #ffffff;
   border-color: #444;
 }
 
-body.dark-mode input:focus {
+:host-context(body.dark-mode) input:focus,
+:host-context(body.dark-mode) .password-input:focus {
   border-color: #9d6aff;
   box-shadow: 0 0 0 3px rgba(157, 106, 255, 0.2);
 }
 
-body.dark-mode .signup-link {
+:host-context(body.dark-mode) .signup-link {
   color: #bbbbbb;
 }
 
-body.dark-mode .signup-button {
+:host-context(body.dark-mode) .signup-button {
   color: #9d6aff;
 }
 
-body.dark-mode .signup-button:hover {
+:host-context(body.dark-mode) .signup-button:hover {
   color: #b389ff;
 }
 
-body.dark-mode .password-input {
-  background-color: var(--input-bg-dark);
-  border-color: #444;
-}
-
-body.dark-mode .toggle-password-btn {
+:host-context(body.dark-mode) .toggle-password-btn {
   color: #9d6aff;
 }
 
-body.dark-mode .toggle-password-btn:hover {
+:host-context(body.dark-mode) .toggle-password-btn:hover {
   color: #b389ff;
 }
 
@@ -256,7 +353,7 @@ body.dark-mode .toggle-password-btn:hover {
   .left-section {
     order: 2;
     padding: 20px;
-    height: auto;
+    height: 300px;
   }
 
   .right-section {
@@ -264,7 +361,11 @@ body.dark-mode .toggle-password-btn:hover {
     padding: 20px;
   }
 
-  .carousel-image {
-    height: auto;
+  .carousel-container {
+    height: 250px;
+  }
+
+  .login-container {
+    padding: 20px;
   }
 }
