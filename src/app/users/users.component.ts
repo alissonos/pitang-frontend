@@ -41,10 +41,16 @@ export class UsersComponent implements OnInit {
     this.selectedUserId = this.selectedUserId === id ? null : id;
   }
 
-  openEditDialog(userId: number) {
-    this.dialog.open(UserEditComponent, {
-      data: { userId },
+  openUserDialog(userId?: number) {
+    const dialogRef = this.dialog.open(UserEditComponent, {
+      data: { userId: userId ?? null },
       width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === true) {
+        this.loadUsers();
+      }
     });
   }
 
@@ -60,6 +66,26 @@ export class UsersComponent implements OnInit {
       error: (err) => {
         console.error('Erro ao deletar o usuário:', err);
       },
+    });
+  }
+
+  createUser() {
+    const dialogRef = this.dialog.open(UserEditComponent, {
+      data: { userId: null },
+      width: '600px',
+    });
+
+    dialogRef.componentInstance.save.subscribe((userData: any) => {
+      this.userService.createUser(userData).subscribe({
+        next: (createdUser) => {
+          console.log('Usuário criado:', createdUser);
+          this.loadUsers(); // Atualiza a lista
+          dialogRef.close(); // (opcional, já fecha no filho)
+        },
+        error: (err) => {
+          console.error('Erro ao criar usuário:', err);
+        },
+      });
     });
   }
 }

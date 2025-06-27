@@ -1,16 +1,17 @@
 <div class="users-header">
   <h2>Lista de Usuários</h2>
-  <button class="create-button">Criar Usuário</button>
+  <button class="create-button" (click)="openUserDialog()">Criar Usuário</button>
 </div>
-<ul *ngIf="users.length > 0; else loading">
+<ul *ngIf=" users.length> 0; else loading">
   <li *ngFor="let user of users">
     <strong>{{ user.fullName}}</strong>
 
     <!-- Botão para mostrar o formulário de edição -->
-    <div class="action-buttons">
-      <button (click)="openEditDialog(user.id)" class="edit-button">Editar</button>
-      <button (click)="deleteUser(user.id)" class="delete-button">Deletar</button>
+    <div class="button-group">
+      <button class="edit-button" (click)="openUserDialog(user.id)">Editar</button>
+      <button class="delete-button" (click)="deleteUser(user.id)">Deletar</button>
     </div>
+
   </li>
 </ul>
 

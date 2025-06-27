@@ -14,7 +14,7 @@ h2 {
 ul {
   list-style: none;
   padding: 0;
-  max-width: 800px; /* largura máxima da lista */
+  max-width: 1000px; /* largura máxima da lista */
   margin: 0 10px; /* centralizar a lista */
 }
 
@@ -25,7 +25,7 @@ li {
   align-items: center; /* Alinha verticalmente */
   background-color: #fff;
   width: 100%; /* ocupa toda a largura do contêiner */
-  padding: 1rem 2.5rem;
+  padding: 0.3rem 2.5rem;
   margin-bottom: 0.75rem; /* espaço entre itens */
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -65,7 +65,7 @@ p {
   display: flex; /* Transforma o contêiner em um flex container */
   justify-content: space-between; /* Distribui os itens: um no início, outro no final */
   align-items: center; /* Alinha verticalmente no centro */
-  margin-bottom: 20px; /* Espaço abaixo do cabeçalho */
+  margin-right: 61px;
 }
 
 /* Seus estilos para o .create-button */
@@ -85,31 +85,42 @@ p {
   background-color: #0056b3;
 }
 
+/* Container para alinhar os botões lado a lado */
+.button-group {
+  display: flex;
+  gap: 8px; /* Espaçamento entre os botões */
+  align-items: center;
+}
+
 /* --- Estilos para o botão EDITAR --- */
 .edit-button {
-  display: flex; /* Flexbox para centralizar o conteúdo */
-  align-items: center; /* Alinha verticalmente */
-  justify-content: space-between;
-  margin-left: auto; /* Empurra o botão para a direita */
-  background-color: #007bff; /* Uma cor azul padrão para botões de ação */
-  color: white; /* Texto branco */
-  border: none; /* Sem borda */
-  padding: 8px 15px; /* Preenchimento interno */
-  border-radius: 5px; /* Bordas arredondadas */
-  cursor: pointer; /* Muda o cursor para indicar clicável */
-  font-size: 0.9rem; /* Tamanho da fonte */
-  font-weight: 500; /* Peso da fonte */
-  transition: background-color 0.2s ease, transform 0.2s ease; /* Transição suave */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: none;
+  .edit-button {
+    background-color: #007bff !important;
+    color: white;
+    border: none;
+    box-shadow: none;
+    outline: none;
+  }
 }
 
 .edit-button:hover {
-  background-color: #0056b3; /* Cor mais escura ao passar o mouse */
-  transform: translateY(-1px); /* Pequeno efeito de elevação */
+  background-color: #0056b3;
+  transform: translateY(-1px);
 }
 
 .edit-button:active {
-  background-color: #004085; /* Cor ainda mais escura ao clicar */
-  transform: translateY(0); /* Volta à posição original ao clicar */
+  background-color: #004085;
+  transform: translateY(0);
 }
 
 /* --- Estilos para o botão DELETAR --- */
@@ -117,7 +128,7 @@ p {
   background-color: #ae1d29;
   color: white;
   border: none;
-  padding: 8px 15px;
+  padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 0.9rem;

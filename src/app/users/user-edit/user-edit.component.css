@@ -78,6 +78,27 @@ button[type="submit"]:disabled {
   cursor: not-allowed;
 }
 
+/* Estilo do botão de fechar */
+.password-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.password-input {
+  flex: 1;
+  padding-right: 2rem; /* espaço pro botão */
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 11px;
+}
+
 /* Mensagem de sucesso */
 .successMessage {
   display: flex;

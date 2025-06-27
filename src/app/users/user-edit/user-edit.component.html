@@ -5,23 +5,50 @@
 <div class="modal-form" (click)="$event.stopPropagation()">
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
     <label>
+      Login:
+      <input formControlName="username" type="text" />
+    </label>
+    <label>
       Nome Completo:
       <input formControlName="fullName" type="text" />
     </label>
-
     <label>
       E-mail:
       <input formControlName="email" type="email" />
     </label>
-
     <label>
-      Nova Senha:
-      <input formControlName="password" type="password" />
+      Permissão:
+      <input formControlName="permissao" type="text" />
     </label>
 
-    <button type="submit" [disabled]="userForm.invalid">Atualizar</button>
-    <p *ngIf="successMessage" class="successMessage">
-      {{ successMessage }}
-    </p>
+    <label class="password-label">
+      Nova Senha:
+      <div class="password-wrapper">
+        <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="password-input"
+          aria-label="Senha" />
+
+        <button type="button" (click)="togglePasswordVisibility()" class="toggle-password-btn"
+          aria-label="Mostrar ou esconder senha">
+          <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+            stroke="#6515f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+            stroke="#6515f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M17.94 17.94a10.03 10.03 0 0 1-5.94 2.06c-7 0-11-8-11-8a18.06 18.06 0 0 1 2.88-4.58" />
+            <path d="M1 1l22 22" />
+          </svg>
+        </button>
+      </div>
+    </label>
+
+    <button type="submit" [disabled]="userForm.invalid">
+      {{ data.userId ? 'Atualizar' : 'Criar' }}
+    </button>
   </form>
+
+  <p *ngIf="successMessage" class="successMessage">
+    {{ successMessage }}
+  </p>
 </div>

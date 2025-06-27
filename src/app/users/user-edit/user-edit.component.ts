@@ -4,6 +4,8 @@ import {
   OnInit,
   OnChanges,
   SimpleChanges,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -34,6 +36,9 @@ export class UserEditComponent implements OnInit {
   userForm: FormGroup;
   isModalOpen = false;
 
+  @Output() save = new EventEmitter<any>();
+  showPassword: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -42,7 +47,9 @@ export class UserEditComponent implements OnInit {
   ) {
     this.userForm = this.fb.group({
       fullName: ['', Validators.required],
+      username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      role: ['', Validators.required],
       password: [''],
     });
 
@@ -73,7 +80,9 @@ export class UserEditComponent implements OnInit {
         this.user = user;
         this.userForm.patchValue({
           fullName: user.fullName,
+          username: user.username,
           email: user.email,
+          role: user.role ? user.role.id : '', // Certifique-se de que o ID do papel está correto
           password: '', // Importante: não preencher a senha existente
         });
         this.isLoading = false;
@@ -90,31 +99,40 @@ export class UserEditComponent implements OnInit {
     });
   }
 
+  saveUser() {
+    if (this.userForm.invalid) return;
+
+    const userData = this.userForm.value;
+    this.save.emit(userData); // Emite para o componente pai
+    this.dialogRef.close(); // Fecha o dialog
+  }
+
   onSubmit(): void {
-    if (this.userForm.invalid || this.data.userId === null) {
-      console.warn('Formulário inválido ou userId nulo.');
-      return;
-    }
+    if (this.userForm.invalid) return;
 
     const userData = this.userForm.value;
 
-    this.userService.updateUser(this.data.userId, userData).subscribe({
-      next: (updatedUser) => {
-        console.log('Usuário atualizado com sucesso:', updatedUser);
-        // Aqui você pode emitir um evento para o pai ou fechar o modal
-        this.successMessage = 'Usuário atualizado com sucesso!';
-        setTimeout(() => {
-          this.dialogRef.close();
-        }, 2000);
-      },
-      error: (err) => {
-        console.error('Erro ao atualizar o usuário:', err);
-      },
-    });
+    if (this.data.userId) {
+      // Atualiza
+      this.userService.updateUser(this.data.userId, userData).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => console.error(err),
+      });
+    } else {
+      // Cria novo usuário
+      this.userService.createUser(userData).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => console.error(err),
+      });
+    }
   }
 
   closeModal() {
     // Lógica para fechar a modal, por exemplo:
     this.dialogRef.close();
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 }

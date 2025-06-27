@@ -107,6 +107,7 @@
   --input-bg-dark: #333333; /* (já existe) */
   --input-border-dark: #444444;
   --input-text-dark: #ffffff;
+  --input-bg-light: #ffffff; /* ou a cor que quiser */
   --toggle-password-icon-dark: #9d6aff;
 }
 
