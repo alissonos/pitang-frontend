@@ -1,3 +1,4 @@
+// users.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { User } from '../../models/user.model';
@@ -41,15 +42,23 @@ export class UsersComponent implements OnInit {
     this.selectedUserId = this.selectedUserId === id ? null : id;
   }
 
+  // Método unificado para abrir o diálogo (editar ou criar)
   openUserDialog(userId?: number) {
+    console.log('Abrindo diálogo para userId:', userId);
+
     const dialogRef = this.dialog.open(UserEditComponent, {
-      data: { userId: userId ?? null },
+      data: {
+        userId: userId || null, // CORRIGIDO: Garantir que seja null se não definido
+      },
       width: '600px',
+      disableClose: true, // Opcional: impede fechar clicando fora
     });
 
     dialogRef.afterClosed().subscribe((result) => {
+      console.log('Diálogo fechado com resultado:', result);
+      // result será true se salvou com sucesso
       if (result === true) {
-        this.loadUsers();
+        this.loadUsers(); // Recarregar a lista de usuários
       }
     });
   }
@@ -58,6 +67,7 @@ export class UsersComponent implements OnInit {
     if (!confirm('Tem certeza que deseja deletar este usuário?')) {
       return;
     }
+
     this.userService.deleteUser(userId).subscribe({
       next: () => {
         console.log('Usuário deletado com sucesso');
@@ -69,23 +79,5 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  createUser() {
-    const dialogRef = this.dialog.open(UserEditComponent, {
-      data: { userId: null },
-      width: '600px',
-    });
-
-    dialogRef.componentInstance.save.subscribe((userData: any) => {
-      this.userService.createUser(userData).subscribe({
-        next: (createdUser) => {
-          console.log('Usuário criado:', createdUser);
-          this.loadUsers(); // Atualiza a lista
-          dialogRef.close(); // (opcional, já fecha no filho)
-        },
-        error: (err) => {
-          console.error('Erro ao criar usuário:', err);
-        },
-      });
-    });
-  }
+  // REMOVIDO: Método createUser duplicado, já que openUserDialog() faz tudo
 }

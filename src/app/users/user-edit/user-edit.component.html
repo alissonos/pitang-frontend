@@ -43,7 +43,7 @@
       </div>
     </label>
 
-    <!-- CORRIGIDO: Campo de Permissão como SELECT em vez de INPUT -->
+    <!-- CORRIGIDO: Campo de Permissão usando 'role' consistentemente -->
     <label>
       Permissão:
       <select formControlName="role" [class.error]="userForm.get('role')?.invalid && userForm.get('role')?.touched">
@@ -61,7 +61,8 @@
       {{ data.userId ? 'Nova Senha (opcional):' : 'Nova Senha:' }}
       <div class="password-wrapper">
         <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="password-input"
-          [placeholder]="data.userId ? 'Deixe em branco para manter atual' : 'Digite a senha'" aria-label="Senha" />
+          [placeholder]="data.userId ? 'Deixe em branco para manter atual' : 'Digite a senha'"
+          [class.error]="userForm.get('password')?.invalid && userForm.get('password')?.touched" aria-label="Senha" />
 
         <button type="button" (click)="togglePasswordVisibility()" class="toggle-password-btn"
           aria-label="Mostrar ou esconder senha">
@@ -76,6 +77,10 @@
             <path d="M1 1l22 22" />
           </svg>
         </button>
+      </div>
+      <!-- CORRIGIDO: Adicionar validação de senha para novos usuários -->
+      <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched" class="error-message">
+        <span *ngIf="userForm.get('password')?.errors?.['required']">Senha é obrigatória</span>
       </div>
     </label>
 

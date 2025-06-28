@@ -54,6 +54,8 @@ form select {
   margin-top: 0.5rem;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
+  background-color: white !important;
+  color: #333 !important;
 }
 
 form input:focus,

@@ -20,14 +20,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 
 import { UserService } from '../../../services/user.service';
-import { User } from '../../../models/user.model';
-
-// Definir as roles/permissões disponíveis
-export interface Role {
-  id: number;
-  name: string;
-  displayName: string;
-}
+import { Role, User } from '../../../models/user.model';
 
 @Component({
   selector: 'app-user-edit',
@@ -46,12 +39,9 @@ export class UserEditComponent implements OnInit {
 
   // Lista de roles/permissões disponíveis
   availableRoles: Role[] = [
-    { id: 1, name: 'SUPER_ADMIN', displayName: 'Super Administrador' },
-    { id: 2, name: 'ADMIN', displayName: 'Administrador' },
-    { id: 3, name: 'MANAGER', displayName: 'Gerente' },
-    { id: 4, name: 'EMPLOYEE', displayName: 'Funcionário' },
-    { id: 5, name: 'USER', displayName: 'Usuário' },
-    { id: 6, name: 'GUEST', displayName: 'Visitante' },
+    { id: 1, name: 'ROLE_ADMIN', displayName: 'Super Administrador' },
+    { id: 2, name: 'ROLE_USER', displayName: 'Administrador' },
+    { id: 3, name: 'ROLE_ORGANIZER', displayName: 'Gerente' },
   ];
 
   @Output() save = new EventEmitter<any>();
@@ -90,6 +80,9 @@ export class UserEditComponent implements OnInit {
         'UserEditComponent: userId não fornecido via MAT_DIALOG_DATA.'
       );
       this.isLoading = false;
+
+      this.userForm.get('password')?.setValidators([Validators.required]);
+      this.userForm.get('password')?.updateValueAndValidity();
     }
   }
 
@@ -115,7 +108,7 @@ export class UserEditComponent implements OnInit {
           fullName: user.fullName,
           username: user.username,
           email: user.email,
-          role: user.role ? user.role.id : '', // Usar o ID da role
+          role: user.roleId ? user.roleId.id : '', // Usar o ID da role
           password: '', // Não preencher senha existente
         });
         this.isLoading = false;
@@ -137,21 +130,44 @@ export class UserEditComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.userForm.invalid) return;
+    if (this.userForm.invalid) {
+      // Marcar todos os campos como touched para mostrar erros
+      this.userForm.markAllAsTouched();
+      return;
+    }
 
-    const userData = this.userForm.value;
+    const userData = { ...this.userForm.value };
+
+    // CORRIGIDO: Mapear 'role' para 'roleId' para o backend
+    userData.roleId = userData.role;
+    delete userData.role;
+
+    // Se é edição e senha está vazia, remover do payload
+    if (this.data.userId && !userData.password) {
+      delete userData.password;
+    }
 
     if (this.data.userId) {
       // Atualiza usuário existente
       this.userService.updateUser(this.data.userId, userData).subscribe({
-        next: () => this.dialogRef.close(true),
-        error: (err) => console.error(err),
+        next: () => {
+          this.successMessage = 'Usuário atualizado com sucesso!';
+          setTimeout(() => this.dialogRef.close(true), 1500);
+        },
+        error: (err) => {
+          console.error('Erro ao atualizar usuário:', err);
+        },
       });
     } else {
       // Cria novo usuário
       this.userService.createUser(userData).subscribe({
-        next: () => this.dialogRef.close(true),
-        error: (err) => console.error(err),
+        next: () => {
+          this.successMessage = 'Usuário criado com sucesso!';
+          setTimeout(() => this.dialogRef.close(true), 1500);
+        },
+        error: (err) => {
+          console.error('Erro ao criar usuário:', err);
+        },
       });
     }
   }
