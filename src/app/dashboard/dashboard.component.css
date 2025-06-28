@@ -1,7 +1,6 @@
 /* Estilos gerais */
 .dashboard-container {
   display: flex;
-  height: 100vh;
   font-family: "Roboto", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 

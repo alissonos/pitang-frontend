@@ -1,19 +1,41 @@
 <div class="users-header">
   <h2>Lista de Usuários</h2>
-  <button class="create-button" (click)="openUserDialog()">Criar Usuário</button>
+  <button mat-flat-button color="primary" (click)="openUserDialog()">Criar Usuário</button>
 </div>
-<ul *ngIf=" users.length> 0; else loading">
-  <li *ngFor="let user of users">
-    <strong>{{ user.fullName}}</strong>
 
-    <!-- Botão para mostrar o formulário de edição -->
-    <div class="button-group">
-      <button class="edit-button" (click)="openUserDialog(user.id)">Editar</button>
-      <button class="delete-button" (click)="deleteUser(user.id)">Deletar</button>
-    </div>
+<table mat-table [dataSource]="users" class="mat-elevation-z8" *ngIf="users.length > 0; else loading">
 
-  </li>
-</ul>
+  <!-- Nome -->
+  <ng-container matColumnDef="fullName">
+    <th mat-header-cell *matHeaderCellDef> Nome </th>
+    <td mat-cell *matCellDef="let user"> {{ user.fullName }} </td>
+  </ng-container>
+
+  <!-- E-mail -->
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef> E-mail </th>
+    <td mat-cell *matCellDef="let user"> {{ user.email }} </td>
+  </ng-container>
+
+  <!-- Permissão -->
+  <ng-container matColumnDef="role">
+    <th mat-header-cell *matHeaderCellDef> Permissão </th>
+    <td mat-cell *matCellDef="let user"> {{ user.role?.displayName || 'N/A' }} </td>
+  </ng-container>
+
+  <!-- Ações -->
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> Ações </th>
+    <td mat-cell *matCellDef="let user">
+      <button mat-button color="accent" (click)="openUserDialog(user.id)">Editar</button>
+      <button mat-button color="warn" (click)="deleteUser(user.id)">Deletar</button>
+    </td>
+  </ng-container>
+
+  <!-- Cabeçalho e linhas -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
 
 <ng-template #loading>
   <p>Carregando usuários...</p>

@@ -1,4 +1,4 @@
-/* Container geral */
+/* ========== TITULO DA SEÇÃO ========== */
 h2 {
   text-align: center;
   font-size: 1.8rem;
@@ -6,53 +6,11 @@ h2 {
   color: #2c3e50;
   font-weight: 600;
   letter-spacing: -0.5px;
-  position: relative;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid #f0f0f0;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-  max-width: 1000px; /* largura máxima da lista */
-  margin: 0 10px; /* centralizar a lista */
-}
-
-/* Estilo de cada item de usuário */
-li {
-  display: flex; /* Flexbox para alinhar itens */
-  justify-content: space-between; /* Espaço entre nome e email */
-  align-items: center; /* Alinha verticalmente */
-  background-color: #fff;
-  width: 100%; /* ocupa toda a largura do contêiner */
-  padding: 0.3rem 2.5rem;
-  margin-bottom: 0.75rem; /* espaço entre itens */
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease-in-out;
-  border-left: 4px solid #4285f4; /* linha lateral azul */
-}
-
-li:hover {
-  transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-
-/* Nome do usuário */
-li strong {
-  font-size: 1.1rem;
-  color: #333;
-  display: block;
-  margin-bottom: 0.25rem;
-}
-
-/* Email */
-li {
-  font-size: 0.95rem;
-  color: #666;
-}
-
-/* Mensagem de carregamento */
+/* ========== MENSAGEM DE CARREGAMENTO ========== */
 p {
   font-size: 1rem;
   color: #666;
@@ -60,16 +18,19 @@ p {
   padding: 2rem;
 }
 
-/* Estilos para o novo contêiner */
+/* ========== HEADER DA SEÇÃO ========== */
 .users-header {
-  display: flex; /* Transforma o contêiner em um flex container */
-  justify-content: space-between; /* Distribui os itens: um no início, outro no final */
-  align-items: center; /* Alinha verticalmente no centro */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-right: 61px;
+  padding: 16px 0;
+  margin-bottom: 16px;
 }
 
-/* Seus estilos para o .create-button */
-.create-button {
+/* ========== BOTÃO CRIAR USUÁRIO ========== */
+.create-button,
+.users-header button {
   background-color: #007bff;
   color: white;
   padding: 10px 20px;
@@ -77,40 +38,37 @@ p {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  font-weight: 600;
   transition: background-color 0.3s ease;
-  /* margin-left: 10px; -- Não é mais necessário com justify-content: space-between */
 }
 
-.create-button:hover {
+.create-button:hover,
+.users-header button:hover {
   background-color: #0056b3;
 }
 
-/* Container para alinhar os botões lado a lado */
+/* ========== BOTÕES DE AÇÃO ========== */
 .button-group {
   display: flex;
-  gap: 8px; /* Espaçamento entre os botões */
+  gap: 8px;
   align-items: center;
 }
 
-/* --- Estilos para o botão EDITAR --- */
-.edit-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
+.edit-button,
+.delete-button {
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;
+  border: none;
   transition: background-color 0.2s ease, transform 0.2s ease;
-  box-shadow: none;
-  .edit-button {
-    background-color: #007bff !important;
-    color: white;
-    border: none;
-    box-shadow: none;
-    outline: none;
-  }
+}
+
+/* EDITAR */
+.edit-button {
+  background-color: #007bff;
+  color: white;
 }
 
 .edit-button:hover {
@@ -123,20 +81,69 @@ p {
   transform: translateY(0);
 }
 
-/* --- Estilos para o botão DELETAR --- */
+/* DELETAR */
 .delete-button {
   background-color: #ae1d29;
   color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .delete-button:hover {
   background-color: #c70000;
   transform: translateY(-1px);
+}
+
+/* ========== TABELA ANGULAR MATERIAL ========== */
+table {
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mat-header-cell,
+.mat-cell {
+  padding: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.mat-header-row {
+  background-color: #f5f6fa;
+}
+
+.mat-row {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.mat-row:last-child {
+  border-bottom: none;
+}
+
+.mat-button {
+  font-weight: 600;
+  text-transform: none;
+  padding: 4px 12px;
+}
+
+.mat-elevation-z8 {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* ========== RESPONSIVO ========== */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .mat-table {
+    min-width: 600px;
+  }
+
+  .users-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
 }

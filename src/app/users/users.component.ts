@@ -6,10 +6,25 @@ import { UserService } from '../../services/user.service';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { MatDialog } from '@angular/material/dialog';
 
+import { MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, UserEditComponent],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatOptionModule
+],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })
@@ -79,5 +94,5 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  // REMOVIDO: Método createUser duplicado, já que openUserDialog() faz tudo
+  displayedColumns: string[] = ['fullName', 'email', 'role', 'actions'];
 }

@@ -178,6 +178,26 @@ form select option {
   padding: 0.5rem;
 }
 
+.table-form table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.password-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.error {
+  border-color: red;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .modal-form {
