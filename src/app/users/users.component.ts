@@ -12,6 +12,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-users',
@@ -23,8 +26,11 @@ import { MatOptionModule } from '@angular/material/core';
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
-    MatOptionModule
-],
+    MatOptionModule,
+    MatPaginatorModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })
@@ -32,6 +38,8 @@ export class UsersComponent implements OnInit {
   users: User[] = [];
   selectedUserId: number | null = null;
   isLoading: boolean = true;
+  filteredOptions: any;
+  searchControl: any;
 
   constructor(private userService: UserService, private dialog: MatDialog) {}
 

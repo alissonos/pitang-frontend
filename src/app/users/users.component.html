@@ -1,9 +1,22 @@
 <div class="users-header">
-  <h2>Lista de Usuários</h2>
-  <button mat-flat-button color="primary" (click)="openUserDialog()">Criar Usuário</button>
+  <div class="search-field">
+    <mat-form-field appearance="outline">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput placeholder="Buscar usuário..." [formControl]="searchControl" />
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredOptions" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+  <div className="create-button">
+    <button mat-flat-button color="primary" (click)="openUserDialog()">Criar Usuário</button>
+  </div>
 </div>
 
-<table mat-table [dataSource]="users" class="mat-elevation-z8" *ngIf="users.length > 0; else loading">
+
+<table mat-table [dataSource]=" users" class="mat-elevation-z8" *ngIf="users.length > 0; else loading">
 
   <!-- Nome -->
   <ng-container matColumnDef="fullName">
@@ -35,7 +48,11 @@
   <!-- Cabeçalho e linhas -->
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+
 </table>
+<mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
+</mat-paginator>
 
 <ng-template #loading>
   <p>Carregando usuários...</p>
