@@ -1,4 +1,11 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+// dashboard.component.ts
+import {
+  Component,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  OnDestroy,
+} from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -11,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,44 +37,76 @@ import { MatCardModule } from '@angular/material/card';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   users: User[] = [];
   user: string = 'Usuário';
   darkMode = false;
-  private isBrowser: boolean | undefined;
-  routerOutlet: any;
+  private isBrowser: boolean;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private userService: UserService,
-    private authservice: AuthService,
+    private authService: AuthService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
-
-  ngOnInit(): void {
-    this.userService.getUsers().subscribe((data) => (this.users = data));
-    this.checkDarkModePreference();
-    this.authservice.nomeUsuario$.subscribe((fullName) => {
-      this.user = fullName;
-    });
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  logout() {
-    this.authservice.logout();
+  ngOnInit(): void {
+    this.loadUsers();
+    this.checkDarkModePreference();
+    this.subscribeToUserName();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private loadUsers(): void {
+    this.userService
+      .getUsers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => (this.users = data),
+        error: (error) => console.error('Erro ao carregar usuários:', error),
+      });
+  }
+
+  private subscribeToUserName(): void {
+    this.authService.nomeUsuario$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((fullName) => {
+        this.user = fullName || 'Usuário';
+      });
+  }
+
+  logout(): void {
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 
-  toggleDarkMode() {
+  toggleDarkMode(): void {
     this.darkMode = !this.darkMode;
+    this.saveDarkModePreference();
+    // Aplicar classe ao documento para afetar toda a aplicação
     if (this.isBrowser) {
-      localStorage.setItem('darkMode', this.darkMode ? 'enabled' : 'disabled');
+      document.body.classList.toggle('dark-theme', this.darkMode);
     }
   }
 
-  private checkDarkModePreference() {
+  private checkDarkModePreference(): void {
     if (this.isBrowser) {
       const darkModePref = localStorage.getItem('darkMode');
       this.darkMode = darkModePref === 'enabled';
+      document.body.classList.toggle('dark-theme', this.darkMode);
+    }
+  }
+
+  private saveDarkModePreference(): void {
+    if (this.isBrowser) {
+      localStorage.setItem('darkMode', this.darkMode ? 'enabled' : 'disabled');
     }
   }
 }

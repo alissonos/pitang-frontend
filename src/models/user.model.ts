@@ -1,6 +1,7 @@
 export interface Role {
   id: number;
   name: string;
+  displayName: string;
 }
 
 export interface User {
@@ -8,6 +9,6 @@ export interface User {
   username: string;
   fullName: string | null;
   email: string;
-  role: Role;
+  roleId: Role;
   createdAt: string | null;
 }

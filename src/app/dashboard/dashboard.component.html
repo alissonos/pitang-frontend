@@ -2,11 +2,11 @@
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #sidenav mode="side" opened class="sidebar" fixedInViewport="true">
       <div class="logo">
-        <span>Seu Logo</span>
+        <span>Sua Logo</span>
       </div>
 
       <mat-nav-list class="nav-menu">
-        <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
+        <a mat-list-item routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <mat-icon matListItemIcon>dashboard</mat-icon>
           <span matListItemTitle>Dashboard</span>
         </a>
@@ -26,7 +26,7 @@
           <span matListItemTitle>Configurações</span>
         </a>
 
-        <a mat-list-item (click)="logout()">
+        <a mat-list-item (click)="logout()" class="logout-item">
           <mat-icon matListItemIcon>logout</mat-icon>
           <span matListItemTitle>Sair</span>
         </a>
@@ -35,7 +35,7 @@
 
     <mat-sidenav-content class="main-content">
       <mat-toolbar class="top-bar">
-        <button mat-icon-button (click)="sidenav.toggle()" class="menu-button">
+        <button mat-icon-button (click)="sidenav.toggle()" class="menu-button" aria-label="Toggle menu">
           <mat-icon>menu</mat-icon>
         </button>
 
@@ -44,8 +44,8 @@
         <span class="spacer"></span>
 
         <div class="user-info">
-          <span>Olá, {{ user }}</span>
-          <button mat-icon-button [matMenuTriggerFor]="userMenu" class="avatar">
+          <span class="user-name">Olá, {{ user }}</span>
+          <button mat-icon-button [matMenuTriggerFor]="userMenu" class="avatar" aria-label="User menu">
             <mat-icon>account_circle</mat-icon>
           </button>
           <mat-menu #userMenu="matMenu">
@@ -61,8 +61,9 @@
         </div>
       </mat-toolbar>
 
-      <!-- Aqui o conteúdo dos filhos será carregado -->
-      <router-outlet></router-outlet>
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>

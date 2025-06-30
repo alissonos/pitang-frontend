@@ -20,6 +20,13 @@ export class UserService {
     return this.http.get<User>(`${this.apiUrl}/${userId}`);
   }
 
+  createUser(userData: any): Observable<User> {
+    const token = this.authService?.getToken(); // método que retorna o JWT do local
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    console.log('Token enviado para create:', token);
+    return this.http.post<User>(`${this.apiUrl}`, userData, { headers });
+  }
+
   updateUser(userId: number, userData: any) {
     const token = this.authService?.getToken(); // método que retorna o JWT do localStorage ou variável
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);

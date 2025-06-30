@@ -1,15 +1,36 @@
+// users.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { MatDialog } from '@angular/material/dialog';
+
+import { MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, UserEditComponent, MatIconModule],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatPaginatorModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })
@@ -17,6 +38,8 @@ export class UsersComponent implements OnInit {
   users: User[] = [];
   selectedUserId: number | null = null;
   isLoading: boolean = true;
+  filteredOptions: any;
+  searchControl: any;
 
   constructor(private userService: UserService, private dialog: MatDialog) {}
 
@@ -42,10 +65,24 @@ export class UsersComponent implements OnInit {
     this.selectedUserId = this.selectedUserId === id ? null : id;
   }
 
-  openEditDialog(userId: number) {
-    this.dialog.open(UserEditComponent, {
-      data: { userId },
+  // Método unificado para abrir o diálogo (editar ou criar)
+  openUserDialog(userId?: number) {
+    console.log('Abrindo diálogo para userId:', userId);
+
+    const dialogRef = this.dialog.open(UserEditComponent, {
+      data: {
+        userId: userId || null, // CORRIGIDO: Garantir que seja null se não definido
+      },
       width: '600px',
+      disableClose: true, // Opcional: impede fechar clicando fora
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('Diálogo fechado com resultado:', result);
+      // result será true se salvou com sucesso
+      if (result === true) {
+        this.loadUsers(); // Recarregar a lista de usuários
+      }
     });
   }
 
@@ -53,6 +90,7 @@ export class UsersComponent implements OnInit {
     if (!confirm('Tem certeza que deseja deletar este usuário?')) {
       return;
     }
+
     this.userService.deleteUser(userId).subscribe({
       next: () => {
         console.log('Usuário deletado com sucesso');
@@ -63,4 +101,6 @@ export class UsersComponent implements OnInit {
       },
     });
   }
+
+  displayedColumns: string[] = ['fullName', 'email', 'role', 'actions'];
 }

@@ -1,27 +1,102 @@
+<!-- user-edit.component.html -->
+
 <!-- Fundo escurecido por trás da modal -->
 <div class="modal-backdrop" (click)="closeModal()"></div>
 
 <!-- Modal com o formulário -->
 <div class="modal-form" (click)="$event.stopPropagation()">
-  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+  <!-- Loading spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <p>Carregando dados do usuário...</p>
+  </div>
+
+  <!-- Formulário -->
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+    <h2>{{ data.userId ? 'Editar Usuário' : 'Novo Usuário' }}</h2>
+
+    <label>
+      Login:
+      <input formControlName="username" type="text" placeholder="Digite o login"
+        [class.error]="userForm.get('username')?.invalid && userForm.get('username')?.touched" />
+      <div *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched" class="error-message">
+        Login é obrigatório
+      </div>
+    </label>
+
     <label>
       Nome Completo:
-      <input formControlName="fullName" type="text" />
+      <input formControlName="fullName" type="text" placeholder="Digite o nome completo"
+        [class.error]="userForm.get('fullName')?.invalid && userForm.get('fullName')?.touched" />
+      <div *ngIf="userForm.get('fullName')?.invalid && userForm.get('fullName')?.touched" class="error-message">
+        Nome completo é obrigatório
+      </div>
     </label>
 
     <label>
       E-mail:
-      <input formControlName="email" type="email" />
+      <input formControlName="email" type="email" placeholder="Digite o e-mail"
+        [class.error]="userForm.get('email')?.invalid && userForm.get('email')?.touched" />
+      <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="error-message">
+        <span *ngIf="userForm.get('email')?.errors?.['required']">E-mail é obrigatório</span>
+        <span *ngIf="userForm.get('email')?.errors?.['email']">E-mail deve ter um formato válido</span>
+      </div>
     </label>
 
+    <!-- CORRIGIDO: Campo de Permissão usando 'role' consistentemente -->
     <label>
-      Nova Senha:
-      <input formControlName="password" type="password" />
+      Permissão:
+      <select formControlName="role" [class.error]="userForm.get('role')?.invalid && userForm.get('role')?.touched">
+        <option value="" disabled>Selecione uma permissão</option>
+        <option *ngFor="let role of availableRoles" [value]="role.id">
+          {{ role.displayName }}
+        </option>
+      </select>
+      <div *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched" class="error-message">
+        Permissão é obrigatória
+      </div>
     </label>
 
-    <button type="submit" [disabled]="userForm.invalid">Atualizar</button>
-    <p *ngIf="successMessage" class="successMessage">
-      {{ successMessage }}
-    </p>
+    <label class="password-label">
+      {{ data.userId ? 'Nova Senha (opcional):' : 'Nova Senha:' }}
+      <div class="password-wrapper">
+        <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="password-input"
+          [placeholder]="data.userId ? 'Deixe em branco para manter atual' : 'Digite a senha'"
+          [class.error]="userForm.get('password')?.invalid && userForm.get('password')?.touched" aria-label="Senha" />
+
+        <button type="button" (click)="togglePasswordVisibility()" class="toggle-password-btn"
+          aria-label="Mostrar ou esconder senha">
+          <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+            stroke="#6515f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+            stroke="#6515f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M17.94 17.94a10.03 10.03 0 0 1-5.94 2.06c-7 0-11-8-11-8a18.06 18.06 0 0 1 2.88-4.58" />
+            <path d="M1 1l22 22" />
+          </svg>
+        </button>
+      </div>
+      <!-- CORRIGIDO: Adicionar validação de senha para novos usuários -->
+      <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched" class="error-message">
+        <span *ngIf="userForm.get('password')?.errors?.['required']">Senha é obrigatória</span>
+      </div>
+    </label>
+
+    <!-- Botões de ação -->
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" (click)="closeModal()">
+        Cancelar
+      </button>
+      <button type="submit" class="btn-submit" [disabled]="userForm.invalid">
+        {{ data.userId ? 'Atualizar' : 'Criar' }}
+      </button>
+    </div>
   </form>
+
+  <!-- Mensagem de sucesso -->
+  <p *ngIf="successMessage" class="successMessage">
+    {{ successMessage }}
+  </p>
 </div>

@@ -1,4 +1,4 @@
-/* Container geral */
+/* ========== TITULO DA SEÇÃO ========== */
 h2 {
   text-align: center;
   font-size: 1.8rem;
@@ -6,53 +6,11 @@ h2 {
   color: #2c3e50;
   font-weight: 600;
   letter-spacing: -0.5px;
-  position: relative;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid #f0f0f0;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-  max-width: 800px; /* largura máxima da lista */
-  margin: 0 10px; /* centralizar a lista */
-}
-
-/* Estilo de cada item de usuário */
-li {
-  display: flex; /* Flexbox para alinhar itens */
-  justify-content: space-between; /* Espaço entre nome e email */
-  align-items: center; /* Alinha verticalmente */
-  background-color: #fff;
-  width: 100%; /* ocupa toda a largura do contêiner */
-  padding: 1rem 2.5rem;
-  margin-bottom: 0.75rem; /* espaço entre itens */
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease-in-out;
-  border-left: 4px solid #4285f4; /* linha lateral azul */
-}
-
-li:hover {
-  transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-
-/* Nome do usuário */
-li strong {
-  font-size: 1.1rem;
-  color: #333;
-  display: block;
-  margin-bottom: 0.25rem;
-}
-
-/* Email */
-li {
-  font-size: 0.95rem;
-  color: #666;
-}
-
-/* Mensagem de carregamento */
+/* ========== MENSAGEM DE CARREGAMENTO ========== */
 p {
   font-size: 1rem;
   color: #666;
@@ -60,53 +18,142 @@ p {
   padding: 2rem;
 }
 
-/* --- Estilos para o container de botões de ação --- */
-.action-buttons {
+/* Header contendo botão + campo de busca */
+.users-header {
   display: flex;
-  gap: 10px; /* Espaço entre os botões */
-}
-
-/* --- Estilos para o botão EDITAR --- */
-.edit-button {
-  display: flex; /* Flexbox para centralizar o conteúdo */
-  align-items: center; /* Alinha verticalmente */
+  align-items: center;
   justify-content: space-between;
-  margin-left: auto; /* Empurra o botão para a direita */
-  background-color: #007bff; /* Uma cor azul padrão para botões de ação */
-  color: white; /* Texto branco */
-  border: none; /* Sem borda */
-  padding: 8px 15px; /* Preenchimento interno */
-  border-radius: 5px; /* Bordas arredondadas */
-  cursor: pointer; /* Muda o cursor para indicar clicável */
-  font-size: 0.9rem; /* Tamanho da fonte */
-  font-weight: 500; /* Peso da fonte */
-  transition: background-color 0.2s ease, transform 0.2s ease; /* Transição suave */
+  gap: 16px;
+  padding: 8px;
+  flex-wrap: wrap; /* Evita quebra feia em telas pequenas */
 }
 
-.edit-button:hover {
-  background-color: #0056b3; /* Cor mais escura ao passar o mouse */
-  transform: translateY(-1px); /* Pequeno efeito de elevação */
+/* Campo de busca com tamanho fixo */
+.search-field {
+  display: flex;
+  flex: 1; /* Ocupa o máximo possível de espaço restante */
+  max-width: 300px;
+  min-width: 200px;
+  width: 1000px;
 }
 
-.edit-button:active {
-  background-color: #004085; /* Cor ainda mais escura ao clicar */
-  transform: translateY(0); /* Volta à posição original ao clicar */
-}
-
-/* --- Estilos para o botão DELETAR --- */
-.delete-button {
-  background-color: #ae1d29;
+/* ========== BOTÃO CRIAR USUÁRIO ========== */
+.create-button,
+.users-header button {
+  background-color: #007bff;
   color: white;
+  padding: 10px 20px;
   border: none;
-  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  right: auto;
+}
+
+.create-button:hover,
+.users-header button:hover {
+  background-color: #0056b3;
+}
+
+/* ========== BOTÕES DE AÇÃO ========== */
+.button-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.edit-button,
+.delete-button {
+  padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;
+  border: none;
   transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* EDITAR */
+.edit-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.edit-button:active {
+  background-color: #004085;
+  transform: translateY(0);
+}
+
+/* DELETAR */
+.delete-button {
+  background-color: #ae1d29;
+  color: white;
 }
 
 .delete-button:hover {
   background-color: #c70000;
   transform: translateY(-1px);
+}
+
+/* ========== TABELA ANGULAR MATERIAL ========== */
+table {
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mat-header-cell,
+.mat-cell {
+  padding: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.mat-header-row {
+  background-color: #f5f6fa;
+}
+
+.mat-row {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.mat-row:last-child {
+  border-bottom: none;
+}
+
+.mat-button {
+  font-weight: 600;
+  text-transform: none;
+  padding: 4px 12px;
+}
+
+.mat-elevation-z8 {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* ========== RESPONSIVO ========== */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .mat-table {
+    min-width: 600px;
+  }
+
+  .users-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
 }
