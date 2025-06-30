@@ -2,12 +2,16 @@
 
 <ul *ngIf="users.length > 0; else loading">
   <li *ngFor="let user of users">
-    <strong>{{ user.fullName}}</strong>
+    <strong>{{ user.fullName }}</strong>
 
     <!-- Botão para mostrar o formulário de edição -->
     <div class="action-buttons">
-      <button (click)="openEditDialog(user.id)" class="edit-button">Editar</button>
-      <button (click)="deleteUser(user.id)" class="delete-button">Deletar</button>
+      <button (click)="openEditDialog(user.id)" class="edit-button">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button (click)="deleteUser(user.id)" class="delete-button">
+        <mat-icon>delete</mat-icon>
+      </button>
     </div>
   </li>
 </ul>

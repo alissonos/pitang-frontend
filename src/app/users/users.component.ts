@@ -4,11 +4,12 @@ import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, UserEditComponent],
+  imports: [CommonModule, UserEditComponent, MatIconModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })
