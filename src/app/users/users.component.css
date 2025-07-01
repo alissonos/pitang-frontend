@@ -23,37 +23,167 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 8px;
+  gap: 8px;
   flex-wrap: wrap; /* Evita quebra feia em telas pequenas */
 }
 
-/* Campo de busca com tamanho fixo */
-.search-field {
-  display: flex;
-  flex: 1; /* Ocupa o máximo possível de espaço restante */
+/* Campo de busca MUITO mais estreito */
+.search-field mat-form-field {
+  font-size: 12px !important;
+  margin-top: 10px;
+  margin-left: 10px;
   max-width: 300px;
-  min-width: 200px;
-  width: 1000px;
+  min-width: 100px;
+}
+
+/* Forçar altura bem pequena */
+::ng-deep .search-field .mat-mdc-form-field .mat-mdc-text-field-wrapper {
+  width: 300px !important;
+  height: 40px !important;
+}
+
+/* Input bem pequeno */
+.search-field .mat-mdc-form-field-input-control {
+  height: 20px !important;
+  font-size: 12px !important;
+}
+
+/* Outline pequeno */
+.search-field .mat-mdc-notched-outline {
+  height: 32px !important;
+}
+
+/* Ícone pequeno - CORRIGIDO */
+.search-field .mat-mdc-form-field-icon-prefix {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 4px;
+}
+
+/* Label/placeholder pequeno */
+.search-field .mat-mdc-floating-label {
+  font-size: 12px !important;
+}
+
+/* Input do campo de busca */
+::ng-deep .search-field input.mat-mdc-input-element {
+  height: 30px !important;
+  font-size: 12px !important;
+  padding: 8px 6px !important;
+  line-height: 20px !important;
+}
+
+/* Ícone corrigido - removido height: 50px */
+.search-field .mat-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ajustes adicionais para melhor alinhamento */
+::ng-deep .search-field .mat-mdc-form-field-flex {
+  align-items: center !important;
+  height: 40px !important;
+}
+
+/* Centralizar o placeholder */
+::ng-deep .search-field .mat-mdc-form-field-infix {
+  display: flex;
+  align-items: center;
+  padding: 0 !important;
+  border-top: none !important;
+}
+
+/* Ajustar o container do ícone */
+::ng-deep .search-field .mat-mdc-form-field-icon-prefix {
+  padding: 0 8px 0 12px !important;
+}
+
+/* ===== REMOVER LINHA ROXA COMPLETAMENTE ===== */
+
+/* Remover outline quando focado - TODOS os seletores possíveis */
+::ng-deep
+  .search-field
+  .mat-mdc-form-field.mat-focused
+  .mat-mdc-notched-outline-thick {
+  border-color: transparent !important;
+  color: transparent !important;
+}
+
+/* Remover outline em todos os estados */
+::ng-deep
+  .search-field
+  .mat-mdc-notched-outline
+  .mat-mdc-notched-outline-thick {
+  border-color: #ddd !important;
+}
+
+/* Remover box-shadow se houver */
+::ng-deep .search-field .mat-mdc-form-field.mat-focused {
+  box-shadow: none !important;
+}
+
+/* Remover qualquer sombra do input */
+::ng-deep .search-field input.mat-mdc-input-element:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Forçar borda cinza mesmo quando focado */
+::ng-deep
+  .search-field
+  .mat-mdc-form-field.mat-focused
+  .mat-mdc-notched-outline {
+  border-color: #ddd !important;
+}
+
+/* Remover qualquer highlight colorido */
+::ng-deep
+  .search-field
+  .mat-mdc-form-field.mat-focused
+  .mat-mdc-notched-outline-leading,
+::ng-deep
+  .search-field
+  .mat-mdc-form-field.mat-focused
+  .mat-mdc-notched-outline-trailing,
+::ng-deep
+  .search-field
+  .mat-mdc-form-field.mat-focused
+  .mat-mdc-notched-outline-notch {
+  border-color: #ddd !important;
+}
+
+/* Se ainda aparecer, força em TUDO */
+::ng-deep .search-field .mat-mdc-form-field * {
+  box-shadow: none !important;
+}
+
+/* Remover ripple effect se houver */
+::ng-deep .search-field .mat-ripple-element {
+  display: none !important;
 }
 
 /* ========== BOTÃO CRIAR USUÁRIO ========== */
-.create-button,
-.users-header button {
+.create-button {
   background-color: #007bff;
+  margin-left: 10px;
   color: white;
-  padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
   transition: background-color 0.3s ease;
-  right: auto;
 }
 
-.create-button:hover,
-.users-header button:hover {
+.create-button:hover {
   background-color: #0056b3;
 }
 
