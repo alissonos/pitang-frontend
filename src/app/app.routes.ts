@@ -7,6 +7,7 @@ import { AuthGuard } from './auth.guard';
 import { UsersComponent } from './users/users.component';
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { UserEditComponent } from './users/user-edit/user-edit.component';
+import { ChatComponent } from './chat/chat.component';
 
 export const routes: Routes = [
   {
@@ -15,13 +16,14 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: '', component: DashboardHomeComponent, canActivate: [AuthGuard] }, // ROTA PADRÃO
-      { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
       // Nova rota para editar usuário:
+      { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
       {
         path: 'users/edit/:id',
         component: UserEditComponent,
         canActivate: [AuthGuard],
       }, //
+      { path: 'chat', component: ChatComponent, canActivate: [AuthGuard] },
     ],
   },
   { path: 'login', component: LoginComponent },

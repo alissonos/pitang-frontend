@@ -8,6 +8,9 @@ import { ConfigService } from '../config/config.service';
   providedIn: 'root',
 })
 export class AuthService {
+  getCurrentUser() {
+    throw new Error('Method not implemented.');
+  }
   constructor(private http: HttpClient, private config: ConfigService) {}
 
   login(usernameOrEmail: string, password: string): Observable<any> {
