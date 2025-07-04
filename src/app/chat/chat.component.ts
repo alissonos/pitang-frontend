@@ -108,16 +108,18 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     });
 
     // Escutar indicador de digitação
-    /*this.chatService
+    this.chatService
       .onTyping()
       .subscribe(
-        (data: { userId: string; userName: string; isTyping: boolean }) => {
-          if (data.userId !== this.currentUserId) {
+        (
+          data: { userId: string; userName: string; isTyping: boolean } | null
+        ) => {
+          if (data && data.userId !== this.currentUserId) {
             this.isTyping = data.isTyping;
             this.typingUser = data.userName;
           }
         }
-      );*/
+      );
 
     // Escutar erros
     this.chatService.onError().subscribe((error: any) => {

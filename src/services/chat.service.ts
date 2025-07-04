@@ -8,8 +8,8 @@ import io, { Socket } from 'socket.io-client'; // Importa io como default e Sock
 })
 export class ChatService {
   private socket: ReturnType<typeof io> | null = null;
-  private apiUrl = 'http://localhost:8080/api'; // URL do seu backend
-  private socketUrl = 'http://localhost:8080'; // URL do WebSocket
+  private apiUrl = 'http://localhost:8081/api'; // URL do seu backend
+  private socketUrl = 'http://localhost:8081'; // URL do WebSocket
 
   // Subjects para observables
   private connectedSubject = new BehaviorSubject<boolean>(false);
@@ -133,5 +133,9 @@ export class ChatService {
   // Verificar se está conectado
   isConnected(): boolean {
     return this.socket?.connected || false;
+  }
+
+  sendMessageViaRest(message: ChatMessage): Observable<ChatMessage> {
+    return this.http.post<ChatMessage>(`${this.apiUrl}/chat/send`, message);
   }
 }
