@@ -29,7 +29,7 @@
   <div class="chat-input">
     <div class="input-container">
       <input type="text" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" (input)="onTyping()"
-        placeholder="Digite sua mensagem..." class="message-input" [disabled]="!isConnected">
+        placeholder="Digite sua mensagem..." class="message-input" [disabled]="isConnected">
 
       <button (click)="sendMessage()" class="send-button" [disabled]="!newMessage.trim() || !isConnected">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

@@ -45,8 +45,12 @@ export class AuthService {
   );
   nomeUsuario$ = this.nomeUsuarioSubject.asObservable();
 
-  getCurrentUser() {
-    throw new Error('Method not implemented.');
+  getCurrentUser(): { id: string; name?: string; username?: string } | null {
+    const userJson = localStorage.getItem('currentUser');
+    if (userJson) {
+      return JSON.parse(userJson);
+    }
+    return null;
   }
 
   login(usernameOrEmail: string, password: string): Observable<any> {
@@ -54,7 +58,14 @@ export class AuthService {
     return this.http.post(`${this.config.apiUrl}/auth/login`, body).pipe(
       tap((response: any) => {
         this.setInStorage('authToken', response.token);
-        this.setInStorage('currentUser', JSON.stringify(response.user));
+
+        const user = {
+          id: response.id,
+          fullName: response.fullName, // ou response.name, depende do backend
+          username: response.username || response.email || '',
+        };
+
+        this.setInStorage('currentUser', JSON.stringify(user));
       })
     );
   }

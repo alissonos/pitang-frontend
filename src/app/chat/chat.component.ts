@@ -12,6 +12,8 @@ import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
 
 export interface ChatMessage {
+  userName: string;
+  userId: string;
   id?: string;
   content: string;
   senderId: string;
@@ -150,6 +152,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       senderId: this.currentUserId,
       senderName: this.currentUserName,
       timestamp: new Date(),
+      userId: '',
+      userName: '',
     };
 
     this.chatService.sendMessage(message);
