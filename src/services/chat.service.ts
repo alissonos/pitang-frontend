@@ -1,254 +1,356 @@
-import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Observable, BehaviorSubject, map, catchError, of, timer } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ChatMessage } from '../app/chat/chat.component';
 import { Client } from '@stomp/stompjs';
 
-// Declare SockJS para usar sem import específico
-declare const SockJS: any;
+interface ConnectionConfig {
+  maxRetries: number;
+  baseDelay: number;
+  maxDelay: number;
+  heartbeatInterval: number;
+  connectionTimeout: number;
+}
 
 @Injectable({
   providedIn: 'root',
 })
-export class ChatService {
+export class ChatService implements OnDestroy {
   private stompClient: Client | null = null;
-  private apiUrl = 'http://localhost:8081/api';
-  private socketUrl = 'http://localhost:8081/ws';
+  private readonly config: ConnectionConfig = {
+    maxRetries: 5,
+    baseDelay: 2000,
+    maxDelay: 30000,
+    heartbeatInterval: 10000,
+    connectionTimeout: 15000,
+  };
 
-  // Subjects para observables
-  private connectedSubject = new BehaviorSubject<boolean>(false);
-  private messageSubject = new BehaviorSubject<ChatMessage | null>(null);
-  private userCountSubject = new BehaviorSubject<number>(0);
-  private typingSubject = new BehaviorSubject<{
+  // URLs configuráveis
+  private readonly apiUrl = 'http://localhost:8081/api';
+  private readonly socketUrl = 'http://localhost:8081/ws';
+
+  // Subjects para comunicação
+  private readonly connectedSubject = new BehaviorSubject<boolean>(false);
+  private readonly messageSubject = new BehaviorSubject<ChatMessage | null>(
+    null
+  );
+  private readonly userCountSubject = new BehaviorSubject<number>(0);
+  private readonly typingSubject = new BehaviorSubject<{
     userId: string;
     userName: string;
     isTyping: boolean;
   } | null>(null);
-  private errorSubject = new BehaviorSubject<any>(null);
+  private readonly errorSubject = new BehaviorSubject<Error | null>(null);
 
+  // Estado da conexão
   private currentUserId: string = '';
   private currentUserName: string = '';
-  private connectionAttempts: number = 0;
-  private maxConnectionAttempts: number = 3;
+  private retryCount: number = 0;
+  private reconnectTimer: any = null;
+  private isDestroyed: boolean = false;
 
   constructor(private http: HttpClient) {
-    console.log('ChatService initialized');
+    this.setupErrorHandling();
   }
 
-  // Conectar ao WebSocket via STOMP
+  ngOnDestroy(): void {
+    this.isDestroyed = true;
+    this.disconnect();
+    this.completeSubjects();
+  }
+
+  // Conectar ao WebSocket
   connect(userId: string, userName: string): void {
-    console.log('Connect called with:', userId, userName);
+    if (this.isDestroyed) return;
 
     if (this.stompClient?.connected) {
-      console.log('Already connected');
+      console.log('Já conectado');
       return;
     }
 
     this.currentUserId = userId;
     this.currentUserName = userName;
-    this.connectionAttempts = 0;
+    this.retryCount = 0;
+    this.clearReconnectTimer();
 
     this.attemptConnection();
   }
 
   private attemptConnection(): void {
-    this.connectionAttempts++;
-    console.log(`Attempting connection #${this.connectionAttempts}`);
+    if (this.isDestroyed) return;
+
+    this.retryCount++;
+    console.log(`Tentativa de conexão #${this.retryCount}`);
+
+    this.cleanup();
+    this.createStompClient();
+    this.activateClient();
+  }
+
+  private createStompClient(): void {
+    this.stompClient = new Client({
+      webSocketFactory: () => this.createWebSocket(),
+      connectHeaders: {
+        userId: this.currentUserId,
+        userName: this.currentUserName,
+      },
+      debug: (str) => this.debugLog(str),
+      reconnectDelay: 0, // Controlamos a reconexão manualmente
+      heartbeatIncoming: this.config.heartbeatInterval,
+      heartbeatOutgoing: this.config.heartbeatInterval,
+      connectionTimeout: this.config.connectionTimeout,
+    });
+
+    this.setupClientCallbacks();
+  }
+
+  private createWebSocket(): WebSocket {
+    try {
+      // Tentar usar SockJS se disponível
+      if (typeof (window as any).SockJS !== 'undefined') {
+        console.log('Usando SockJS');
+        return new (window as any).SockJS(this.socketUrl);
+      }
+
+      // Fallback para WebSocket nativo
+      console.log('Usando WebSocket nativo');
+      const wsUrl = this.socketUrl
+        .replace('http://', 'ws://')
+        .replace('https://', 'wss://');
+      return new WebSocket(wsUrl);
+    } catch (error) {
+      console.error('Erro ao criar WebSocket:', error);
+      throw new Error('Falha ao criar conexão WebSocket');
+    }
+  }
+
+  private setupClientCallbacks(): void {
+    if (!this.stompClient) return;
+
+    this.stompClient.onConnect = (frame) => {
+      console.log('✅ Conectado:', frame);
+      this.connectedSubject.next(true);
+      this.retryCount = 0;
+      this.errorSubject.next(null);
+      this.subscribeToTopics();
+    };
+
+    this.stompClient.onStompError = (frame) => {
+      const error = new Error(`STOMP: ${frame.headers['message']}`);
+      console.error('❌ Erro STOMP:', error);
+      this.handleConnectionError(error);
+    };
+
+    this.stompClient.onDisconnect = (frame) => {
+      console.log('🔌 Desconectado');
+      this.connectedSubject.next(false);
+      this.scheduleReconnect();
+    };
+
+    this.stompClient.onWebSocketError = (error) => {
+      console.error('❌ Erro WebSocket:', error);
+      this.handleConnectionError(new Error('Erro de WebSocket'));
+    };
+
+    this.stompClient.onWebSocketClose = (event) => {
+      console.log('🔌 WebSocket fechado:', event.code);
+      this.connectedSubject.next(false);
+
+      if (event.code !== 1000) {
+        // Não foi fechamento normal
+        this.scheduleReconnect();
+      }
+    };
+  }
+
+  private activateClient(): void {
+    if (!this.stompClient || this.isDestroyed) return;
 
     try {
-      // Configurar cliente STOMP
-      this.stompClient = new Client({
-        // Usar WebSocket nativo primeiro, fallback para SockJS
-        webSocketFactory: () => {
-          try {
-            // Tentar WebSocket nativo primeiro
-            return new WebSocket(this.socketUrl.replace('http', 'ws'));
-          } catch (error) {
-            console.log('WebSocket nativo falhou, tentando SockJS');
-            // Fallback para SockJS
-            return new SockJS(this.socketUrl);
-          }
-        },
-
-        // Headers de conexão
-        connectHeaders: {
-          userId: this.currentUserId,
-          userName: this.currentUserName,
-        },
-
-        // Configurações de debug - só em desenvolvimento
-        debug: (str) => {
-          console.log('STOMP Debug:', str);
-        },
-
-        // Configurações de reconexão
-        reconnectDelay: 5000,
-        heartbeatIncoming: 4000,
-        heartbeatOutgoing: 4000,
-
-        // Configurações de timeout
-        connectionTimeout: 10000,
-      });
-
-      // Callback de conexão bem-sucedida
-      this.stompClient.onConnect = (frame) => {
-        console.log('✅ Conectado ao STOMP:', frame);
-        this.connectedSubject.next(true);
-        this.connectionAttempts = 0;
-        this.errorSubject.next(null);
-
-        // Subscrever aos tópicos
-        this.subscribeToTopics();
-      };
-
-      // Callback de erro STOMP
-      this.stompClient.onStompError = (frame) => {
-        console.error('❌ Erro STOMP:', frame.headers['message']);
-        console.error('Detalhes:', frame.body);
-        this.handleConnectionError(frame);
-      };
-
-      // Callback de desconexão
-      this.stompClient.onDisconnect = (frame) => {
-        console.log('🔌 Desconectado do STOMP');
-        this.connectedSubject.next(false);
-      };
-
-      // Callback de erro de WebSocket
-      this.stompClient.onWebSocketError = (error) => {
-        console.error('❌ Erro WebSocket:', error);
-        this.handleConnectionError(error);
-      };
-
-      // Ativar cliente STOMP
       this.stompClient.activate();
     } catch (error) {
-      console.error('❌ Erro ao criar cliente STOMP:', error);
+      console.error('❌ Erro ao ativar cliente:', error);
       this.handleConnectionError(error);
     }
   }
 
-  private handleConnectionError(error: any): void {
-    console.error('Erro no chat:', error);
-    this.errorSubject.next(error);
-
-    if (this.connectionAttempts < this.maxConnectionAttempts) {
-      console.log(
-        `Tentando reconectar em 5 segundos... (${this.connectionAttempts}/${this.maxConnectionAttempts})`
-      );
-      setTimeout(() => {
-        this.attemptConnection();
-      }, 5000);
-    } else {
-      console.error('❌ Máximo de tentativas de conexão excedido');
-      this.connectedSubject.next(false);
-    }
-  }
-
-  // Subscrever aos tópicos STOMP
   private subscribeToTopics(): void {
-    if (!this.stompClient?.connected) {
-      console.error('Cliente STOMP não conectado para subscrições');
-      return;
-    }
+    if (!this.stompClient?.connected || this.isDestroyed) return;
 
     console.log('📡 Subscrevendo aos tópicos...');
 
     try {
-      // Subscrever ao tópico de mensagens públicas
+      // Mensagens públicas
       this.stompClient.subscribe('/topic/public', (message) => {
-        console.log('📨 Mensagem recebida:', message.body);
-        const chatMessage: ChatMessage = JSON.parse(message.body);
-        this.messageSubject.next(chatMessage);
+        this.handleMessage(message, 'public');
       });
 
-      // Subscrever ao tópico de contagem de usuários
+      // Contagem de usuários
       this.stompClient.subscribe('/topic/userCount', (message) => {
-        console.log('👥 Contagem de usuários:', message.body);
-        const count: number = JSON.parse(message.body);
-        this.userCountSubject.next(count);
+        this.handleUserCount(message);
       });
 
-      // Subscrever ao tópico de digitação
+      // Indicador de digitação
       this.stompClient.subscribe('/topic/typing', (message) => {
-        console.log('⌨️ Indicador de digitação:', message.body);
-        const typingData: {
-          userId: string;
-          userName: string;
-          isTyping: boolean;
-        } = JSON.parse(message.body);
-        this.typingSubject.next(typingData);
+        this.handleTyping(message);
       });
 
-      // Subscrever a mensagens privadas (opcional)
+      // Mensagens privadas
       this.stompClient.subscribe(
         `/user/${this.currentUserId}/queue/private`,
         (message) => {
-          console.log('🔒 Mensagem privada:', message.body);
-          const chatMessage: ChatMessage = JSON.parse(message.body);
-          this.messageSubject.next(chatMessage);
+          this.handleMessage(message, 'private');
         }
       );
 
       console.log('✅ Subscrito a todos os tópicos');
     } catch (error) {
-      console.error('❌ Erro ao subscrever aos tópicos:', error);
-      this.errorSubject.next(error);
+      console.error('❌ Erro ao subscrever:', error);
+      this.errorSubject.next(error instanceof Error ? error : new Error(String(error)));
     }
   }
 
-  // Desconectar
+  private handleMessage(message: any, type: string): void {
+    try {
+      const chatMessage: ChatMessage = JSON.parse(message.body);
+      console.log(`📨 Mensagem ${type} recebida:`, chatMessage);
+      this.messageSubject.next(chatMessage);
+    } catch (error) {
+      console.error('Erro ao processar mensagem:', error);
+    }
+  }
+
+  private handleUserCount(message: any): void {
+    try {
+      const count: number = JSON.parse(message.body);
+      console.log('👥 Usuários online:', count);
+      this.userCountSubject.next(count);
+    } catch (error) {
+      console.error('Erro ao processar contagem:', error);
+    }
+  }
+
+  private handleTyping(message: any): void {
+    try {
+      const typingData = JSON.parse(message.body);
+      console.log('⌨️ Digitação:', typingData);
+      this.typingSubject.next(typingData);
+    } catch (error) {
+      console.error('Erro ao processar digitação:', error);
+    }
+  }
+
+  private handleConnectionError(error: any): void {
+    console.error('Erro na conexão:', error);
+    this.errorSubject.next(error instanceof Error ? error : new Error(String(error)));
+    this.connectedSubject.next(false);
+    this.scheduleReconnect();
+  }
+
+  private scheduleReconnect(): void {
+    if (this.isDestroyed || this.retryCount >= this.config.maxRetries) {
+      if (this.retryCount >= this.config.maxRetries) {
+        const maxError = new Error('Máximo de tentativas excedido');
+        this.errorSubject.next(maxError);
+      }
+      return;
+    }
+
+    this.clearReconnectTimer();
+    const delay = this.calculateDelay();
+
+    console.log(
+      `🔄 Reconectando em ${delay / 1000}s... (${this.retryCount}/${
+        this.config.maxRetries
+      })`
+    );
+
+    this.reconnectTimer = setTimeout(() => {
+      this.attemptConnection();
+    }, delay);
+  }
+
+  private calculateDelay(): number {
+    const exponentialDelay =
+      this.config.baseDelay * Math.pow(2, this.retryCount - 1);
+    return Math.min(exponentialDelay, this.config.maxDelay);
+  }
+
   disconnect(): void {
     console.log('🔌 Desconectando...');
+    this.isDestroyed = true;
+    this.clearReconnectTimer();
+    this.cleanup();
+    this.connectedSubject.next(false);
+  }
+
+  private cleanup(): void {
     if (this.stompClient) {
-      this.stompClient.deactivate();
+      try {
+        if (this.stompClient.connected) {
+          this.stompClient.deactivate();
+        }
+      } catch (error) {
+        console.warn('Erro durante cleanup:', error);
+      }
       this.stompClient = null;
-      this.connectedSubject.next(false);
-      console.log('✅ Desconectado');
     }
   }
 
-  // Enviar mensagem
+  private clearReconnectTimer(): void {
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+  }
+
+  private completeSubjects(): void {
+    this.connectedSubject.complete();
+    this.messageSubject.complete();
+    this.userCountSubject.complete();
+    this.typingSubject.complete();
+    this.errorSubject.complete();
+  }
+
+  // Métodos públicos
   sendMessage(message: ChatMessage): void {
     if (!this.stompClient?.connected) {
-      console.error('❌ Cliente STOMP não conectado para enviar mensagem');
+      console.error('❌ Não conectado para enviar mensagem');
+      this.sendMessageViaRest(message).subscribe({
+        next: () => console.log('✅ Mensagem enviada via REST'),
+        error: (error) => this.errorSubject.next(error),
+      });
       return;
     }
 
     try {
-      // Adicionar informações do usuário se não estiverem presentes
-      const messageWithUser = {
+      const messagePayload = {
         ...message,
-        userId: message.userId || this.currentUserId,
-        userName: message.userName || this.currentUserName,
+        senderId: message.senderId || this.currentUserId,
+        senderName: message.senderName || this.currentUserName,
         timestamp: new Date().toISOString(),
       };
 
-      console.log('📤 Enviando mensagem:', messageWithUser);
-
       this.stompClient.publish({
         destination: '/app/chat.sendMessage',
-        body: JSON.stringify(messageWithUser),
+        body: JSON.stringify(messagePayload),
       });
 
-      console.log('✅ Mensagem enviada');
+      console.log('✅ Mensagem enviada via WebSocket');
     } catch (error) {
       console.error('❌ Erro ao enviar mensagem:', error);
-      this.errorSubject.next(error);
+      this.errorSubject.next(error instanceof Error ? error : new Error(String(error)));
     }
   }
 
-  // Enviar indicador de digitação
   sendTyping(isTyping: boolean): void {
-    if (!this.stompClient?.connected) {
-      return;
-    }
+    if (!this.stompClient?.connected) return;
 
     try {
       const typingData = {
         userId: this.currentUserId,
         userName: this.currentUserName,
-        isTyping: isTyping,
+        isTyping,
       };
 
       this.stompClient.publish({
@@ -260,13 +362,38 @@ export class ChatService {
     }
   }
 
-  // Buscar histórico de mensagens via HTTP
+  // Métodos HTTP
   getChatHistory(): Observable<ChatMessage[]> {
-    console.log('📚 Buscando histórico de mensagens...');
-    return this.http.get<ChatMessage[]>(`${this.apiUrl}/chat/messages`);
+    return this.http
+      .get<ChatMessage[]>(`${this.apiUrl}/chat/messages`)
+      .pipe(
+        catchError(this.handleHttpError<ChatMessage[]>('getChatHistory', []))
+      );
   }
 
-  // Observables para componentes
+  sendMessageViaRest(message: ChatMessage): Observable<ChatMessage> {
+    const messagePayload = {
+      ...message,
+      senderId: message.senderId || this.currentUserId,
+      senderName: message.senderName || this.currentUserName,
+      timestamp: new Date().toISOString(),
+    };
+
+    return this.http
+      .post<ChatMessage>(`${this.apiUrl}/chat/send`, messagePayload)
+      .pipe(
+        catchError(this.handleHttpError<ChatMessage>('sendMessageViaRest'))
+      );
+  }
+
+  testConnection(): Observable<boolean> {
+    return this.http.get(`${this.apiUrl}/health`).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    );
+  }
+
+  // Observables
   onConnect(): Observable<boolean> {
     return this.connectedSubject.asObservable();
   }
@@ -291,37 +418,61 @@ export class ChatService {
     return this.typingSubject.asObservable();
   }
 
-  onError(): Observable<any> {
+  onError(): Observable<Error | null> {
     return this.errorSubject.asObservable();
   }
 
-  // Verificar se está conectado
+  // Utilitários
   isConnected(): boolean {
     return this.stompClient?.connected || false;
   }
 
-  // Enviar mensagem via REST (fallback)
-  sendMessageViaRest(message: ChatMessage): Observable<ChatMessage> {
-    console.log('📤 Enviando mensagem via REST:', message);
-    return this.http.post<ChatMessage>(`${this.apiUrl}/chat/send`, message);
-  }
-
-  // Método para obter status da conexão
   getConnectionStatus(): string {
     if (!this.stompClient) return 'Não inicializado';
     if (this.stompClient.connected) return 'Conectado';
-    if (this.connectionAttempts > 0) return 'Conectando...';
+    if (this.retryCount > 0)
+      return `Conectando... (${this.retryCount}/${this.config.maxRetries})`;
     return 'Desconectado';
   }
 
-  // Método para forçar reconexão
   forceReconnect(): void {
     console.log('🔄 Forçando reconexão...');
     this.disconnect();
+    this.isDestroyed = false;
+    this.retryCount = 0;
+
     setTimeout(() => {
       if (this.currentUserId && this.currentUserName) {
         this.connect(this.currentUserId, this.currentUserName);
       }
     }, 1000);
+  }
+
+  // Utilitários privados
+  private handleHttpError<T>(operation = 'operation', result?: T) {
+    return (error: HttpErrorResponse): Observable<T> => {
+      console.error(`${operation} falhou:`, error);
+      this.errorSubject.next(new Error(`${operation}: ${error.message}`));
+      return of(result as T);
+    };
+  }
+
+  private debugLog(str: string): void {
+    if (!str.includes('PING') && !str.includes('PONG')) {
+      console.log('STOMP:', str);
+    }
+  }
+
+  private setupErrorHandling(): void {
+    // Tratar erros globais não capturados
+    window.addEventListener('error', (event) => {
+      if (
+        event.error?.message?.includes('WebSocket') ||
+        event.error?.message?.includes('STOMP')
+      ) {
+        console.error('Erro global de WebSocket:', event.error);
+        this.handleConnectionError(event.error);
+      }
+    });
   }
 }

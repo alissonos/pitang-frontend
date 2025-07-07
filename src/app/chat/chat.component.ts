@@ -5,15 +5,15 @@ import {
   ViewChild,
   ElementRef,
   AfterViewChecked,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
+import { Subject, takeUntil } from 'rxjs';
 
 export interface ChatMessage {
-  userName: string;
-  userId: string;
   id?: string;
   content: string;
   senderId: string;
@@ -32,6 +32,7 @@ export interface ChatMessage {
 export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
 
+  // Propriedades do componente
   messages: ChatMessage[] = [];
   newMessage: string = '';
   currentUserId: string = '';
@@ -40,13 +41,19 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   connectedUsers: number = 0;
   isTyping: boolean = false;
   typingUser: string = '';
+  connectionStatus: string = 'Desconectado';
+  lastError: string = '';
 
+  // Controle de componente
+  private destroy$ = new Subject<void>();
   private typingTimer: any;
   private shouldScrollToBottom: boolean = false;
+  private userScrolledUp: boolean = false;
 
   constructor(
     private chatService: ChatService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -56,126 +63,198 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    if (this.shouldScrollToBottom) {
+    if (this.shouldScrollToBottom && !this.userScrolledUp) {
       this.scrollToBottom();
       this.shouldScrollToBottom = false;
     }
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.chatService.disconnect();
-    if (this.typingTimer) {
-      clearTimeout(this.typingTimer);
-    }
+    this.clearTypingTimer();
   }
 
   private initializeUser(): void {
-    const user = this.authService.getCurrentUser() as unknown as {
-      id: string;
-      name?: string;
-      username?: string;
-    };
-    if (user !== undefined && user !== null) {
-      this.currentUserId = user.id;
-      this.currentUserName = user.name || user.username || '';
+    try {
+      const user = this.authService.getCurrentUser() as unknown as {
+        id: string;
+        name?: string;
+        username?: string;
+      };
+
+      if (user?.id) {
+        this.currentUserId = user.id;
+        this.currentUserName = user.name || user.username || 'Usuário';
+      } else {
+        this.handleError('Usuário não autenticado');
+      }
+    } catch (error) {
+      this.handleError('Erro ao obter dados do usuário');
     }
   }
 
   private connectToChat(): void {
+    if (!this.currentUserId) {
+      this.handleError('Não é possível conectar sem ID de usuário');
+      return;
+    }
+
     this.chatService.connect(this.currentUserId, this.currentUserName);
+    this.subscribeToEvents();
+  }
 
-    // Escutar conexão estabelecida
-    this.chatService.onConnect().subscribe(() => {
-      this.isConnected = true;
-      console.log('Conectado ao chat');
-    });
+  private subscribeToEvents(): void {
+    // Conexão estabelecida
+    this.chatService
+      .onConnect()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (connected) => {
+          this.isConnected = connected;
+          this.connectionStatus = connected ? 'Conectado' : 'Desconectado';
+          if (connected) {
+            this.lastError = '';
+          }
+          this.cdr.detectChanges();
+        },
+        error: (error) => this.handleError('Erro na conexão'),
+      });
 
-    // Escutar desconexão
-    this.chatService.onDisconnect().subscribe(() => {
-      this.isConnected = false;
-      console.log('Desconectado do chat');
-    });
+    // Novas mensagens
+    this.chatService
+      .onMessage()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (message) => {
+          if (message) {
+            this.messages.push(message);
+            this.shouldScrollToBottom = true;
+            this.cdr.detectChanges();
+          }
+        },
+        error: (error) => this.handleError('Erro ao receber mensagem'),
+      });
 
-    // Escutar novas mensagens
-    this.chatService.onMessage().subscribe((message: ChatMessage | null) => {
-      if (message) {
-        this.messages.push(message);
-        this.shouldScrollToBottom = true;
-      }
-    });
+    // Contagem de usuários
+    this.chatService
+      .onUserCount()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (count) => {
+          this.connectedUsers = count;
+          this.cdr.detectChanges();
+        },
+        error: (error) =>
+          this.handleError('Erro ao obter contagem de usuários'),
+      });
 
-    // Escutar usuários online
-    this.chatService.onUserCount().subscribe((count: number) => {
-      this.connectedUsers = count;
-    });
-
-    // Escutar indicador de digitação
+    // Indicador de digitação
     this.chatService
       .onTyping()
-      .subscribe(
-        (
-          data: { userId: string; userName: string; isTyping: boolean } | null
-        ) => {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
           if (data && data.userId !== this.currentUserId) {
             this.isTyping = data.isTyping;
             this.typingUser = data.userName;
+            this.cdr.detectChanges();
           }
-        }
-      );
+        },
+        error: (error) => this.handleError('Erro no indicador de digitação'),
+      });
 
-    // Escutar erros
-    this.chatService.onError().subscribe((error: any) => {
-      console.error('Erro no chat:', error);
-      this.isConnected = false;
-    });
+    // Erros
+    this.chatService
+      .onError()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (error) => {
+          if (error) {
+            this.handleError(error.message || 'Erro desconhecido no chat');
+          }
+        },
+      });
   }
 
   private loadChatHistory(): void {
-    this.chatService.getChatHistory().subscribe({
-      next: (messages: ChatMessage[]) => {
-        this.messages = messages;
-        this.shouldScrollToBottom = true;
-      },
-      error: (error: any) => {
-        console.error('Erro ao carregar histórico:', error);
-      },
-    });
+    this.chatService
+      .getChatHistory()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (messages) => {
+          this.messages = messages;
+          this.shouldScrollToBottom = true;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          this.handleError('Erro ao carregar histórico do chat');
+        },
+      });
   }
 
   sendMessage(): void {
-    if (!this.newMessage.trim() || !this.isConnected) {
+    const messageContent = this.newMessage.trim();
+
+    if (!messageContent || !this.isConnected) {
       return;
     }
 
     const message: ChatMessage = {
-      content: this.newMessage.trim(),
+      content: messageContent,
       senderId: this.currentUserId,
       senderName: this.currentUserName,
       timestamp: new Date(),
-      userId: '',
-      userName: '',
+      type: 'message',
     };
 
-    this.chatService.sendMessage(message);
-    this.newMessage = '';
-    this.shouldScrollToBottom = true;
+    try {
+      this.chatService.sendMessage(message);
+      this.newMessage = '';
+      this.shouldScrollToBottom = true;
+      this.clearTypingTimer();
+    } catch (error) {
+      this.handleError('Erro ao enviar mensagem');
+    }
   }
 
   onTyping(): void {
     if (!this.isConnected) return;
 
-    // Notificar que está digitando
-    this.chatService.sendTyping(true);
+    try {
+      this.chatService.sendTyping(true);
+      this.clearTypingTimer();
 
-    // Limpar timer anterior
-    if (this.typingTimer) {
-      clearTimeout(this.typingTimer);
+      this.typingTimer = setTimeout(() => {
+        this.chatService.sendTyping(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Erro ao enviar indicador de digitação:', error);
     }
+  }
 
-    // Parar de digitar após 2 segundos de inatividade
-    this.typingTimer = setTimeout(() => {
-      this.chatService.sendTyping(false);
-    }, 2000);
+  onScroll(): void {
+    if (!this.messagesContainer) return;
+
+    const container = this.messagesContainer.nativeElement;
+    const threshold = 100; // pixels do fundo
+
+    this.userScrolledUp =
+      container.scrollTop + container.clientHeight + threshold <
+      container.scrollHeight;
+  }
+
+  scrollToBottom(): void {
+    try {
+      if (this.messagesContainer) {
+        const container = this.messagesContainer.nativeElement;
+        container.scrollTop = container.scrollHeight;
+        this.userScrolledUp = false;
+      }
+    } catch (error) {
+      console.error('Erro ao rolar para o final:', error);
+    }
   }
 
   formatTime(timestamp: Date): string {
@@ -198,14 +277,37 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  private scrollToBottom(): void {
-    try {
-      if (this.messagesContainer) {
-        const container = this.messagesContainer.nativeElement;
-        container.scrollTop = container.scrollHeight;
-      }
-    } catch (err) {
-      console.error('Erro ao rolar para o final:', err);
+  reconnect(): void {
+    this.chatService.forceReconnect();
+  }
+
+  clearError(): void {
+    this.lastError = '';
+  }
+
+  private handleError(message: string): void {
+    this.lastError = message;
+    console.error('Chat Error:', message);
+    this.cdr.detectChanges();
+  }
+
+  private clearTypingTimer(): void {
+    if (this.typingTimer) {
+      clearTimeout(this.typingTimer);
+      this.typingTimer = null;
     }
+  }
+
+  // Getters para template
+  get canSendMessage(): boolean {
+    return this.newMessage.trim().length > 0 && this.isConnected;
+  }
+
+  get statusClass(): string {
+    return this.isConnected ? 'connected' : 'disconnected';
+  }
+
+  get hasError(): boolean {
+    return this.lastError.length > 0;
   }
 }

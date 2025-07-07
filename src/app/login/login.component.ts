@@ -13,6 +13,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from '../../config/config.service';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
 
 interface CarouselSlide {
   background?: string;
@@ -80,16 +82,21 @@ export class LoginComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private snackBar: MatSnackBar,
     private config: ConfigService,
-    private http: HttpClient
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    this.loadTheme();
-    this.startCarousel();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadTheme();
+      this.startCarousel();
+    }
   }
 
   ngOnDestroy(): void {
-    this.stopCarousel();
+    if (isPlatformBrowser(this.platformId)) {
+      this.stopCarousel();
+    }
   }
 
   // Login method (mantendo sua implementação original)
@@ -184,29 +191,33 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // Theme methods
   toggleTheme(): void {
-    this.isDarkMode = !this.isDarkMode;
-    this.darkMode = this.isDarkMode; // Sincronizando com variável existente
+    if (isPlatformBrowser(this.platformId)) {
+      this.isDarkMode = !this.isDarkMode;
+      this.darkMode = this.isDarkMode;
 
-    if (this.isDarkMode) {
-      document.body.classList.add('dark-mode');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.body.classList.remove('dark-mode');
-      localStorage.setItem('theme', 'light');
+      if (this.isDarkMode) {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      }
     }
   }
 
   private loadTheme(): void {
-    const savedTheme = localStorage.getItem('theme');
+    if (isPlatformBrowser(this.platformId)) {
+      const savedTheme = localStorage.getItem('theme');
 
-    if (savedTheme === 'dark') {
-      this.isDarkMode = true;
-      this.darkMode = true;
-      document.body.classList.add('dark-mode');
-    } else {
-      this.isDarkMode = false;
-      this.darkMode = false;
-      document.body.classList.remove('dark-mode');
+      if (savedTheme === 'dark') {
+        this.isDarkMode = true;
+        this.darkMode = true;
+        document.body.classList.add('dark-mode');
+      } else {
+        this.isDarkMode = false;
+        this.darkMode = false;
+        document.body.classList.remove('dark-mode');
+      }
     }
   }
 
