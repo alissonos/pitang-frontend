@@ -61,8 +61,7 @@ export class ChatService implements OnDestroy {
 
   // Conectar ao WebSocket
   connect(userId: string, userName: string): void {
-    if (this.isDestroyed) return;
-
+    this.isDestroyed = false; // <- importante
     if (this.stompClient?.connected) {
       console.log('Já conectado');
       return;
@@ -206,7 +205,9 @@ export class ChatService implements OnDestroy {
       console.log('✅ Subscrito a todos os tópicos');
     } catch (error) {
       console.error('❌ Erro ao subscrever:', error);
-      this.errorSubject.next(error instanceof Error ? error : new Error(String(error)));
+      this.errorSubject.next(
+        error instanceof Error ? error : new Error(String(error))
+      );
     }
   }
 
@@ -242,7 +243,9 @@ export class ChatService implements OnDestroy {
 
   private handleConnectionError(error: any): void {
     console.error('Erro na conexão:', error);
-    this.errorSubject.next(error instanceof Error ? error : new Error(String(error)));
+    this.errorSubject.next(
+      error instanceof Error ? error : new Error(String(error))
+    );
     this.connectedSubject.next(false);
     this.scheduleReconnect();
   }
@@ -339,7 +342,9 @@ export class ChatService implements OnDestroy {
       console.log('✅ Mensagem enviada via WebSocket');
     } catch (error) {
       console.error('❌ Erro ao enviar mensagem:', error);
-      this.errorSubject.next(error instanceof Error ? error : new Error(String(error)));
+      this.errorSubject.next(
+        error instanceof Error ? error : new Error(String(error))
+      );
     }
   }
 
