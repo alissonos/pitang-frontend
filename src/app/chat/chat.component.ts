@@ -19,7 +19,7 @@ export interface ChatMessage {
   senderId: string;
   senderName: string;
   timestamp: Date;
-  type?: 'message' | 'system';
+  type?: 'MESSAGE' | 'SYSTEM';
 }
 
 @Component({
@@ -83,6 +83,16 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         name?: string;
         username?: string;
       };
+
+      // Logs para depuração
+      console.log(
+        'Usuario do localStorage:',
+        this.authService.getCurrentUser()
+      );
+      console.log(
+        'Nome vindo de getNomeUsuario():',
+        this.authService.getNomeUsuario()
+      );
 
       if (user?.id) {
         this.currentUserId = user.id;
@@ -206,7 +216,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       senderId: this.currentUserId,
       senderName: this.currentUserName,
       timestamp: new Date(),
-      type: 'message',
+      type: 'MESSAGE',
     };
 
     try {
