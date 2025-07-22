@@ -49,6 +49,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private typingTimer: any;
   private shouldScrollToBottom: boolean = false;
   private userScrolledUp: boolean = false;
+  private userCountRefreshTimer: any; // Timer para atualizar contagem periodicamente
 
   constructor(
     private chatService: ChatService,
@@ -60,6 +61,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.initializeUser();
     this.connectToChat();
     this.loadChatHistory();
+    this.startUserCountRefresh(); // Inicia refresh periódico da contagem
   }
 
   ngAfterViewChecked(): void {
@@ -126,6 +128,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.connectionStatus = connected ? 'Conectado' : 'Desconectado';
           if (connected) {
             this.lastError = '';
+            // Solicita contagem atualizada assim que conecta
+            this.requestUserCount();
           }
           this.cdr.detectChanges();
         },
@@ -202,6 +206,28 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.handleError('Erro ao carregar histórico do chat');
         },
       });
+  }
+
+  // Método para solicitar contagem de usuários manualmente
+  private requestUserCount(): void {
+    if (this.isConnected) {
+      this.chatService.requestUserCount();
+    }
+  }
+
+  // Inicia refresh periódico da contagem de usuários
+  private startUserCountRefresh(): void {
+    this.userCountRefreshTimer = setInterval(() => {
+      this.requestUserCount();
+    }, 10000); // A cada 10 segundos
+  }
+
+  // Limpa o timer de refresh da contagem
+  private clearUserCountRefreshTimer(): void {
+    if (this.userCountRefreshTimer) {
+      clearInterval(this.userCountRefreshTimer);
+      this.userCountRefreshTimer = null;
+    }
   }
 
   sendMessage(): void {

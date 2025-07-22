@@ -48,6 +48,7 @@ export class ChatService implements OnDestroy {
   private retryCount: number = 0;
   private reconnectTimer: any = null;
   private isDestroyed: boolean = false;
+  handleError: any;
 
   constructor(private http: HttpClient) {
     this.setupErrorHandling();
@@ -132,6 +133,7 @@ export class ChatService implements OnDestroy {
       this.retryCount = 0;
       this.errorSubject.next(null);
       this.subscribeToTopics();
+      this.requestUserCount();
     };
 
     this.stompClient.onStompError = (frame) => {
@@ -186,7 +188,9 @@ export class ChatService implements OnDestroy {
 
       // Contagem de usuários
       this.stompClient.subscribe('/topic/userCount', (message) => {
-        this.handleUserCount(message);
+        const count = JSON.parse(message.body);
+        console.log('🧮 Contagem de usuários recebida:', count);
+        this.userCountSubject.next(count); // ou qualquer lógica sua
       });
 
       // Indicador de digitação
@@ -438,6 +442,32 @@ export class ChatService implements OnDestroy {
     if (this.retryCount > 0)
       return `Conectando... (${this.retryCount}/${this.config.maxRetries})`;
     return 'Desconectado';
+  }
+
+  /**
+   * Solicita a contagem atual de usuários online
+   */
+  requestUserCount(): void {
+    if (!this.stompClient?.connected) {
+      console.warn(
+        '⚠️ WebSocket desconectado, não é possível solicitar contagem de usuários'
+      );
+      return;
+    }
+
+    try {
+      console.log('👥 Solicitando contagem de usuários...');
+      this.stompClient.publish({
+        destination: '/app/chat.getUserCount',
+        body: JSON.stringify({
+          userId: this.currentUserId,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+    } catch (error) {
+      console.error('❌ Erro ao solicitar contagem de usuários:', error);
+      this.handleError('Erro ao solicitar contagem', error);
+    }
   }
 
   forceReconnect(): void {

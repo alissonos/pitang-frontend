@@ -19,6 +19,10 @@ export class AuthService {
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   loggedIn$ = this.loggedInSubject.asObservable();
 
+  // ADICIONE ESTA LINHA - BehaviorSubject para controlar quando a auth foi carregada
+  private authLoadedSubject = new BehaviorSubject<boolean>(false);
+  authLoaded$ = this.authLoadedSubject.asObservable();
+
   constructor(
     private http: HttpClient,
     private config: ConfigService,
@@ -26,19 +30,34 @@ export class AuthService {
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
 
-    // Evita acesso ao localStorage no lado do servidor
-    if (this.isBrowser) {
-      const nomeSalvo = localStorage.getItem('nomeUsuario');
-      if (nomeSalvo) {
-        this.nomeUsuarioSubject.next(nomeSalvo);
-      }
+    // MODIFIQUE ESTA PARTE - Adicione initializeAuth()
+    this.initializeAuth();
+  }
 
-      // Atualiza loggedInSubject com base no token ao iniciar
-      const token = localStorage.getItem('authToken');
-      this.loggedInSubject.next(!!token);
+  // ADICIONE ESTE MÉTODO
+  private initializeAuth(): void {
+    if (this.isBrowser) {
+      // Pequeno delay para garantir que o localStorage seja acessível
+      setTimeout(() => {
+        const nomeSalvo = localStorage.getItem('nomeUsuario');
+        if (nomeSalvo) {
+          this.nomeUsuarioSubject.next(nomeSalvo);
+        }
+
+        // Atualiza loggedInSubject com base no token ao iniciar
+        const token = localStorage.getItem('authToken');
+        this.loggedInSubject.next(!!token);
+
+        // IMPORTANTE: Marca que a autenticação foi carregada
+        this.authLoadedSubject.next(true);
+      }, 0);
+    } else {
+      // No servidor, marca como carregado imediatamente
+      this.authLoadedSubject.next(true);
     }
   }
 
+  // O resto dos seus métodos permanecem iguais...
   // Métodos auxiliares para localStorage
   private getFromStorage(key: string): string | null {
     if (this.isBrowser) {
