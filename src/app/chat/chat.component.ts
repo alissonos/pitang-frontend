@@ -246,6 +246,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     };
 
     try {
+      this.chatService.sendTyping(false); // Envia indicador de digitação como falso
+
       this.chatService.sendMessage(message);
       this.newMessage = '';
       this.shouldScrollToBottom = true;
