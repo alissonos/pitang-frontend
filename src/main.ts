@@ -7,8 +7,18 @@ import {
   withInterceptors,
 } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { routes } from './app/app.routes'; // Importe suas rotas
-import { AuthInterceptor } from './app/auth.interceptor'; // Ajuste o caminho conforme sua estrutura
+import { APP_INITIALIZER } from '@angular/core';
+
+import { routes } from './app/app.routes';
+import { AuthInterceptor } from './app/auth.interceptor';
+import { AuthService } from './services/auth.service';
+
+// Factory function para o APP_INITIALIZER
+export function initializeAuth(authService: AuthService) {
+  return (): Promise<void> => {
+    return authService.initializeAuth();
+  };
+}
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -19,7 +29,13 @@ bootstrapApplication(AppComponent, {
       useClass: AuthInterceptor,
       multi: true,
     },
+    // ADICIONE ESTE PROVIDER:
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAuth,
+      deps: [AuthService],
+      multi: true,
+    },
     provideAnimations(),
-    // Remova o provider manual de HTTP_INTERCEPTORS se estiver usando withInterceptors
   ],
 }).catch((err) => console.error(err));

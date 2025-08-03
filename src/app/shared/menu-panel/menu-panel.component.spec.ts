@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RedirectComponent } from './redirect.component';
+import { MenuPanelComponent } from './menu-panel.component';
 
-describe('RedirectComponent', () => {
-  let component: RedirectComponent;
-  let fixture: ComponentFixture<RedirectComponent>;
+describe('MenuPanelComponent', () => {
+  let component: MenuPanelComponent;
+  let fixture: ComponentFixture<MenuPanelComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RedirectComponent]
+      imports: [MenuPanelComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RedirectComponent);
+    fixture = TestBed.createComponent(MenuPanelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

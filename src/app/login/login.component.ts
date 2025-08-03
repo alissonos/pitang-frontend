@@ -87,6 +87,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    console.log('[LoginComponent] ngOnInit chamado');
+
     if (isPlatformBrowser(this.platformId)) {
       this.loadTheme();
       this.startCarousel();

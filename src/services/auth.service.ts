@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ConfigService } from '../config/config.service';
 
 @Injectable({
@@ -19,7 +19,7 @@ export class AuthService {
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   loggedIn$ = this.loggedInSubject.asObservable();
 
-  // ADICIONE ESTA LINHA - BehaviorSubject para controlar quando a auth foi carregada
+  // BehaviorSubject para controlar quando a auth foi carregada
   private authLoadedSubject = new BehaviorSubject<boolean>(false);
   authLoaded$ = this.authLoadedSubject.asObservable();
 
@@ -29,35 +29,32 @@ export class AuthService {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
-
-    // MODIFIQUE ESTA PARTE - Adicione initializeAuth()
-    this.initializeAuth();
   }
 
-  // ADICIONE ESTE MÉTODO
-  private initializeAuth(): void {
-    if (this.isBrowser) {
-      // Pequeno delay para garantir que o localStorage seja acessível
-      setTimeout(() => {
+  // Método que será chamado pelo APP_INITIALIZER
+  initializeAuth(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      if (this.isBrowser) {
+        // Carrega nome do usuário
         const nomeSalvo = localStorage.getItem('nomeUsuario');
         if (nomeSalvo) {
           this.nomeUsuarioSubject.next(nomeSalvo);
         }
 
-        // Atualiza loggedInSubject com base no token ao iniciar
+        // Carrega estado de login
         const token = localStorage.getItem('authToken');
         this.loggedInSubject.next(!!token);
+      } else {
+        // No servidor, usuário não está logado
+        this.loggedInSubject.next(false);
+      }
 
-        // IMPORTANTE: Marca que a autenticação foi carregada
-        this.authLoadedSubject.next(true);
-      }, 0);
-    } else {
-      // No servidor, marca como carregado imediatamente
+      // Marca como carregado
       this.authLoadedSubject.next(true);
-    }
+      resolve();
+    });
   }
 
-  // O resto dos seus métodos permanecem iguais...
   // Métodos auxiliares para localStorage
   private getFromStorage(key: string): string | null {
     if (this.isBrowser) {
@@ -79,7 +76,7 @@ export class AuthService {
   }
 
   getCurrentUser(): { id: string; name?: string; username?: string } | null {
-    const userJson = localStorage.getItem('currentUser');
+    const userJson = this.getFromStorage('currentUser');
     if (userJson) {
       return JSON.parse(userJson);
     }
@@ -94,13 +91,11 @@ export class AuthService {
 
         const user = {
           id: response.id,
-          name: response.fullName, // renomeado para consistência
+          name: response.fullName,
           username: response.username || response.email || '',
         };
 
         this.setInStorage('currentUser', JSON.stringify(user));
-
-        // Salva o nome para mostrar corretamente no reload
         this.setNomeUsuario(response.fullName);
 
         // Atualiza estado de login
@@ -132,9 +127,9 @@ export class AuthService {
     return !!this.getFromStorage('authToken');
   }
 
-  // Novo método assíncrono para usar no guard
+  // Método assíncrono para usar no guard
   isLoggedIn$(): Observable<boolean> {
-    return this.loggedIn$;
+    return this.loggedIn$.pipe(map((loggedIn) => !!loggedIn));
   }
 
   getToken(): string | null {

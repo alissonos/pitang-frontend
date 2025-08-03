@@ -31,17 +31,77 @@
 
 /* Sidebar */
 .sidebar {
-  width: 250px;
-  background-color: var(--primary-color);
+  width: 57px;
+  background-color: aliceblue;
+  color: #424242;
+}
+
+.profile-section {
+  text-align: center;
+  padding: 16px;
+}
+
+.profile-img {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+.profile-name {
+  font-size: 1rem;
+  font-weight: 500;
   color: white;
 }
 
-.sidebar .logo {
-  padding: 16px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
+.menu-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0;
+  margin-left: 2px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  a[mat-list-item] {
+    padding: 0 !important;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    width: auto;
+    min-width: 48px;
+    min-height: 48px;
+
+    .mat-list-item-content {
+      padding: 0 !important;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  mat-icon {
+    font-size: 28px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+  }
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding-bottom: 10px;
+  text-align: center;
+  border-top: 1px solid rgba(159, 36, 36, 0.1);
+}
+
+/* Menu de navegação */
+.nav-menu {
+  margin-top: 80px;
+  padding: 0;
 }
 
 /* Lista de navegação */
@@ -66,7 +126,7 @@
 }
 
 mat-nav-list mat-icon {
-  color: #c6cdeb;
+  color: #333333;
 }
 
 mat-nav-list span {
@@ -131,6 +191,11 @@ mat-nav-list span {
 /* Botão do menu (para mobile) */
 .menu-button {
   display: none;
+}
+
+::ng-deep .mat-drawer,
+::ng-deep .mat-sidenav {
+  border-radius: 0 !important;
 }
 
 /* Media queries para responsividade */

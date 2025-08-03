@@ -54,6 +54,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log('[DashboardComponent] ngOnInit chamado');
+
     this.loadUsers();
     this.checkDarkModePreference();
     this.subscribeToUserName();
