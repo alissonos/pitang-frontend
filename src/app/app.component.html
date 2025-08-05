@@ -1,1 +1,13 @@
-<router-outlet></router-outlet>
+<div class="global-toolbar">
+  <button mat-icon-button (click)="toggleDarkMode()" aria-label="Alternar modo escuro">
+    <mat-icon>dark_mode</mat-icon>
+  </button>
+</div>
+
+<ng-container *ngIf="authService.authLoaded$ | async; else loading">
+  <router-outlet></router-outlet>
+</ng-container>
+
+<ng-template #loading>
+  <app-loading></app-loading>
+</ng-template>

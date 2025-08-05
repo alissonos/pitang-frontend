@@ -19,6 +19,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
 import { Subject, takeUntil } from 'rxjs';
+import { MenuPanelComponent } from '../shared/menu-panel/menu-panel.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,6 +34,7 @@ import { Subject, takeUntil } from 'rxjs';
     MatListModule,
     MatMenuModule,
     MatCardModule,
+    MenuPanelComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -54,8 +56,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('[DashboardComponent] ngOnInit chamado');
-
     this.loadUsers();
     this.checkDarkModePreference();
     this.subscribeToUserName();

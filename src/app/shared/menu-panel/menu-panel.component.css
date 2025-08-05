@@ -1,0 +1,40 @@
+::ng-deep .mat-mdc-menu-content {
+  width: 275px;
+  background-color: aliceblue;
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 570px;
+  padding-bottom: 45px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-left: 30px;
+  margin-bottom: 400px;
+}
+
+.profile-img {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 80x;
+}
+
+.user-info p {
+  margin: 0;
+  font-weight: 500;
+  padding: 5px 0 0 0;
+}
+
+.user-info small {
+  font-size: 0.8em;
+  color: gray;
+}

@@ -13,3 +13,29 @@ li {
 .container {
   padding: 1rem; /* Evite valores fixos muito grandes (ex: 50px) */
 }
+
+.global-toolbar {
+  position: absolute;
+  bottom: 16px;
+  left: 8px;
+  z-index: 100;
+}
+
+.global-toolbar button {
+  width: 40px;
+  height: 40px;
+  background-color: #ffa726; /* Laranja suave */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.global-toolbar button:hover {
+  background-color: #fb8c00;
+}

@@ -61,7 +61,6 @@
   align-items: center;
   padding: 12px 0;
   margin-left: 2px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   a[mat-list-item] {
     padding: 0 !important;
@@ -95,7 +94,6 @@
   width: 100%;
   padding-bottom: 10px;
   text-align: center;
-  border-top: 1px solid rgba(159, 36, 36, 0.1);
 }
 
 /* Menu de navegação */
@@ -111,10 +109,12 @@
 
 .mat-nav-list .mat-list-item {
   color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .mat-nav-list .mat-list-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
 }
 
 .mat-nav-list .mat-list-item.active {
@@ -123,9 +123,15 @@
 
 .mat-nav-list .mat-icon {
   margin-right: 8px;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
-mat-nav-list mat-icon {
+.mat-nav-list .mat-list-item:hover .mat-icon {
+  transform: scale(1.1);
+  color: #fff; /* opcional */
+}
+
+[mat-nav-list] mat-icon {
   color: #333333;
 }
 
@@ -185,7 +191,6 @@ mat-nav-list span {
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Botão do menu (para mobile) */

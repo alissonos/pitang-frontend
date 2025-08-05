@@ -261,3 +261,49 @@ button[type="submit"]:hover,
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+.mat-mdc-list-item {
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.mat-mdc-list-item:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffcc80;
+}
+
+.mat-mdc-list-item:hover .mat-icon {
+  transform: scale(1.1);
+  color: #ffcc80;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* ================== */
+/* 🌐 Toolbar Global */
+body.dark-theme {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-theme .mat-drawer-container {
+  background-color: #121212;
+}
+
+body.dark-theme .mat-drawer,
+body.dark-theme .sidebar {
+  background-color: #1e1e1e;
+}
+
+body.dark-theme .mat-card {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+body.dark-theme .mat-icon {
+  color: #ffffff;
+}
+
+body.dark-theme .mat-toolbar {
+  background-color: #1f1f1f;
+  color: #fff;
+}

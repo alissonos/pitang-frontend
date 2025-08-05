@@ -9,13 +9,16 @@
       -->
 
       <mat-nav-list class="menu-top">
-        <a mat-list-item>
+        <a mat-list-item [matMenuTriggerFor]="menu">
           <mat-icon matListItemIcon>menu</mat-icon>
         </a>
+        <mat-menu #menu="matMenu" class="menu-panel-container">
+          <app-menu-panel></app-menu-panel>
+        </mat-menu>
       </mat-nav-list>
       <mat-nav-list class="nav-menu">
         <a mat-list-item routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-          <mat-icon matListItemIcon>house</mat-icon>
+          <mat-icon matListItemIcon title="teste">house</mat-icon>
         </a>
         <a mat-list-item routerLink="/dashboard/users" routerLinkActive="active">
           <mat-icon matListItemIcon>people</mat-icon>
@@ -36,14 +39,13 @@
         <a mat-list-item (click)="logout()" class="logout-item">
           <mat-icon matListItemIcon>logout</mat-icon>
         </a>
-
       </mat-nav-list>
 
-      <div class="sidebar-footer">
+      <!-- <div class="sidebar-footer">
         <a mat-list-item (click)="toggleDarkMode()">
           <mat-icon matListItemIcon>dark_mode</mat-icon>
         </a>
-      </div>
+      </div> -->
     </mat-sidenav>
 
     <mat-sidenav-content class="main-content">
@@ -53,12 +55,6 @@
         </button>
 
         <h1 class="title">Bem-vindo ao Painel</h1>
-
-        <span class="spacer"></span>
-
-        <div class="user-info">
-          <span class="user-name">Olá, {{ user }}</span>
-        </div>
       </mat-toolbar>
 
       <div class="content-wrapper">
