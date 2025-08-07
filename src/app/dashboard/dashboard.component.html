@@ -1,13 +1,20 @@
 <div class="dashboard-container" [class.dark-mode]="darkMode">
   <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav-content class="main-content">
+      <mat-toolbar class="top-bar">
+        <button mat-icon-button (click)="sidenav.toggle()" class="menu-button" aria-label="Toggle menu">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <h1 class="title">Bem-vindo ao Painel</h1>
+      </mat-toolbar>
+
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+
     <mat-sidenav #sidenav mode="side" opened class="sidebar" fixedInViewport="true">
-
-      <!--
-      <div class="logo profile-section">
-        <img src="../../assets/alisson.jpg" alt="Foto de perfil" class="profile-img" />
-        <div class="profile-name">{{ user.split(' ')[0] || 'Usuário' }}</div>
-      -->
-
       <mat-nav-list class="menu-top">
         <a mat-list-item [matMenuTriggerFor]="menu">
           <mat-icon matListItemIcon>menu</mat-icon>
@@ -40,26 +47,6 @@
           <mat-icon matListItemIcon>logout</mat-icon>
         </a>
       </mat-nav-list>
-
-      <!-- <div class="sidebar-footer">
-        <a mat-list-item (click)="toggleDarkMode()">
-          <mat-icon matListItemIcon>dark_mode</mat-icon>
-        </a>
-      </div> -->
     </mat-sidenav>
-
-    <mat-sidenav-content class="main-content">
-      <mat-toolbar class="top-bar">
-        <button mat-icon-button (click)="sidenav.toggle()" class="menu-button" aria-label="Toggle menu">
-          <mat-icon>menu</mat-icon>
-        </button>
-
-        <h1 class="title">Bem-vindo ao Painel</h1>
-      </mat-toolbar>
-
-      <div class="content-wrapper">
-        <router-outlet></router-outlet>
-      </div>
-    </mat-sidenav-content>
   </mat-sidenav-container>
 </div>

@@ -1,14 +1,18 @@
-::ng-deep .mat-mdc-menu-content {
-  width: 275px;
+.menu-panel {
+  width: 250px;
   background-color: aliceblue;
+  height: 100vh;
+  padding: none;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ddd;
 }
 
 .profile-section {
   display: flex;
+  flex-direction: column; /* novo */
   align-items: center;
   gap: 10px;
-  height: 570px;
-  padding-bottom: 45px;
 }
 
 .user-info {
@@ -16,8 +20,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding-left: 30px;
-  margin-bottom: 400px;
+  padding-left: 0; /* ajustado */
+  margin: 16px 0; /* era 400px, agora só um espaçamento leve */
 }
 
 .profile-img {
@@ -25,16 +29,59 @@
   height: 84px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 80x;
+  margin-bottom: 12px; /* estava com 80x, e com typo */
 }
 
-.user-info p {
-  margin: 0;
-  font-weight: 500;
-  padding: 5px 0 0 0;
+::ng-deep .menu-section * {
+  font-size: 12px !important;
 }
 
-.user-info small {
-  font-size: 0.8em;
-  color: gray;
+::ng-deep mat-icon {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.custom-list-item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.custom-list-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.custom-list-item mat-icon {
+  font-size: 20px;
+}
+
+mat-divider {
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid #ccc;
+  width: 100%;
+}
+
+.submenu {
+  padding-left: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.submenu-item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.no-padding .mat-expansion-panel-content {
+  padding: 0;
 }

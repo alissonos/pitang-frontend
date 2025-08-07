@@ -1,7 +1,58 @@
-<div class="profile-section">
-  <div class="user-info">
-    <img src="../../assets/alisson.jpg" alt="Foto de perfil" class="profile-img" />
-    <p>Olá, {{ user }}</p>
-    <small>{{ email }}</small>
+<div class="menu-panel">
+  <div class="profile-section">
+    <div class="user-info">
+      <img src="../../assets/alisson.jpg" alt="Foto de perfil" class="profile-img" />
+      <p>Olá, {{ user }}</p>
+      <small>{{ email }}</small>
+    </div>
+  </div>
+
+  <!-- Menu com linha separadora -->
+  <mat-divider></mat-divider>
+  <div class="menu-section">
+    <nav>
+      <a class="custom-list-item" href="#" (click)="onClickHandler($event)">
+        <mat-icon>group</mat-icon>
+        <span>Usuários</span>
+      </a>
+      <a class="custom-list-item" href="#" (click)="onClickHandler($event)">
+        <mat-icon>store</mat-icon>
+        <span>Clientes/Fornecedores</span>
+      </a>
+      <a class="custom-list-item" href="#" (click)="onClickHandler($event)">
+        <mat-icon>assignment</mat-icon>
+        <span>Leads/Contratos</span>
+      </a>
+      <a class="custom-list-item" href="#" (click)="onClickHandler($event)">
+        <mat-icon>chat</mat-icon>
+        <span>Canais de Comunicação</span>
+      </a>
+      <a class="custom-list-item" href="#" (click)="onClickHandler($event)">
+        <mat-icon>smart_toy</mat-icon>
+        <span>Agentes Virtuais</span>
+      </a>
+      <a class="custom-list-item" href="#" (click)="onClickHandler($event)">
+        <mat-icon>compare_arrows</mat-icon>
+        <span>Fluxo de Comunicação</span>
+      </a>
+      <a class="custom-list-item" (click)="toggleConfig()" (click)="onClickHandler($event)">
+        <mat-icon>settings</mat-icon>
+        <span>Configurações</span>
+      </a>
+      <div *ngIf="showConfig" class="submenu">
+        <a class="submenu-item">
+          <mat-icon>apartment</mat-icon>
+          <span>Empresa</span>
+        </a>
+        <a class="submenu-item">
+          <mat-icon>business</mat-icon>
+          <span>Departamento</span>
+        </a>
+      </div>
+      <a class="custom-list-item" href="#" (click)="onClickHandler($event)">
+        <mat-icon>logout</mat-icon>
+        <span>Sair</span>
+      </a>
+    </nav>
   </div>
 </div>

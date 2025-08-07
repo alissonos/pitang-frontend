@@ -277,6 +277,10 @@ button[type="submit"]:hover,
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
+.mat-mdc-menu-panel .mat-mdc-menu-content {
+  padding: 0;
+}
+
 /* ================== */
 /* 🌐 Toolbar Global */
 body.dark-theme {
