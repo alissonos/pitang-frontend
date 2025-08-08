@@ -23,11 +23,10 @@ export interface ChatMessage {
 }
 
 @Component({
-  selector: 'app-chat',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './chat.component.html',
-  styleUrl: './chat.component.css',
+    selector: 'app-chat',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './chat.component.html',
+    styleUrl: './chat.component.css'
 })
 export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;

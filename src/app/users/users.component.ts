@@ -17,22 +17,21 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-users',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatPaginatorModule,
-    MatAutocompleteModule,
-    ReactiveFormsModule,
-  ],
-  templateUrl: './users.component.html',
-  styleUrl: './users.component.css',
+    selector: 'app-users',
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatPaginatorModule,
+        MatAutocompleteModule,
+        ReactiveFormsModule,
+    ],
+    templateUrl: './users.component.html',
+    styleUrl: './users.component.css'
 })
 export class UsersComponent implements OnInit {
   users: User[] = [];

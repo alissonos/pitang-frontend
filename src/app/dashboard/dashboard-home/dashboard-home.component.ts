@@ -11,6 +11,8 @@ import { Router, RouterModule } from '@angular/router';
 import { User } from '../../../models/user.model';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
+import { NgChartsModule } from 'ng2-charts';
+import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -25,6 +27,7 @@ import { AuthService } from '../../../services/auth.service';
     MatListModule,
     MatMenuModule,
     MatCardModule,
+    NgChartsModule,
   ],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css',
@@ -34,6 +37,7 @@ export class DashboardHomeComponent {
   darkMode = false;
   private isBrowser: boolean | undefined;
   routerOutlet: any;
+  doughnut: 'doughnut' | undefined;
 
   constructor(
     private userService: UserService,
@@ -41,6 +45,41 @@ export class DashboardHomeComponent {
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
+
+  public doughnutChartLabels: string[] = [
+    'Nota 1',
+    'Nota 2',
+    'Nota 3',
+    'Nota 4',
+    'Nota 5',
+  ];
+  public doughnutChartData = {
+    labels: this.doughnutChartLabels,
+    datasets: [
+      {
+        data: [0, 0, 0, 0, 1], // Distribuição de notas (exemplo: 1 nota 5)
+        backgroundColor: [
+          '#ff3e3e',
+          '#ff8c00',
+          '#ffd700',
+          '#87ceeb',
+          '#28a745',
+        ],
+        borderWidth: 0,
+      },
+    ],
+  };
+  public doughnutChartType: ChartType = 'doughnut';
+
+  public doughnutChartOptions: ChartOptions<'doughnut'> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    cutout: '70%', // <-- isso só funciona com ChartOptions<'doughnut'>
+  };
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => (this.users = data));

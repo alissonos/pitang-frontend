@@ -1,25 +1,19 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthService } from '../services/auth.service';
 import { filter, take } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { LoadingComponent } from './shared/loading/loading.component';
 import { LoginComponent } from './login/login.component';
-import { MatIcon } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { f } from '../../node_modules/@angular/material/icon-module.d-COXCrhrh';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [
-    RouterModule,
-    CommonModule,
-    LoadingComponent,
-    LoginComponent,
-    MatIcon,
-  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  imports: [CommonModule, RouterOutlet, LoadingComponent, MatIconModule],
 })
 export class AppComponent implements OnInit {
   title(title: any) {

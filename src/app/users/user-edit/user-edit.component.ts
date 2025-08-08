@@ -30,20 +30,19 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 
 @Component({
-  selector: 'app-user-edit',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTableModule,
-  ],
-  templateUrl: './user-edit.component.html',
-  styleUrl: './user-edit.component.css',
+    selector: 'app-user-edit',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTableModule,
+    ],
+    templateUrl: './user-edit.component.html',
+    styleUrl: './user-edit.component.css'
 })
 export class UserEditComponent implements OnInit {
   user: User | null = null;

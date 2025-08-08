@@ -6,11 +6,10 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 @Component({
-  selector: 'app-signup',
-  standalone: true,
-  imports: [FormsModule, CommonModule],
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css'],
+    selector: 'app-signup',
+    imports: [FormsModule, CommonModule],
+    templateUrl: './signup.component.html',
+    styleUrls: ['./signup.component.css']
 })
 export class SignupComponent {
   signupData = {

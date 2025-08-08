@@ -4,11 +4,10 @@ import { AuthService } from '../../../services/auth.service';
 import { take } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-loading',
-  standalone: true,
-  imports: [],
-  templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.css'],
+    selector: 'app-loading',
+    imports: [],
+    templateUrl: './loading.component.html',
+    styleUrls: ['./loading.component.css']
 })
 export class LoadingComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}

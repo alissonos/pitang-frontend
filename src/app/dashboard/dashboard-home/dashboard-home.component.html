@@ -4,8 +4,12 @@
       <mat-card-title>Visão Geral</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <p>Resumo do sistema</p>
+      <p>Índice de Satisfação</p>
+      <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [options]="doughnutChartOptions"
+        type="doughnut">
+      </canvas>
     </mat-card-content>
+
   </mat-card>
 
   <mat-card class="card">

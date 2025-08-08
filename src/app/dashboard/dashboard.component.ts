@@ -34,10 +34,10 @@ import { MenuPanelComponent } from '../shared/menu-panel/menu-panel.component';
     MatListModule,
     MatMenuModule,
     MatCardModule,
-    MenuPanelComponent,
-  ],
+    MenuPanelComponent
+],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   users: User[] = [];
