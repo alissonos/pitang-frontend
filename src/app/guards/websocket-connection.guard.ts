@@ -21,21 +21,16 @@ export const webSocketConnectionGuard: CanActivateFn = (route, state) => {
 
   // ✅ Verificar se WebSocket está conectado
   if (!webSocketService.isConnected()) {
-    console.log('🔄 WebSocket desconectado, tentando reconectar...');
-
     // Tentar reconectar
     webSocketService.reconnect(token, user);
 
     // Aguardar um momento para a conexão
     setTimeout(() => {
       if (webSocketService.isConnected()) {
-        console.log('✅ WebSocket reconectado com sucesso');
       } else {
-        console.log('❌ Falha na reconexão do WebSocket');
       }
     }, 2000);
   } else {
-    console.log('✅ WebSocket já está conectado');
   }
 
   return true; // Sempre permite a navegação

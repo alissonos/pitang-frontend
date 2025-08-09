@@ -1,32 +1,65 @@
-<div class="content">
-  <mat-card class="card">
-    <mat-card-header>
-      <mat-card-title>Visão Geral</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p>Índice de Satisfação</p>
-      <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [options]="doughnutChartOptions"
-        type="doughnut">
-      </canvas>
-    </mat-card-content>
+<div class="dashboard-container">
 
-  </mat-card>
+  <!-- Linha 1: Boas-vindas -->
+  <div class="row">
+    <mat-card class="card quarter-width">
+      <mat-card-header>
+        <mat-card-title>Bem-vindo ao Dashboard</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Resumo das atividades recentes</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="card quarter-width">
+      <mat-card-header>
+        <mat-card-title>Bem-vindo ao Dashboard</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Resumo das atividades recentes</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="card quarter-width">
+      <mat-card-header>
+        <mat-card-title>Bem-vindo ao Dashboard</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Resumo das atividades recentes</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="card quarter-width">
+      <mat-card-header>
+        <mat-card-title>Bem-vindo ao Dashboard</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Resumo das atividades recentes</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
-  <mat-card class="card">
-    <mat-card-header>
-      <mat-card-title>Estatísticas</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p>Dados importantes</p>
-    </mat-card-content>
-  </mat-card>
+  <!-- Linha 2: Gráficos lado a lado -->
+  <div class="row">
+    <mat-card class="card half-width">
+      <mat-card-header>
+        <mat-card-title>Visão Geral</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Índice de Satisfação</p>
+        <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [options]="doughnutChartOptions"
+          [type]="'doughnut'" class="chart-doughnut">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
 
-  <mat-card class="card">
-    <mat-card-header>
-      <mat-card-title>Atividades Recentes</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p>Últimas ações</p>
-    </mat-card-content>
-  </mat-card>
+    <mat-card class="card half-width">
+      <mat-card-header>
+        <mat-card-title>Estatísticas</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Interações em Atendimentos</p>
+        <canvas baseChart [data]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions" [type]="'line'"
+          class="chart-lines">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

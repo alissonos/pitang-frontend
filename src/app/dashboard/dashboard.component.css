@@ -23,6 +23,10 @@
   color: white;
 }
 
+mat-toolbar.top-bar {
+  background-color: aliceblue;
+}
+
 /* Container do sidenav */
 .sidenav-container {
   width: 100%;
@@ -141,7 +145,7 @@ mat-nav-list span {
 
 /* Conteúdo principal */
 .main-content {
-  background-color: #f5f6fa;
+  background-color: aliceblue;
 }
 
 /* Barra superior */

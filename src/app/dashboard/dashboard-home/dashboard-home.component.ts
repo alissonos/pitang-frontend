@@ -12,7 +12,12 @@ import { User } from '../../../models/user.model';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { NgChartsModule } from 'ng2-charts';
-import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
+import {
+  ChartConfiguration,
+  ChartData,
+  ChartOptions,
+  ChartType,
+} from 'chart.js';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -46,6 +51,7 @@ export class DashboardHomeComponent {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
+  /* Gráfico de Rosca - Índice de Satisfação */
   public doughnutChartLabels: string[] = [
     'Nota 1',
     'Nota 2',
@@ -57,7 +63,7 @@ export class DashboardHomeComponent {
     labels: this.doughnutChartLabels,
     datasets: [
       {
-        data: [0, 0, 0, 0, 1], // Distribuição de notas (exemplo: 1 nota 5)
+        data: [0, 0, 1, 1, 1], // Distribuição de notas (exemplo: 1 nota 5)
         backgroundColor: [
           '#ff3e3e',
           '#ff8c00',
@@ -78,8 +84,64 @@ export class DashboardHomeComponent {
         display: false,
       },
     },
-    cutout: '70%', // <-- isso só funciona com ChartOptions<'doughnut'>
+    cutout: '70%',
   };
+
+  /* Gráfico de Linhas - Chamados ao Longo do Dia */
+  lineChartData: ChartData<'line'> = {
+    labels: [
+      '05/Ago 08:00',
+      '05/Ago 09:00',
+      '05/Ago 10:00',
+      '05/Ago 11:00',
+      '05/Ago 12:00',
+    ],
+    datasets: [
+      {
+        label: 'Iniciados',
+        data: [0, 2, 0, 2, 0],
+        fill: true,
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        tension: 0.4,
+      },
+      {
+        label: 'Encerrados',
+        data: [0, 1, 1, 0, 0],
+        fill: true,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.4,
+      },
+      {
+        label: 'Transferidos',
+        data: [0, 1, 1, 1, 0],
+        fill: true,
+        borderColor: 'rgba(255, 159, 64, 1)',
+        backgroundColor: 'rgba(255, 159, 64, 0.2)',
+        tension: 0.4,
+      },
+    ],
+  };
+
+  lineChartLabels: string[] = [
+    '05/Ago 08:00',
+    '05/Ago 09:00',
+    '05/Ago 10:00',
+    '05/Ago 11:00',
+    '05/Ago 12:00',
+  ];
+
+  lineChartOptions: ChartOptions<'line'> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+    },
+  };
+
+  lineChartColors = [];
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => (this.users = data));

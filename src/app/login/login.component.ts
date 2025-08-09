@@ -22,20 +22,20 @@ interface CarouselSlide {
 }
 
 @Component({
-    selector: 'app-login',
-    imports: [
-        CommonModule,
-        FormsModule,
-        MatProgressSpinnerModule,
-        MatButtonModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatCardModule,
-        MatIconModule,
-        CarouselModule,
-    ],
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css']
+  selector: 'app-login',
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatIconModule,
+    CarouselModule,
+  ],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
   // Form variables
@@ -86,8 +86,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log('[LoginComponent] ngOnInit chamado');
-
     if (isPlatformBrowser(this.platformId)) {
       this.loadTheme();
       this.startCarousel();
@@ -136,7 +134,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           });
       },
       error: (err) => {
-        console.error('Erro no login:', err);
         this.errorMessage = err.error?.message || 'Credenciais inválidas';
         this.loading = false;
       },
