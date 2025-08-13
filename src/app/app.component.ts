@@ -30,16 +30,16 @@ export class AppComponent implements OnInit {
     );
   }
 
-  toggleDarkMode(): void {
-    document.body.classList.toggle('dark-theme');
+  // toggleDarkMode(): void {
+  //   document.body.classList.toggle('dark-theme');
 
-    this.darkMode = !this.darkMode;
+  //   this.darkMode = !this.darkMode;
 
-    const body = document.body;
-    if (this.darkMode) {
-      body.classList.add('dark-mode');
-    } else {
-      body.classList.remove('dark-mode');
-    }
-  }
+  //   const body = document.body;
+  //   if (this.darkMode) {
+  //     body.classList.add('dark-mode');
+  //   } else {
+  //     body.classList.remove('dark-mode');
+  //   }
+  // }
 }

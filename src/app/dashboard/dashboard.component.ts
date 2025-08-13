@@ -34,8 +34,8 @@ import { MenuPanelComponent } from '../shared/menu-panel/menu-panel.component';
     MatListModule,
     MatMenuModule,
     MatCardModule,
-    MenuPanelComponent
-],
+    MenuPanelComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
@@ -90,11 +90,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   toggleDarkMode(): void {
+    document.body.classList.toggle('dark-theme');
+
     this.darkMode = !this.darkMode;
-    this.saveDarkModePreference();
-    // Aplicar classe ao documento para afetar toda a aplicação
-    if (this.isBrowser) {
-      document.body.classList.toggle('dark-theme', this.darkMode);
+
+    const body = document.body;
+    if (this.darkMode) {
+      body.classList.add('dark-mode');
+    } else {
+      body.classList.remove('dark-mode');
     }
   }
 

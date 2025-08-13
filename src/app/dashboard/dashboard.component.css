@@ -168,6 +168,10 @@ mat-nav-list span {
   flex: 1 1 auto;
 }
 
+.menu-bottom {
+  margin-top: 280px;
+}
+
 /* Informações do usuário */
 .user-info {
   display: flex;
@@ -205,6 +209,30 @@ mat-nav-list span {
 ::ng-deep .mat-drawer,
 ::ng-deep .mat-sidenav {
   border-radius: 0 !important;
+}
+
+.global-toolbar button[mat-icon-button] {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  width: auto;
+  min-width: 48px;
+  min-height: 48px;
+}
+
+.global-toolbar mat-icon {
+  font-size: 28px;
+  width: 23.98px;
+  height: 23.98px;
+  justify-content: center;
+  margin: 0 16px 0 14px;
+  text-align: center;
+  color: #333333;
+}
+
+.global-toolbar:hover mat-icon {
+  transform: scale(1.1);
+  color: rgb(223, 223, 0);
 }
 
 /* Media queries para responsividade */

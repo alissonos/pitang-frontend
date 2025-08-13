@@ -87,6 +87,44 @@ export class DashboardHomeComponent {
     cutout: '70%',
   };
 
+  /* Gráficos de Baras - Comparativo de Resultados */
+
+  // Labels (nomes no eixo X)
+  barChartLabels: string[] = [
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+  ];
+
+  // Dados do gráfico
+  barChartData: ChartConfiguration<'bar'>['data'] = {
+    labels: this.barChartLabels,
+    datasets: [
+      {
+        label: 'Vendas',
+        data: [120, 150, 180, 90, 200, 170],
+        backgroundColor: '#42A5F5',
+      },
+      {
+        label: 'Despesas',
+        data: [80, 100, 140, 70, 160, 150],
+        backgroundColor: '#FF7043',
+      },
+    ],
+  };
+
+  // Opções visuais
+  barChartOptions: ChartConfiguration<'bar'>['options'] = {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      title: { display: true, text: 'Comparativo Mensal' },
+    },
+  };
+
   /* Gráfico de Linhas - Chamados ao Longo do Dia */
   lineChartData: ChartData<'line'> = {
     labels: [

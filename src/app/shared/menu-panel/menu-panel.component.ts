@@ -37,6 +37,7 @@ export class MenuPanelComponent {
   users: User[] = [];
   email: string = '';
   showConfig = false;
+  darkMode = false;
 
   private destroy$ = new Subject<void>();
 
