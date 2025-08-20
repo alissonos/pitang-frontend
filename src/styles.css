@@ -153,6 +153,50 @@ body.dark-mode button[type="submit"]:hover {
 }
 
 /* ================== */
+/* 🌐 Angular Material Dark Mode */
+/* ================== */
+body.dark-mode {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .mat-drawer-container {
+  background-color: #121212 !important;
+}
+
+body.dark-mode .mat-drawer,
+body.dark-mode .sidebar {
+  background-color: #1e1e1e !important;
+}
+
+body.dark-mode .mat-card {
+  background-color: #1e1e1e !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+body.dark-mode .mat-icon {
+  color: #ffffff !important;
+}
+
+body.dark-mode .mat-toolbar {
+  background-color: #1f1f1f !important;
+  color: #fff !important;
+}
+
+body.dark-mode .mat-sidenav-content {
+  background-color: #121212 !important;
+}
+
+body.dark-mode .mat-list-item {
+  color: #ffffff !important;
+}
+
+body.dark-mode .mat-list-item:hover {
+  background-color: #333333 !important;
+}
+
+/* ================== */
 /* 📦 Layout Base */
 /* ================== */
 html,
@@ -279,35 +323,4 @@ button[type="submit"]:hover,
 
 .mat-mdc-menu-panel .mat-mdc-menu-content {
   padding: 0;
-}
-
-/* ================== */
-/* 🌐 Toolbar Global */
-body.dark-theme {
-  background-color: #121212;
-  color: #ffffff;
-}
-
-body.dark-theme .mat-drawer-container {
-  background-color: #121212;
-}
-
-body.dark-theme .mat-drawer,
-body.dark-theme .sidebar {
-  background-color: #1e1e1e;
-}
-
-body.dark-theme .mat-card {
-  background-color: #1e1e1e;
-  color: #ffffff;
-  box-shadow: none;
-}
-
-body.dark-theme .mat-icon {
-  color: #ffffff;
-}
-
-body.dark-theme .mat-toolbar {
-  background-color: #1f1f1f;
-  color: #fff;
 }

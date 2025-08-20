@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,6 +24,8 @@ import {
   ChartOptions,
   ChartType,
 } from 'chart.js';
+import { ThemeService } from '../../../services/ThemeService';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -43,12 +51,14 @@ export class DashboardHomeComponent {
   private isBrowser: boolean | undefined;
   routerOutlet: any;
   doughnut: 'doughnut' | undefined;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private userService: UserService,
     private authservice: AuthService,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private themeService: ThemeService // Injete o serviço
   ) {}
 
   /* Gráfico de Rosca - Índice de Satisfação */
@@ -63,7 +73,7 @@ export class DashboardHomeComponent {
     labels: this.doughnutChartLabels,
     datasets: [
       {
-        data: [0, 0, 1, 1, 1], // Distribuição de notas (exemplo: 1 nota 5)
+        data: [1, 1, 1, 1, 1], // Distribuição de notas (exemplo: 1 nota 5)
         backgroundColor: [
           '#ff3e3e',
           '#ff8c00',
@@ -85,35 +95,6 @@ export class DashboardHomeComponent {
       },
     },
     cutout: '70%',
-  };
-
-  /* Gráficos de Baras - Comparativo de Resultados */
-
-  // Labels (nomes no eixo X)
-  barChartLabels: string[] = [
-    'Janeiro',
-    'Fevereiro',
-    'Março',
-    'Abril',
-    'Maio',
-    'Junho',
-  ];
-
-  // Dados do gráfico
-  barChartData: ChartConfiguration<'bar'>['data'] = {
-    labels: this.barChartLabels,
-    datasets: [
-      {
-        label: 'Vendas',
-        data: [120, 150, 180, 90, 200, 170],
-        backgroundColor: '#42A5F5',
-      },
-      {
-        label: 'Despesas',
-        data: [80, 100, 140, 70, 160, 150],
-        backgroundColor: '#FF7043',
-      },
-    ],
   };
 
   // Opções visuais
@@ -183,7 +164,60 @@ export class DashboardHomeComponent {
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe((data) => (this.users = data));
-    this.checkDarkModePreference();
+    this.subscribeToThemeChanges();
+  }
+
+  private subscribeToThemeChanges(): void {
+    this.themeService.darkMode$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((isDark) => {
+        if (isDark) {
+          this.setDarkModeChartColors();
+        } else {
+          this.setDefaultChartColors();
+        }
+      });
+  }
+
+  private setDarkModeChartColors(): void {
+    // Altere as cores dos labels e eixos para branco
+    this.doughnutChartOptions = {
+      ...this.doughnutChartOptions,
+      plugins: {
+        legend: { labels: { color: '#ffffff' } },
+      },
+    };
+    this.lineChartOptions = {
+      ...this.lineChartOptions,
+      scales: {
+        x: { ticks: { color: '#ffffff' }, grid: { color: '#444444' } },
+        y: { ticks: { color: '#ffffff' }, grid: { color: '#444444' } },
+      },
+      plugins: {
+        legend: { labels: { color: '#ffffff' } },
+      },
+    };
+    // Reatribua os dados para que o Angular detecte a mudança e atualize o gráfico
+    this.lineChartData = { ...this.lineChartData };
+    this.doughnutChartData = { ...this.doughnutChartData };
+  }
+
+  private setDefaultChartColors(): void {
+    // Defina as cores padrão
+    this.doughnutChartOptions = {
+      ...this.doughnutChartOptions,
+      plugins: { legend: { labels: { color: '#000000' } } },
+    };
+    this.lineChartOptions = {
+      ...this.lineChartOptions,
+      scales: {
+        x: { ticks: { color: '#000000' }, grid: { color: '#dddddd' } },
+        y: { ticks: { color: '#000000' }, grid: { color: '#dddddd' } },
+      },
+      plugins: { legend: { labels: { color: '#000000' } } },
+    };
+    this.lineChartData = { ...this.lineChartData };
+    this.doughnutChartData = { ...this.doughnutChartData };
   }
 
   logout() {
@@ -191,17 +225,8 @@ export class DashboardHomeComponent {
     this.router.navigate(['/login']);
   }
 
-  toggleDarkMode() {
-    this.darkMode = !this.darkMode;
-    if (this.isBrowser) {
-      localStorage.setItem('darkMode', this.darkMode ? 'enabled' : 'disabled');
-    }
-  }
-
-  private checkDarkModePreference() {
-    if (this.isBrowser) {
-      const darkModePref = localStorage.getItem('darkMode');
-      this.darkMode = darkModePref === 'enabled';
-    }
+  // **Adicione esta função** para que o botão no HTML funcione
+  toggleDarkMode(): void {
+    this.themeService.toggleDarkMode();
   }
 }

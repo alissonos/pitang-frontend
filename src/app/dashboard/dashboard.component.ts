@@ -20,6 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
 import { Subject, takeUntil } from 'rxjs';
 import { MenuPanelComponent } from '../shared/menu-panel/menu-panel.component';
+import { ThemeService } from '../../services/ThemeService';
 
 @Component({
   selector: 'app-dashboard',
@@ -43,21 +44,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   users: User[] = [];
   user: string = 'Usuário';
   darkMode = false;
-  private isBrowser: boolean;
   private destroy$ = new Subject<void>();
 
   constructor(
     private userService: UserService,
     private authService: AuthService,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-  }
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private themeService: ThemeService
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
-    this.checkDarkModePreference();
     this.subscribeToUserName();
   }
 
@@ -90,29 +88,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   toggleDarkMode(): void {
-    document.body.classList.toggle('dark-theme');
-
-    this.darkMode = !this.darkMode;
-
-    const body = document.body;
-    if (this.darkMode) {
-      body.classList.add('dark-mode');
-    } else {
-      body.classList.remove('dark-mode');
-    }
-  }
-
-  private checkDarkModePreference(): void {
-    if (this.isBrowser) {
-      const darkModePref = localStorage.getItem('darkMode');
-      this.darkMode = darkModePref === 'enabled';
-      document.body.classList.toggle('dark-theme', this.darkMode);
-    }
-  }
-
-  private saveDarkModePreference(): void {
-    if (this.isBrowser) {
-      localStorage.setItem('darkMode', this.darkMode ? 'enabled' : 'disabled');
-    }
+    this.themeService.toggleDarkMode();
   }
 }

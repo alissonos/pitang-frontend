@@ -4,25 +4,6 @@
   font-family: "Roboto", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.dashboard-container.dark-mode {
-  background-color: #303030;
-  color: white;
-}
-
-.dashboard-container.dark-mode .sidebar {
-  background-color: #424242;
-}
-
-.dashboard-container.dark-mode .top-bar {
-  background-color: #424242;
-  color: white;
-}
-
-.dashboard-container.dark-mode .card {
-  background-color: #424242;
-  color: white;
-}
-
 mat-toolbar.top-bar {
   background-color: aliceblue;
 }

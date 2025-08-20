@@ -14,8 +14,6 @@ li {
   padding: 1rem; /* Evite valores fixos muito grandes (ex: 50px) */
 }
 
-/* Botões da barra de ferramentas global Dark */
-
 .global-toolbar button {
   width: 40px;
   height: 40px;

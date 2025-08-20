@@ -16,12 +16,6 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Suporte ao modo escuro herdado */
-.dark-mode .card {
-  background-color: #424242;
-  color: white;
-}
-
 .dashboard-container {
   display: flex;
   flex-direction: column;
@@ -73,4 +67,9 @@
   margin: 0 auto; /* centraliza se quiser */
 }
 
-
+/* Estilos específicos para o gráfico de barras */
+.chart-bar {
+  max-width: 500px; /* ou 100%, se quiser responsivo */
+  height: 500px; /* altura fixa */
+  display: block;
+}
