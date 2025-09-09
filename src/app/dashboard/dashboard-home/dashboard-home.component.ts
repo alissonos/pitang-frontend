@@ -45,7 +45,7 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css',
 })
-export class DashboardHomeComponent {
+export class DashboardHomeComponent implements OnInit, OnDestroy {
   users: User[] = [];
   darkMode = false;
   private isBrowser: boolean | undefined;
@@ -85,6 +85,7 @@ export class DashboardHomeComponent {
       },
     ],
   };
+
   public doughnutChartType: ChartType = 'doughnut';
 
   public doughnutChartOptions: ChartOptions<'doughnut'> = {
@@ -95,15 +96,6 @@ export class DashboardHomeComponent {
       },
     },
     cutout: '70%',
-  };
-
-  // Opções visuais
-  barChartOptions: ChartConfiguration<'bar'>['options'] = {
-    responsive: true,
-    plugins: {
-      legend: { position: 'top' },
-      title: { display: true, text: 'Comparativo Mensal' },
-    },
   };
 
   /* Gráfico de Linhas - Chamados ao Longo do Dia */
@@ -167,6 +159,15 @@ export class DashboardHomeComponent {
     this.subscribeToThemeChanges();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /* ==============================
+      TEMA DINÂMICO
+  =============================== */
+
   private subscribeToThemeChanges(): void {
     this.themeService.darkMode$
       .pipe(takeUntil(this.destroy$))
@@ -206,15 +207,15 @@ export class DashboardHomeComponent {
     // Defina as cores padrão
     this.doughnutChartOptions = {
       ...this.doughnutChartOptions,
-      plugins: { legend: { labels: { color: '#000000' } } },
+      plugins: { legend: { labels: { color: '#ffffff' } } },
     };
     this.lineChartOptions = {
       ...this.lineChartOptions,
       scales: {
-        x: { ticks: { color: '#000000' }, grid: { color: '#dddddd' } },
-        y: { ticks: { color: '#000000' }, grid: { color: '#dddddd' } },
+        x: { ticks: { color: '#ffffff' }, grid: { color: '#dddddd' } },
+        y: { ticks: { color: '#ffffff' }, grid: { color: '#dddddd' } },
       },
-      plugins: { legend: { labels: { color: '#000000' } } },
+      plugins: { legend: { labels: { color: '#0ffffff00000' } } },
     };
     this.lineChartData = { ...this.lineChartData };
     this.doughnutChartData = { ...this.doughnutChartData };

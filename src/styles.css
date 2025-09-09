@@ -2,112 +2,111 @@
 /* 🌐 Variáveis Globais */
 /* ================== */
 :root {
-  /* Cores Primárias (Já existentes e boas) */
-  --primary-color: #6515f8; /* Roxo principal para botões, links, ícones */
-  --primary-color-dark: #560ee0; /* Roxo mais escuro para hover, estados ativos */
-  --primary-color-light: #bca6f7; /* Roxo mais claro para fundos sutis, bordas */
-  --primary-color-lighter: #e5d9fb; /* Um roxo ainda mais claro, quase branco, para realces muito leves */
+  /* Cores Primárias */
+  --primary-color: #6515f8;
+  --primary-color-dark: #560ee0;
+  --primary-color-light: #bca6f7;
+  --primary-color-lighter: #e5d9fb;
 
-  /* Cores Secundárias (para realces, gráficos, etc.) */
-  --secondary-color: #00bcd4; /* Exemplo: Um azul turquesa para contraste */
+  /* Cores Secundárias */
+  --secondary-color: #00bcd4;
   --secondary-color-dark: #008ba3;
   --secondary-color-light: #62efff;
 
-  /* Cores Neutras / Tons de Cinza (para texto, bordas, fundos) */
-  --text-color: #333333; /* Cor padrão do texto (já existe) */
-  --text-color-light: #f0f0f0; /* Cor do texto para modo escuro (já existe) */
-  --text-color-secondary: #666666; /* Texto secundário, como legendas, descrições */
-  --text-color-disabled: #aaaaaa; /* Texto para elementos desabilitados */
+  /* Cores Neutras */
+  --text-color: #333333;
+  --text-color-light: #f0f0f0;
+  --text-color-secondary: #666666;
+  --text-color-disabled: #aaaaaa;
 
-  --border-color: #cccccc; /* Cor padrão para bordas de inputs, cards */
+  --border-color: #cccccc;
   --border-color-dark: #999999;
   --border-color-light: #eeeeee;
 
-  --bg-light: #f6f2ff; /* Fundo claro principal (já existe) */
-  --bg-dark: #121212; /* Fundo escuro principal (já existe) */
-  --bg-secondary-light: #ffffff; /* Fundo branco para elementos como cards, modais */
-  --bg-secondary-dark: #1e1e1e; /* Fundo escuro secundário (já existe) */
+  --bg-light: #f6f2ff;
+  --bg-dark: #121212;
+  --bg-secondary-light: #ffffff;
+  --bg-secondary-dark: #1e1e1e;
 
-  /* Cores de Feedback (Erros, Sucesso, Alerta) */
-  --success-color: #28a745; /* Verde para mensagens de sucesso */
+  /* Feedback */
+  --success-color: #28a745;
   --success-bg: #d4edda;
   --success-border: #c3e6cb;
   --success-text: #155724;
 
-  --error-color: #dc3545; /* Vermelho para erros (já existe no CSS) */
-  --error-bg: #f8d7da; /* (já existe) */
-  --error-border: #f5c2c7; /* (já existe) */
-  --error-text: #842029; /* (já existe) */
+  --error-color: #dc3545;
+  --error-bg: #f8d7da;
+  --error-border: #f5c2c7;
+  --error-text: #842029;
 
-  --warning-color: #ffc107; /* Laranja para alertas/atenção */
+  --warning-color: #ffc107;
   --warning-bg: #fff3cd;
   --warning-border: #ffeeba;
   --warning-text: #664d03;
 
-  --info-color: #17a2b8; /* Azul claro para informações */
+  --info-color: #17a2b8;
   --info-bg: #d1ecf1;
   --info-border: #bee5eb;
   --info-text: #0c5460;
 
-  /* Tipografia (Fontes e Tamanhos) */
-  --font-family-base: "Segoe UI", sans-serif; /* Fonte padrão (já existe no body) */
-  --font-family-heading: "Segoe UI", sans-serif; /* Se quiser uma fonte diferente para títulos */
+  /* Tipografia */
+  --font-family-base: "Segoe UI", sans-serif;
+  --font-family-heading: "Segoe UI", sans-serif;
 
   --font-size-base: 16px;
-  --font-size-sm: 14px; /* Tamanho menor para texto secundário */
-  --font-size-lg: 18px; /* Tamanho maior */
-  --font-size-h1: 32px; /* Tamanhos para seus h1, h2, etc. */
-  --font-size-h2: 24px; /* (já existe para h2 no login-container) */
+  --font-size-sm: 14px;
+  --font-size-lg: 18px;
+  --font-size-h1: 32px;
+  --font-size-h2: 24px;
 
   --font-weight-light: 300;
   --font-weight-normal: 400;
-  --font-weight-medium: 500; /* (já existe para error-message) */
-  --font-weight-semibold: 600; /* (já existe para botões e links) */
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  --line-height-base: 1.5; /* Espaçamento entre linhas */
+  --line-height-base: 1.5;
 
-  /* Espaçamento (Margens e Paddings) */
+  /* Espaçamento */
   --spacing-xxs: 4px;
   --spacing-xs: 8px;
-  --spacing-sm: 12px; /* Útil para padding de inputs/botões */
+  --spacing-sm: 12px;
   --spacing-md: 16px;
-  --spacing-lg: 24px; /* Útil para margens maiores */
+  --spacing-lg: 24px;
   --spacing-xl: 32px;
-  --spacing-xxl: 40px; /* Útil para padding de containers (já existe) */
+  --spacing-xxl: 40px;
 
   /* Bordas e Sombras */
   --border-radius-sm: 4px;
-  --border-radius-md: 8px; /* (já existe para botões) */
-  --border-radius-lg: 16px; /* (já existe para login-container) */
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
   --border-radius-xl: 20px;
 
   --box-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-  --box-shadow-md: 0 6px 24px rgba(0, 0, 0, 0.1); /* (já existe para login-container) */
+  --box-shadow-md: 0 6px 24px rgba(0, 0, 0, 0.1);
   --box-shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
 
   /* Transições */
   --transition-speed-fast: 0.2s;
-  --transition-speed-normal: 0.3s; /* (já existe para botões e body) */
+  --transition-speed-normal: 0.3s;
   --transition-speed-slow: 0.5s;
   --transition-ease: ease;
   --transition-ease-in-out: ease-in-out;
 
-  /* Larguras Máximas de Conteúdo */
+  /* Larguras Máximas */
   --max-width-sm: 600px;
   --max-width-md: 960px;
   --max-width-lg: 1200px;
 
   /* Alturas */
-  --header-height: 60px; /* Se tiver um cabeçalho fixo */
-  --footer-height: 80px; /* Se tiver um rodapé */
+  --header-height: 60px;
+  --footer-height: 80px;
 
-  /* Modo Escuro (Variáveis específicas que podem ser redefinidas em .dark-mode) */
-  /* Algumas já existem, outras podem ser adicionadas para maior controle */
-  --input-bg-dark: #333333; /* (já existe) */
+  /* Inputs */
+  --input-bg-dark: #333333;
   --input-border-dark: #444444;
   --input-text-dark: #ffffff;
-  --input-bg-light: #ffffff; /* ou a cor que quiser */
+  --input-bg-light: #ffffff;
   --toggle-password-icon-dark: #9d6aff;
 }
 
@@ -115,83 +114,67 @@
 /* 🌙 Dark Mode Styles */
 /* ================== */
 body.dark-mode {
-  background-color: #0d0d0d;
-  color: #cfcfcf;
+  background-color: #121212 !important;
+  color: #ffffff !important;
 }
 
+/* Login */
 body.dark-mode .login-container {
   background-color: #1e1e1e;
   color: #ccc;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
-
 body.dark-mode .login-container h2 {
   color: #ccc;
 }
-
 body.dark-mode label {
   color: #aaa;
 }
-
 body.dark-mode input {
   background-color: #333;
   border-color: #555;
   color: #eee;
 }
-
 body.dark-mode input::placeholder {
   color: #bbb;
 }
-
 body.dark-mode button[type="submit"] {
   background-color: #0057b7;
   color: white;
 }
-
 body.dark-mode button[type="submit"]:hover {
   background-color: #003d7a;
 }
 
-/* ================== */
-/* 🌐 Angular Material Dark Mode */
-/* ================== */
-body.dark-mode {
-  background-color: #121212 !important;
-  color: #ffffff !important;
-}
-
+/* Angular Material */
 body.dark-mode .mat-drawer-container {
   background-color: #121212 !important;
 }
-
 body.dark-mode .mat-drawer,
 body.dark-mode .sidebar {
   background-color: #1e1e1e !important;
 }
-
+body.dark-mode .mat-mdc-card,
 body.dark-mode .mat-card {
   background-color: #1e1e1e !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
-
 body.dark-mode .mat-icon {
   color: #ffffff !important;
 }
-
 body.dark-mode .mat-toolbar {
   background-color: #1f1f1f !important;
   color: #fff !important;
 }
-
 body.dark-mode .mat-sidenav-content {
   background-color: #121212 !important;
 }
-
+body.dark-mode .mat-mdc-list-item,
 body.dark-mode .mat-list-item {
   color: #ffffff !important;
 }
-
+body.dark-mode .mat-mdc-list-item:hover,
 body.dark-mode .mat-list-item:hover {
   background-color: #333333 !important;
 }
@@ -219,7 +202,6 @@ body {
   border-radius: 8px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
-
 .login-container h2 {
   text-align: center;
   margin-bottom: 25px;
@@ -234,13 +216,11 @@ form div {
   display: flex;
   flex-direction: column;
 }
-
 label {
   margin-bottom: 6px;
   font-weight: 600;
   color: #555;
 }
-
 input {
   padding: 10px 12px;
   border: 1.8px solid #ccc;
@@ -250,7 +230,6 @@ input {
   transition: border-color 0.3s ease, background-color 0.3s ease,
     color 0.3s ease;
 }
-
 input:focus {
   border-color: var(--primary-color);
   outline: none;
@@ -273,7 +252,6 @@ button[type="submit"],
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
-
 button[type="submit"]:hover,
 .login-button:hover {
   background-color: var(--primary-color-light);
@@ -290,7 +268,6 @@ button[type="submit"]:hover,
   color: #777;
   font-size: 14px;
 }
-
 .signup-button {
   color: var(--primary-color);
   font-weight: 600;
@@ -299,28 +276,31 @@ button[type="submit"]:hover,
   cursor: pointer;
   transition: color 0.3s ease, text-decoration 0.3s ease;
 }
-
 .signup-button:hover {
   color: var(--primary-color-dark);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
+/* ================== */
+/* 🖱️ Interações Listas */
+/* ================== */
 .mat-mdc-list-item {
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
-
 .mat-mdc-list-item:hover {
   background-color: rgba(255, 255, 255, 0.15);
   color: #ffcc80;
 }
-
 .mat-mdc-list-item:hover .mat-icon {
   transform: scale(1.1);
   color: #ffcc80;
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
+/* ================== */
+/* 🍔 Menu Ajustes */
+/* ================== */
 .mat-mdc-menu-panel .mat-mdc-menu-content {
   padding: 0;
 }
