@@ -81,15 +81,10 @@ mat-toolbar.top-bar {
   text-align: center;
 }
 
-/* Menu de navegação */
-.nav-menu {
-  margin-top: 80px;
-  padding: 0;
-}
-
 /* Lista de navegação */
 .mat-nav-list {
   padding-top: 0;
+  margin-right: 20px;
 }
 
 .mat-nav-list .mat-list-item {

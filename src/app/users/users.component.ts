@@ -15,23 +15,26 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatCard } from '@angular/material/card';
+import { MatToolbar } from '@angular/material/toolbar';
+import { MatCardContent } from '../../../node_modules/@angular/material/card/index';
 
 @Component({
-    selector: 'app-users',
-    imports: [
-        CommonModule,
-        MatTableModule,
-        MatInputModule,
-        MatButtonModule,
-        MatIconModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatPaginatorModule,
-        MatAutocompleteModule,
-        ReactiveFormsModule,
-    ],
-    templateUrl: './users.component.html',
-    styleUrl: './users.component.css'
+  selector: 'app-users',
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatPaginatorModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+  ],
+  templateUrl: './users.component.html',
+  styleUrl: './users.component.css',
 })
 export class UsersComponent implements OnInit {
   users: User[] = [];

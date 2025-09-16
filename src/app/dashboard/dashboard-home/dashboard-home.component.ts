@@ -207,7 +207,7 @@ export class DashboardHomeComponent implements OnInit, OnDestroy {
     // Defina as cores padrão
     this.doughnutChartOptions = {
       ...this.doughnutChartOptions,
-      plugins: { legend: { labels: { color: '#ffffff' } } },
+      plugins: { legend: { labels: { color: '#000000' } } },
     };
     this.lineChartOptions = {
       ...this.lineChartOptions,
