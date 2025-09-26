@@ -4,7 +4,8 @@ import { provideRouter } from '@angular/router';
 import {
   HTTP_INTERCEPTORS,
   provideHttpClient,
-  withInterceptors,
+  withFetch, // 👈 Importar withFetch
+  withInterceptorsFromDi, // 👈 Importar withInterceptorsFromDi para interceptors de Classe
 } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { APP_INITIALIZER } from '@angular/core';
@@ -23,14 +24,19 @@ export function initializeAuth(authService: AuthService) {
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    provideHttpClient(),
+    // 💡 MUDANÇA AQUI:
+    provideHttpClient(
+      withFetch(), // 👈 Adicionado para resolver o NG02801 (melhor performance/SSR)
+      withInterceptorsFromDi() // 👈 Adicionado para garantir que o interceptor de classe funcione corretamente
+    ),
     {
+      // Seu interceptor de classe (mantém o uso do AuthInterceptor)
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
     },
-    // ADICIONE ESTE PROVIDER:
     {
+      // Seu APP_INITIALIZER (está correto)
       provide: APP_INITIALIZER,
       useFactory: initializeAuth,
       deps: [AuthService],

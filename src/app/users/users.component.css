@@ -232,44 +232,6 @@ p {
   transform: translateY(-1px);
 }
 
-/* ========== TABELA ANGULAR MATERIAL ========== */
-table {
-  width: 100%;
-  background-color: white;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.mat-header-cell,
-.mat-cell {
-  padding: 16px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.mat-header-row {
-  background-color: #f5f6fa;
-}
-
-.mat-row {
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.mat-row:last-child {
-  border-bottom: none;
-}
-
-.mat-button {
-  font-weight: 600;
-  text-transform: none;
-  padding: 4px 12px;
-}
-
-.mat-elevation-z8 {
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
 /* ========== RESPONSIVO ========== */
 @media (max-width: 768px) {
   table {

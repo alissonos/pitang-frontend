@@ -111,14 +111,150 @@
 }
 
 /* ================== */
-/* 🌙 Dark Mode Styles */
+/* 🌙 Dark Mode Styles - ORGANIZADO */
 /* ================== */
+
+/* Define cores de fundo e texto para o BODY */
 body.dark-mode {
-  background-color: #121212 !important;
+  background-color: var(--bg-dark) !important;
+  color: var(--text-color-light) !important;
+}
+
+/* --- 1. ESTILOS GERAIS DE ESTRUTURA E NAVEGAÇÃO (Sidebar, Toolbar, etc.) --- */
+
+/* Angular Material Containers */
+body.dark-mode .mat-drawer-container {
+  background-color: var(--bg-dark) !important;
+}
+body.dark-mode .mat-drawer,
+body.dark-mode .sidebar {
+  background-color: var(--bg-secondary-dark) !important;
+}
+body.dark-mode .mat-sidenav-content {
+  background-color: var(--bg-dark) !important;
+}
+
+/* Toolbar (Header) */
+body.dark-mode .mat-toolbar {
+  background-color: #1f1f1f !important;
+  color: var(--text-color-light) !important;
+}
+
+/* Cards (Base para Tabelas, Painéis e Diálogos) */
+body.dark-mode .mat-mdc-card,
+body.dark-mode .mat-card {
+  background-color: var(--bg-secondary-dark) !important;
+  color: var(--text-color-light) !important;
+  box-shadow: none !important;
+}
+
+/* Ícones (Geral) */
+body.dark-mode .mat-icon {
+  color: var(--text-color-light) !important;
+}
+
+/* Listas de Navegação (Sidebar) */
+body.dark-mode .mat-mdc-list-item,
+body.dark-mode .mat-list-item {
+  color: var(--text-color-light) !important;
+}
+body.dark-mode .mat-mdc-list-item:hover,
+body.dark-mode .mat-list-item:hover {
+  background-color: #333333 !important;
+}
+body.dark-mode .mat-nav-list .mat-icon {
+  color: var(--text-color-light) !important;
+}
+
+/* --- 2. ESTILOS ESPECÍFICOS PARA TABELA E PAGINADOR --- */
+
+/* Fundo da Tabela/Paginador (Containers) */
+body.dark-mode .mat-mdc-table,
+body.dark-mode .mat-elevation-z8,
+body.dark-mode .mat-mdc-paginator {
+  background-color: var(--bg-secondary-dark) !important;
+  border-color: #333333 !important;
+}
+
+/* Células: Garante o texto em branco no Cabeçalho e Dados */
+/* Usamos #ffffff diretamente para garantir o máximo contraste,
+   apesar da variável ser f0f0f0 (você pode trocar para var(--text-color-light) se preferir) */
+body.dark-mode .mat-mdc-header-cell,
+body.dark-mode .mat-mdc-cell {
   color: #ffffff !important;
 }
 
-/* Login */
+/* Seletor mais específico para o texto das células/cabeçalhos (usando typography) */
+body.dark-mode.mat-typography .mat-header-cell,
+body.dark-mode.mat-typography .mat-cell {
+  color: #ffffff !important;
+}
+
+/* Linhas divisórias da tabela */
+body.dark-mode .mat-row {
+  border-color: #333333 !important;
+}
+
+/* Paginador: Texto e Controles */
+body.dark-mode .mat-mdc-paginator-range-label, /* O texto de contagem */
+body.dark-mode .mat-mdc-select-value {
+  /* O valor selecionado no dropdown */
+  color: var(--text-color-light) !important;
+}
+body.dark-mode .mat-mdc-paginator-icon {
+  /* As setas */
+  color: var(--text-color-light) !important;
+}
+
+/* Paginador Dropdown Overlay (Precisa ser sem o body para pegar o overlay) */
+.dark-mode .mat-mdc-select-panel {
+  background-color: var(--bg-secondary-dark) !important;
+}
+.dark-mode .mat-mdc-option {
+  color: var(--text-color-light) !important;
+}
+.dark-mode
+  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+  background-color: #333333 !important;
+}
+
+/* --- 3. ESTILOS ESPECÍFICOS PARA FORMULÁRIOS (Campo de Busca) --- */
+
+/* Fundo do Input field */
+body.dark-mode .mat-mdc-form-field-flex {
+  background-color: var(--input-bg-dark) !important;
+}
+
+/* Texto digitado no input */
+body.dark-mode .mat-mdc-form-field-input-control {
+  color: var(--input-text-dark) !important;
+}
+
+/* Placeholder / Label */
+body.dark-mode .mat-mdc-form-field-label {
+  color: var(--text-color-disabled) !important;
+}
+
+/* Ícone de busca (lupa) */
+body.dark-mode .mat-form-field-prefix .mat-icon {
+  color: var(--text-color-secondary) !important;
+}
+
+/* --- 4. ESTILOS DE BOTÕES --- */
+
+/* Botões de Ação (Editar/Deletar) */
+body.dark-mode .mat-mdc-button.mat-accent,
+body.dark-mode .mat-mdc-button.mat-warn {
+  color: var(--primary-color-light) !important;
+}
+
+/* Botão de Criação (mat-flat-button) */
+body.dark-mode .mat-mdc-flat-button.mat-primary {
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+/* --- 5. ESTILOS NÃO-MATERIAL (Login) --- */
 body.dark-mode .login-container {
   background-color: #1e1e1e;
   color: #ccc;
@@ -144,39 +280,6 @@ body.dark-mode button[type="submit"] {
 }
 body.dark-mode button[type="submit"]:hover {
   background-color: #003d7a;
-}
-
-/* Angular Material */
-body.dark-mode .mat-drawer-container {
-  background-color: #121212 !important;
-}
-body.dark-mode .mat-drawer,
-body.dark-mode .sidebar {
-  background-color: #1e1e1e !important;
-}
-body.dark-mode .mat-mdc-card,
-body.dark-mode .mat-card {
-  background-color: #1e1e1e !important;
-  color: #ffffff !important;
-  box-shadow: none !important;
-}
-body.dark-mode .mat-icon {
-  color: #ffffff !important;
-}
-body.dark-mode .mat-toolbar {
-  background-color: #1f1f1f !important;
-  color: #fff !important;
-}
-body.dark-mode .mat-sidenav-content {
-  background-color: #121212 !important;
-}
-body.dark-mode .mat-mdc-list-item,
-body.dark-mode .mat-list-item {
-  color: #ffffff !important;
-}
-body.dark-mode .mat-mdc-list-item:hover,
-body.dark-mode .mat-list-item:hover {
-  background-color: #333333 !important;
 }
 
 /* ================== */
@@ -303,4 +406,14 @@ button[type="submit"]:hover,
 /* ================== */
 .mat-mdc-menu-panel .mat-mdc-menu-content {
   padding: 0;
+}
+
+/* ================== */
+/* 📦 Layout Base - (Mantenha-o no final para resetar estilos) */
+/* ================== */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
