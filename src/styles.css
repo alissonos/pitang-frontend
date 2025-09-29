@@ -201,9 +201,47 @@ body.dark-mode .mat-mdc-select-value {
   /* O valor selecionado no dropdown */
   color: var(--text-color-light) !important;
 }
-body.dark-mode .mat-mdc-paginator-icon {
+
+body.dark-mode .mat-mdc-paginator-icon .mat-mdc-paginator-page-size-label {
   /* As setas */
   color: var(--text-color-light) !important;
+}
+
+body.dark-mode .mat-mdc-paginator-page-size-label {
+  color: var(--text-color-light) !important;
+}
+
+body.dark-mode .mdc-notched-outline {
+  background-color: #333333 !important;
+}
+
+/* Número selecionado dentro do paginator */
+body.dark-mode .mat-mdc-select-value,
+body.dark-mode .mat-mdc-select-min-line,
+body.dark-mode .mat-mdc-select-value-text {
+  color: #fff !important;
+}
+
+/* Texto branco dentro do painel do select (dark mode) */
+body.dark-mode .mat-mdc-option,
+body.dark-mode .mat-mdc-option .mdc-list-item__primary-text {
+  color: #fff !important;
+}
+
+/* Opção ao passar o mouse */
+body.dark-mode .mat-mdc-option:hover,
+body.dark-mode .mat-mdc-option:hover .mdc-list-item__primary-text {
+  background-color: #444 !important; /* fundo hover */
+  color: #fff !important; /* texto hover */
+}
+
+/* Opção selecionada */
+body.dark-mode .mat-mdc-option.mdc-list-item--selected,
+body.dark-mode
+  .mat-mdc-option.mdc-list-item--selected
+  .mdc-list-item__primary-text {
+  background-color: #333 !important;
+  color: #fff !important;
 }
 
 /* Paginador Dropdown Overlay (Precisa ser sem o body para pegar o overlay) */
@@ -280,6 +318,38 @@ body.dark-mode button[type="submit"] {
 }
 body.dark-mode button[type="submit"]:hover {
   background-color: #003d7a;
+}
+
+/* --- 6. MENU PAINEL --- */
+
+body.dark-mode .menu-panel {
+  background-color: #1e1e1e !important;
+  color: #ccc !important;
+}
+
+body.dark-mode div.profile-section {
+  background-color: #1e1e1e;
+  color: #ccc;
+}
+
+body.dark-mode div.profile-section:hover {
+  background-color: #333333 !important;
+  color: #ffcc80 !important;
+}
+
+body.dark-mode .custom-list-item {
+  background-color: #1e1e1e !important;
+  color: #ccc !important;
+}
+
+body.dark-mode .custom-list-item:hover {
+  background-color: #333333 !important;
+  color: #ffcc80 !important;
+}
+
+body.mat-divider .mat-divider-horizontal {
+  background-color: #1e1e1e !important;
+  color: #ccc !important;
 }
 
 /* ================== */
