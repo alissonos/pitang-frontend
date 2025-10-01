@@ -352,6 +352,36 @@ body.mat-divider .mat-divider-horizontal {
   color: #ccc !important;
 }
 
+/* --- 7. CHAT --- */
+
+body.dark-mode .chat-header {
+  background-color: #3a3f47 !important; /* fundo principal mais escuro */
+  color: #e0e0e0 !important; /* texto claro */
+}
+
+body.dark-mode .chat-messages {
+  background-color: #3a3f47 !important; /* fundo principal mais escuro */
+  color: #e0e0e0 !important; /* texto claro mas não branco puro */
+}
+
+body.dark-mode .message-content {
+  background-color: #3a3f47 !important; /* balão de mensagem */
+  color: #f5f5f5 !important; /* texto mais visível */
+  border-radius: 8px; /* cantos arredondados para suavizar */
+  padding: 6px 10px;
+}
+
+body.dark-mode .chat-input {
+  background-color: #3a3f47 !important; /* campo de entrada mais definido */
+  color: #f0f0f0 !important;
+  border: 1px solid #444; /* leve contraste */
+}
+
+body.dark-mode .message-input {
+  background-color: #3a3f47 !important; /* campo de entrada mais definido */
+  color: #f0f0f0 !important;
+}
+
 /* ================== */
 /* 📦 Layout Base */
 /* ================== */
