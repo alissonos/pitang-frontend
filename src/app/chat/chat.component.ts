@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
+import { UsersOnlineComponent } from './users-online/users-online.component';
 
 export interface ChatMessage {
   id?: string;
@@ -23,10 +24,11 @@ export interface ChatMessage {
 }
 
 @Component({
-    selector: 'app-chat',
-    imports: [CommonModule, FormsModule],
-    templateUrl: './chat.component.html',
-    styleUrl: './chat.component.css'
+  selector: 'app-chat',
+  standalone: true,
+  imports: [CommonModule, FormsModule, UsersOnlineComponent],
+  templateUrl: './chat.component.html',
+  styleUrl: './chat.component.css',
 })
 export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
