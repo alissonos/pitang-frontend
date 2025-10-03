@@ -8,14 +8,37 @@
   border: none;
 }
 
+.online-users {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  justify-content: space-between;
+}
+
+.online-indicator {
+  width: 8px;
+  height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
 .header {
   padding: 20px;
   background-color: #6366f1;
   color: white;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-left: 96px;
 }
 
 .header h3 {

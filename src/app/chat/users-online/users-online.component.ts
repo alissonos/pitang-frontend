@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChatService } from '../../../services/chat.service';
+import { Subject, takeUntil } from 'rxjs';
 
 interface User {
   id: number;
@@ -10,13 +12,21 @@ interface User {
 
 @Component({
   selector: 'app-users-online',
-  standalone: true, // ← Tem que ter isso
-  imports: [CommonModule], // ← E isso
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './users-online.component.html',
   styleUrls: ['./users-online.component.css'],
 })
 export class UsersOnlineComponent implements OnInit {
   users: User[] = [];
+  connectedUsers: number = 0;
+  private destroy$ = new Subject<void>();
+  lastError: string = '';
+
+  constructor(
+    private chatService: ChatService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     // Dados mockados - depois você substitui pela chamada real da API/WebSocket
@@ -27,6 +37,8 @@ export class UsersOnlineComponent implements OnInit {
       { id: 4, nome: 'Ana Paula', status: 'online' },
       { id: 5, nome: 'Carlos Eduardo', status: 'ocupado' },
     ];
+
+    this.connectToChat();
   }
 
   getInitials(nome: string): string {
@@ -45,5 +57,30 @@ export class UsersOnlineComponent implements OnInit {
       ocupado: '#ef4444',
     };
     return colors[status] || '#6b7280';
+  }
+
+  private connectToChat(): void {
+    this.subscribeToEvents();
+  }
+
+  private subscribeToEvents(): void {
+    // Contagem de usuários
+    this.chatService
+      .onUserCount()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (count) => {
+          this.connectedUsers = count;
+          this.cdr.detectChanges();
+        },
+        error: (error) =>
+          this.handleError('Erro ao obter contagem de usuários'),
+      });
+  }
+
+  private handleError(message: string): void {
+    this.lastError = message;
+    console.error('Chat Error:', message);
+    this.cdr.detectChanges();
   }
 }

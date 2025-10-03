@@ -8,6 +8,12 @@ mat-toolbar.top-bar {
   background-color: aliceblue;
 }
 
+.mat-drawer-inner-container {
+  background-color: aliceblue;
+  width: 90px;
+  height: 100%;
+}
+
 /* Container do sidenav */
 .sidenav-container {
   width: 100%;
@@ -145,7 +151,7 @@ mat-nav-list span {
 }
 
 .menu-bottom {
-  margin-top: 280px;
+  margin-top: 160px;
 }
 
 /* Informações do usuário */

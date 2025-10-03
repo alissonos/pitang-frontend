@@ -355,7 +355,7 @@ body.mat-divider .mat-divider-horizontal {
 /* --- 7. CHAT --- */
 
 body.dark-mode .chat-header {
-  background-color: #3a3f47 !important; /* fundo principal mais escuro */
+  background-color: #510 !important; /* fundo principal mais escuro */
   color: #e0e0e0 !important; /* texto claro */
 }
 
