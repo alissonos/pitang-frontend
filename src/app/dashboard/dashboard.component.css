@@ -20,6 +20,10 @@ mat-toolbar.top-bar {
   height: 100%;
 }
 
+.nav-menu {
+  padding-top: 30px;
+}
+
 /* Sidebar */
 .sidebar {
   width: 57px;
@@ -89,7 +93,7 @@ mat-toolbar.top-bar {
 
 /* Lista de navegação */
 .mat-nav-list {
-  padding-top: 0;
+  padding-top: 16;
   margin-right: 20px;
 }
 
@@ -151,7 +155,7 @@ mat-nav-list span {
 }
 
 .menu-bottom {
-  margin-top: 160px;
+  margin-top: 130px;
 }
 
 /* Informações do usuário */

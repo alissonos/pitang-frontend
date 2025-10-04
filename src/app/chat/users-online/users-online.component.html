@@ -17,15 +17,19 @@
     <div *ngFor="let user of users" class="user-item">
       <div class="user-avatar">
         <div class="avatar-circle">
-          {{ getInitials(user.nome) }}
+          {{ getInitials(user.username) }}
         </div>
         <span class="status-indicator" [style.background-color]="getStatusColor(user.status)"></span>
       </div>
 
       <div class="user-info">
-        <span class="user-name">{{ user.nome }}</span>
+        <span class="user-name">{{ user.username }}</span>
         <span class="user-status">{{ user.status }}</span>
       </div>
+    </div>
+
+    <div *ngIf="lastError" class="error-message">
+      <p>Erro: {{ lastError }}</p>
     </div>
   </div>
 </div>

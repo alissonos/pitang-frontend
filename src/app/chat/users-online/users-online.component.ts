@@ -1,14 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ChatService } from '../../../services/chat.service';
+import { UserService } from '../../../services/user.service';
 import { Subject, takeUntil } from 'rxjs';
 
-interface User {
-  id: number;
-  nome: string;
-  avatar?: string;
-  status: 'online' | 'ausente' | 'ocupado';
-}
+import { User } from '../../../models/user.model';
 
 @Component({
   selector: 'app-users-online',
@@ -17,7 +13,7 @@ interface User {
   templateUrl: './users-online.component.html',
   styleUrls: ['./users-online.component.css'],
 })
-export class UsersOnlineComponent implements OnInit {
+export class UsersOnlineComponent implements OnInit, OnDestroy {
   users: User[] = [];
   connectedUsers: number = 0;
   private destroy$ = new Subject<void>();
@@ -25,20 +21,37 @@ export class UsersOnlineComponent implements OnInit {
 
   constructor(
     private chatService: ChatService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private userService: UserService
   ) {}
 
-  ngOnInit(): void {
-    // Dados mockados - depois você substitui pela chamada real da API/WebSocket
-    this.users = [
-      { id: 1, nome: 'João Silva', status: 'online' },
-      { id: 2, nome: 'Maria Santos', status: 'online' },
-      { id: 3, nome: 'Pedro Costa', status: 'ausente' },
-      { id: 4, nome: 'Ana Paula', status: 'online' },
-      { id: 5, nome: 'Carlos Eduardo', status: 'ocupado' },
-    ];
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
+  ngOnInit(): void {
     this.connectToChat();
+    this.loadUsers();
+  }
+
+  loadUsers(): void {
+    this.userService
+      .getUsers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        // Adicionado takeUntil
+        next: (data) => {
+          // Filtra *apenas* os usuários que têm status 'online'
+          // Se a API retornar todos os usuários, esta é a forma correta de filtrar.
+          this.users = data.filter((user) => user.status === 'ONLINE');
+          this.cdr.detectChanges(); // Garante que a view é atualizada
+        },
+        error: (err) => {
+          this.handleError('Erro ao carregar usuários.');
+          console.error('Erro ao carregar usuários:', err);
+        },
+      });
   }
 
   getInitials(nome: string): string {
@@ -52,11 +65,12 @@ export class UsersOnlineComponent implements OnInit {
 
   getStatusColor(status: string): string {
     const colors: { [key: string]: string } = {
-      online: '#10b981',
-      ausente: '#f59e0b',
-      ocupado: '#ef4444',
+      ONLINE: '#10b981',
+      AWAY: '#f59e0b',
+      BUSY: '#ef4444',
+      OFFLINE: '#6b7280',
     };
-    return colors[status] || '#6b7280';
+    return colors[status.toUpperCase()] || '#6b7280';
   }
 
   private connectToChat(): void {
