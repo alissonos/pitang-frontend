@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ChatService } from '../../../services/chat.service';
 import { UserService } from '../../../services/user.service';
+import { AuthService } from '../../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 
 import { User } from '../../../models/user.model';
@@ -22,7 +23,8 @@ export class UsersOnlineComponent implements OnInit, OnDestroy {
   constructor(
     private chatService: ChatService,
     private cdr: ChangeDetectorRef,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
   ngOnDestroy(): void {
@@ -36,15 +38,22 @@ export class UsersOnlineComponent implements OnInit, OnDestroy {
   }
 
   loadUsers(): void {
+    const currentUser = this.authService.getCurrentUser();
+
     this.userService
       .getUsers()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        // Adicionado takeUntil
         next: (data) => {
+          console.log('Usuários recebidos:', data);
+          console.log('Usuário atual:', currentUser);
           // Filtra *apenas* os usuários que têm status 'online'
           // Se a API retornar todos os usuários, esta é a forma correta de filtrar.
-          this.users = data.filter((user) => user.status === 'ONLINE');
+          this.users = data.filter(
+            (user) =>
+              user.status === 'ONLINE' &&
+              Number(user.id) !== Number(currentUser?.id)
+          );
           this.cdr.detectChanges(); // Garante que a view é atualizada
         },
         error: (err) => {

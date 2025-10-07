@@ -37,8 +37,6 @@ export class WebSocketService {
   connect(token: string, user: any): void {
     if (!this.isBrowser || this.client?.connected) return;
 
-    console.log('🔌 Conectando ao WebSocket STOMP...');
-
     // Configuração do cliente STOMP
     const stompConfig: StompConfig = {
       // ✅ Usando SockJS para melhor compatibilidade
@@ -56,33 +54,24 @@ export class WebSocketService {
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
 
-      // ✅ Configurações de debug
-      debug: (str: string) => {
-        console.log('🔧 STOMP Debug:', str);
-      },
-
       // ✅ Callback de conexão bem-sucedida
       onConnect: (frame) => {
-        console.log('✅ WebSocket STOMP conectado:', frame);
         this.isConnectedSubject.next(true);
         this.setupSubscriptions(user);
       },
 
       // ✅ Callback de erro
       onStompError: (frame) => {
-        console.error('❌ Erro STOMP:', frame);
         this.isConnectedSubject.next(false);
       },
 
       // ✅ Callback de desconexão
       onDisconnect: (frame) => {
-        console.log('❌ WebSocket STOMP desconectado:', frame);
         this.isConnectedSubject.next(false);
       },
 
       // ✅ Callback de erro de conexão
       onWebSocketError: (error) => {
-        console.error('❌ Erro WebSocket:', error);
         this.isConnectedSubject.next(false);
       },
     };
@@ -98,14 +87,12 @@ export class WebSocketService {
     // ✅ Subscrever ao contador de usuários online
     this.client.subscribe('/topic/users/online', (message) => {
       const count = parseInt(message.body);
-      console.log('👥 Usuários online:', count);
       this.onlineUsersSubject.next(count);
     });
 
     // ✅ Subscrever às mensagens do chat público
     this.client.subscribe('/topic/chat/messages', (message) => {
       const messageData = JSON.parse(message.body);
-      console.log('💬 Nova mensagem:', messageData);
       const currentMessages = this.messagesSubject.value;
       this.messagesSubject.next([...currentMessages, messageData]);
     });
@@ -113,7 +100,6 @@ export class WebSocketService {
     // ✅ Subscrever ao histórico de mensagens
     this.client.subscribe('/topic/chat/history', (message) => {
       const messages = JSON.parse(message.body);
-      console.log('📜 Histórico de mensagens:', messages);
       this.messagesSubject.next(messages);
     });
 
@@ -121,7 +107,6 @@ export class WebSocketService {
     if (user?.id) {
       this.client.subscribe(`/queue/user/${user.id}/messages`, (message) => {
         const messageData = JSON.parse(message.body);
-        console.log('💬 Mensagem privada:', messageData);
         const currentMessages = this.messagesSubject.value;
         this.messagesSubject.next([...currentMessages, messageData]);
       });
@@ -130,7 +115,6 @@ export class WebSocketService {
     // ✅ Subscrever a usuários digitando
     this.client.subscribe('/topic/chat/typing', (message) => {
       const typingData = JSON.parse(message.body);
-      console.log('⌨️ Usuário digitando:', typingData);
       this.updateTypingUsers(typingData);
     });
 
@@ -173,7 +157,6 @@ export class WebSocketService {
   // ✅ Desconectar
   disconnect(): void {
     if (this.client) {
-      console.log('🔌 Desconectando WebSocket STOMP...');
       this.client.deactivate();
       this.client = null;
       this.isConnectedSubject.next(false);
@@ -201,9 +184,6 @@ export class WebSocketService {
         }),
       });
     } else {
-      console.error(
-        '❌ WebSocket não conectado. Não foi possível enviar mensagem.'
-      );
     }
   }
 
@@ -221,9 +201,6 @@ export class WebSocketService {
         }),
       });
     } else {
-      console.error(
-        '❌ WebSocket não conectado. Não foi possível enviar mensagem privada.'
-      );
     }
   }
 
@@ -236,9 +213,6 @@ export class WebSocketService {
         headers: headers,
       });
     } else {
-      console.error(
-        `❌ WebSocket não conectado. Não foi possível publicar em: ${destination}`
-      );
     }
   }
 
@@ -250,14 +224,10 @@ export class WebSocketService {
           const data = JSON.parse(message.body);
           callback(data);
         } catch (error) {
-          console.error('❌ Erro ao parsear mensagem:', error);
           callback(message.body);
         }
       });
     } else {
-      console.error(
-        `❌ WebSocket não conectado. Não foi possível subscrever a: ${destination}`
-      );
       return null;
     }
   }
@@ -388,10 +358,6 @@ export class WebSocketService {
           timestamp: new Date().toISOString(),
         }),
       });
-    } else {
-      console.error(
-        '❌ WebSocket não conectado. Não foi possível enviar mensagem para sala.'
-      );
     }
   }
 }
