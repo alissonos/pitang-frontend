@@ -4,6 +4,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ConfigService } from '../config/config.service';
+import { WebSocketService } from './websocket.service';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +27,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private config: ConfigService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private websocketService: WebSocketService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -35,14 +37,20 @@ export class AuthService {
   initializeAuth(): Promise<void> {
     return new Promise<void>((resolve) => {
       if (this.isBrowser) {
-        // Carrega nome do usuário
-        const nomeSalvo = localStorage.getItem('nomeUsuario');
-        if (nomeSalvo) {
-          this.nomeUsuarioSubject.next(nomeSalvo);
-        }
+        // ... (Carrega nome do usuário)  
 
         // Carrega estado de login
         const token = localStorage.getItem('authToken');
+
+        // Se houver um token, restaura a conexão e carrega o usuário atual.
+        if (token) {
+          const user = this.getCurrentUser(); // Obtém o usuário do localStorage
+          if (user) {
+            // 🎯 AÇÃO CHAVE 1: Reconecta o WebSocket com o token e dados do usuário
+            this.websocketService.connect(token, user);
+          }
+        }
+
         this.loggedInSubject.next(!!token);
       } else {
         // No servidor, usuário não está logado
@@ -98,6 +106,8 @@ export class AuthService {
         this.setInStorage('currentUser', JSON.stringify(user));
         this.setNomeUsuario(response.fullName);
 
+        this.websocketService.connect(response.token, user);
+
         // Atualiza estado de login
         this.loggedInSubject.next(true);
       })
@@ -114,6 +124,7 @@ export class AuthService {
   }
 
   logout(): void {
+    this.websocketService.disconnect();
     this.removeFromStorage('authToken');
     this.removeFromStorage('currentUser');
     this.removeFromStorage('nomeUsuario');

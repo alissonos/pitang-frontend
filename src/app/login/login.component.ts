@@ -1,7 +1,13 @@
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -37,7 +43,7 @@ interface CarouselSlide {
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   // Form variables
   usernameOrEmail: string = '';
   password: string = '';
@@ -45,6 +51,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   showValidation: boolean = false;
   showPassword: boolean = false;
+
+  @ViewChild('loginForm') loginForm!: NgForm;
 
   // Carousel variables
   currentSlide: number = 0;
@@ -92,6 +100,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewInit(): void {
+    this.resetForm();
+  }
+
   ngOnDestroy(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.stopCarousel();
@@ -119,6 +131,8 @@ export class LoginComponent implements OnInit, OnDestroy {
             next: (user) => {
               localStorage.setItem('nomeUsuario', user.fullName);
               this.authService.setNomeUsuario(user.fullName);
+
+              this.resetForm();
 
               this.router.navigate(['/dashboard']);
               this.loading = false;
@@ -231,5 +245,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.showValidation = false;
     this.errorMessage = undefined;
     this.loading = false;
+
+    if (this.loginForm) {
+      this.loginForm.resetForm();
+    }
   }
 }

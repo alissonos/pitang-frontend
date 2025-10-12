@@ -35,49 +35,51 @@ export class WebSocketService {
 
   // ✅ Conectar ao WebSocket usando STOMP
   connect(token: string, user: any): void {
-    if (!this.isBrowser || this.client?.connected) return;
+    // 1. Condição de SAÍDA: Se não for o browser OU se o cliente existir E estiver conectado, retorne.
+    //    (Isso evita reconexões desnecessárias quando o usuário já está ativo.)
+    if (!this.isBrowser || (this.client && this.client.connected)) {
+      return;
+    }
 
-    // Configuração do cliente STOMP
-    const stompConfig: StompConfig = {
-      // ✅ Usando SockJS para melhor compatibilidade
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+    // 2. 🎯 CORREÇÃO CRÍTICA: Se a instância for nula (após o logout), RECRIA.
+    if (!this.client) {
+      // Configuração do cliente STOMP é movida aqui para ser executada apenas na criação.
+      const stompConfig: StompConfig = {
+        // ✅ Usando SockJS para melhor compatibilidade
+        webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
 
-      // ✅ Headers de autenticação
-      connectHeaders: {
-        Authorization: `Bearer ${token}`,
-        'X-User-ID': user?.id?.toString() || '',
-        'X-User-Name': user?.fullName || user?.username || 'Usuário',
-      },
+        // ✅ Configurações de reconexão (mantenha)
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
 
-      // ✅ Configurações de reconexão
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
+        // ✅ Callbacks (mantenha)
+        onConnect: (frame) => {
+          this.isConnectedSubject.next(true);
+          this.setupSubscriptions(user);
+        },
+        onStompError: (frame) => {
+          this.isConnectedSubject.next(false);
+        },
+        onDisconnect: (frame) => {},
+        onWebSocketError: (error) => {
+          this.isConnectedSubject.next(false);
+        },
+      };
 
-      // ✅ Callback de conexão bem-sucedida
-      onConnect: (frame) => {
-        this.isConnectedSubject.next(true);
-        this.setupSubscriptions(user);
-      },
+      this.client = new Client(stompConfig); // Cria a instância somente se for a primeira vez ou após o logout.
+    }
 
-      // ✅ Callback de erro
-      onStompError: (frame) => {
-        this.isConnectedSubject.next(false);
-      },
-
-      // ✅ Callback de desconexão
-      onDisconnect: (frame) => {
-        this.isConnectedSubject.next(false);
-      },
-
-      // ✅ Callback de erro de conexão
-      onWebSocketError: (error) => {
-        this.isConnectedSubject.next(false);
-      },
+    // 3. 🎯 AÇÃO CHAVE: Headers de autenticação (sempre atualiza antes de ativar!)
+    //    Isso garante que o token mais recente seja usado para conexão/reativação.
+    this.client!.connectHeaders = {
+      Authorization: `Bearer ${token}`,
+      'X-User-ID': user?.id?.toString() || '',
+      'X-User-Name': user?.fullName || user?.username || 'Usuário',
     };
 
-    this.client = new Client(stompConfig);
-    this.client.activate();
+    // 4. Ativa a conexão (funciona tanto para a nova instância quanto para a reativação)
+    this.client!.activate();
   }
 
   // ✅ Configurar subscrições após conectar
@@ -158,11 +160,11 @@ export class WebSocketService {
   disconnect(): void {
     if (this.client) {
       this.client.deactivate();
-      this.client = null;
       this.isConnectedSubject.next(false);
       this.onlineUsersSubject.next(0);
       this.messagesSubject.next([]);
       this.typingUsersSubject.next([]);
+      this.client = null;
     }
   }
 
