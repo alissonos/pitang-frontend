@@ -278,6 +278,58 @@ body.dark-mode .mat-form-field-prefix .mat-icon {
   color: var(--text-color-secondary) !important;
 }
 
+/* ========================================================================= */
+/* ESTE BLOCO DEVE ESTAR EM styles.css (ARQUIVO GLOBAL) PARA FUNCIONAR */
+/* ========================================================================= */
+
+/* ========================================================================= */
+/* BLOCO DE ESPECIFICIDADE MÁXIMA - NO styles.css (ARQUIVO GLOBAL) */
+/* ========================================================================= */
+
+/* 1. Altera a cor do TEXTO do PLACEHOLDER ("Busque...") */
+/* Usando todas as classes do input + !important */
+.dark-mode
+  input.mat-mdc-input-element.mat-mdc-form-field-input-control.mdc-text-field__input#busque::placeholder {
+  color: white !important;
+  opacity: 1 !important;
+}
+
+/* 2. Altera a cor do TEXTO que o usuário DIGITA (Essa você já tinha e estava riscada) */
+.dark-mode
+  input.mat-mdc-input-element.mat-mdc-form-field-input-control.mdc-text-field__input#busque {
+  color: white !important;
+  caret-color: white !important;
+}
+
+/* 3. Altera a cor do ÍCONE de busca (a lupa) */
+/* O seletor que garante que o ícone interno mude de cor */
+.dark-mode .mat-form-field-icon-prefix .mat-icon {
+  color: white !important;
+}
+
+/* 4. Opcional: Para escurecer o fundo do campo de busca */
+.dark-mode .mat-mdc-form-field-wrapper {
+  background-color: #2c2c2c !important;
+}
+
+/* 3. Altera a cor do ÍCONE de busca (a lupa) */
+/* O seletor é o wrapper do form-field seguido do ícone. */
+.dark-mode .mat-mdc-form-field-icon-prefix mat-icon {
+  color: white !important;
+}
+
+/* 4. Opcional: Altera a cor do background do input para escuro */
+.dark-mode .mat-mdc-text-field-wrapper {
+  background-color: #333333 !important;
+}
+
+/* 5. Opcional: Altera a cor da borda do input em dark mode (se a borda for escura no light mode) */
+.dark-mode
+  .mat-mdc-form-field-appearance-outline
+  .mat-mdc-form-field-outline-thick {
+  color: #555555 !important; /* Cor mais escura para a borda */
+}
+
 /* --- 4. ESTILOS DE BOTÕES --- */
 
 /* Botões de Ação (Editar/Deletar) */
@@ -355,7 +407,7 @@ body.mat-divider .mat-divider-horizontal {
 /* --- 7. CHAT --- */
 
 body.dark-mode .chat-header {
-  background-color: #0f0f0f !important; /* fundo principal mais escuro */
+  background-color: #3a3f47 !important; /* fundo principal mais escuro */
   color: #e0e0e0 !important; /* texto claro */
 }
 

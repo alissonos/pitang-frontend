@@ -9,7 +9,7 @@ export interface User {
   status: 'ONLINE' | 'OFFLINE' | 'AWAY' | 'BUSY';
   id: number;
   username: string;
-  fullName: string | null;
+  fullName: string;
   email: string;
   roleId: Role;
   createdAt: string | null;

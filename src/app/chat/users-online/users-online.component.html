@@ -17,13 +17,13 @@
     <div *ngFor="let user of users" class="user-item" (click)="selectUser(user)">
       <div class="user-avatar">
         <div class="avatar-circle">
-          {{ getInitials(user.username) }}
+          {{ getInitials(user.fullName) }}
         </div>
         <span class="status-indicator" [style.background-color]="getStatusColor(user.status)"></span>
       </div>
 
       <div class="user-info">
-        <span class="user-name">{{ user.username }}</span>
+        <span class="user-name">{{ user.fullName }}</span>
       </div>
     </div>
 

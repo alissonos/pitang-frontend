@@ -70,7 +70,7 @@ p {
 }
 
 /* Input do campo de busca */
-::ng-deep .search-field input.mat-mdc-input-element {
+.search-field input.mat-mdc-input-element {
   height: 30px !important;
   font-size: 12px !important;
   padding: 8px 6px !important;
@@ -94,7 +94,7 @@ p {
 }
 
 /* Centralizar o placeholder */
-::ng-deep .search-field .mat-mdc-form-field-infix {
+.search-field .mat-mdc-form-field-infix {
   display: flex;
   align-items: center;
   padding: 0 !important;
