@@ -14,11 +14,16 @@ import { AuthService } from '../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { UsersOnlineComponent } from './users-online/users-online.component';
 
+// NOVO: Importe o modelo User
+import { User } from '../../models/user.model'; // ASSUMIDO: Ajuste o caminho conforme sua estrutura
+
 export interface ChatMessage {
   id?: string;
   content: string;
   senderId: string;
   senderName: string;
+  // NOVO: Adicionado receiverId para mensagens privadas
+  receiverId?: string;
   timestamp: Date;
   type?: 'MESSAGE' | 'SYSTEM';
 }
@@ -45,12 +50,15 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   connectionStatus: string = 'Desconectado';
   lastError: string = '';
 
+  // MANTIDO: selectedUser, agora com o tipo User importado
+  selectedUser: User | null = null;
+
   // Controle de componente
   private destroy$ = new Subject<void>();
   private typingTimer: any;
   private shouldScrollToBottom: boolean = false;
   private userScrolledUp: boolean = false;
-  private userCountRefreshTimer: any; // Timer para atualizar contagem periodicamente
+  private userCountRefreshTimer: any;
 
   constructor(
     private chatService: ChatService,
@@ -61,8 +69,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   ngOnInit(): void {
     this.initializeUser();
     this.connectToChat();
-    this.loadChatHistory();
-    this.startUserCountRefresh(); // Inicia refresh periódico da contagem
+    // REMOVIDO: this.loadChatHistory(); // Removido, pois o chat passa a ser privado por padrão
+    this.startUserCountRefresh();
   }
 
   ngAfterViewChecked(): void {
@@ -77,15 +85,37 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.destroy$.complete();
     this.chatService.disconnect();
     this.clearTypingTimer();
+    this.clearUserCountRefreshTimer(); // NOVO: Limpar o timer de contagem
+  }
+
+  // NOVO: Método para lidar com a seleção do usuário (do UsersOnlineComponent)
+  onUserSelected(user: User): void {
+    if (this.selectedUser?.id === user.id) {
+      // Já estamos na conversa com este usuário
+      return;
+    }
+
+    // 1. Define o novo usuário selecionado
+    this.selectedUser = user;
+
+    // 2. Limpa o histórico de mensagens anterior
+    this.messages = [];
+
+    // 3. Carrega o histórico de conversa com o novo usuário
+    this.loadConversationHistory(String(user.id));
+
+    // 4. Se o chatService tiver um método para se inscrever no tópico privado, chame-o aqui.
+    // Ex: this.chatService.subscribeToPrivateTopic(this.currentUserId, user.id);
+
+    // Força atualização da view
+    this.cdr.detectChanges();
   }
 
   private initializeUser(): void {
     try {
-      const user = this.authService.getCurrentUser() as unknown as {
-        id: string;
-        name?: string;
-        username?: string;
-      };
+      // CORRIGIDO: Tipagem mais segura para evitar 'unknown as' se possível.
+      // Manter a estrutura atual, mas usar o tipo User
+      const user = this.authService.getCurrentUser() as unknown as User;
 
       // Logs para depuração
       console.log(
@@ -97,8 +127,10 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.authService.getNomeUsuario()
       );
 
+      // CORRIGIDO: user.id deve ser verificado se existe antes de ser usado.
       if (user?.id) {
-        this.currentUserId = user.id;
+        // Garantindo que ID e nome são strings
+        this.currentUserId = String(user.id);
         this.currentUserName = user.name || user.username || 'Usuário';
       } else {
         this.handleError('Usuário não autenticado');
@@ -118,6 +150,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.subscribeToEvents();
   }
 
+  // ALTERADO: subscribeToEvents() ajustado para lidar com mensagens privadas
   private subscribeToEvents(): void {
     // Conexão estabelecida
     this.chatService
@@ -129,7 +162,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.connectionStatus = connected ? 'Conectado' : 'Desconectado';
           if (connected) {
             this.lastError = '';
-            // Solicita contagem atualizada assim que conecta
             this.requestUserCount();
           }
           this.cdr.detectChanges();
@@ -144,15 +176,30 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       .subscribe({
         next: (message) => {
           if (message) {
-            this.messages.push(message);
-            this.shouldScrollToBottom = true;
-            this.cdr.detectChanges();
+            // LÓGICA CHAVE: Adicionar mensagem APENAS se for do chat GERAL (SEM receiverId)
+            // OU se for uma mensagem privada entre o usuário atual e o usuário SELECIONADO.
+
+            const isGeneralMessage = !message.receiverId && !this.selectedUser;
+
+            // Verifica se a mensagem é para ou do usuário atualmente selecionado
+            const isCurrentPrivateMessage =
+              this.selectedUser &&
+              ((message.senderId === String(this.selectedUser.id) &&
+                message.receiverId === this.currentUserId) ||
+                (message.senderId === this.currentUserId &&
+                  message.receiverId === String(this.selectedUser.id)));
+
+            if (isGeneralMessage || isCurrentPrivateMessage) {
+              this.messages.push(message);
+              this.shouldScrollToBottom = true;
+              this.cdr.detectChanges();
+            }
           }
         },
         error: (error) => this.handleError('Erro ao receber mensagem'),
       });
 
-    // Contagem de usuários
+    // Contagem de usuários (Mantido)
     this.chatService
       .onUserCount()
       .pipe(takeUntil(this.destroy$))
@@ -165,13 +212,23 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.handleError('Erro ao obter contagem de usuários'),
       });
 
-    // Indicador de digitação
+    // Indicador de digitação (Mantido, mas considere escutar apenas o usuário selecionado)
     this.chatService
       .onTyping()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          if (data && data.userId !== this.currentUserId) {
+          // NOVO: Apenas mostra o indicador se a digitação for do usuário selecionado
+          const isTypingForSelectedUser =
+            this.selectedUser &&
+            data &&
+            data.userId === String(this.selectedUser.id);
+
+          if (
+            data &&
+            data.userId !== this.currentUserId &&
+            isTypingForSelectedUser
+          ) {
             this.isTyping = data.isTyping;
             this.typingUser = data.userName;
             this.cdr.detectChanges();
@@ -180,7 +237,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         error: (error) => this.handleError('Erro no indicador de digitação'),
       });
 
-    // Erros
+    // Erros (Mantido)
     this.chatService
       .onError()
       .pipe(takeUntil(this.destroy$))
@@ -193,9 +250,12 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       });
   }
 
-  private loadChatHistory(): void {
+  // NOVO: Método para carregar histórico de conversa privada
+  loadConversationHistory(receiverId: string): void {
+    if (!receiverId) return;
+
     this.chatService
-      .getChatHistory()
+      .getMessagesHistory(receiverId) // ASSUMIDO: Seu ChatService tem este método
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (messages) => {
@@ -204,26 +264,28 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.cdr.detectChanges();
         },
         error: (error) => {
-          this.handleError('Erro ao carregar histórico do chat');
+          this.handleError('Erro ao carregar histórico da conversa');
         },
       });
   }
 
-  // Método para solicitar contagem de usuários manualmente
+  // REMOVIDO: loadChatHistory() se torna loadConversationHistory()
+
+  // Método para solicitar contagem de usuários manualmente (Mantido)
   private requestUserCount(): void {
     if (this.isConnected) {
       this.chatService.requestUserCount();
     }
   }
 
-  // Inicia refresh periódico da contagem de usuários
+  // Inicia refresh periódico da contagem de usuários (Mantido)
   private startUserCountRefresh(): void {
     this.userCountRefreshTimer = setInterval(() => {
       this.requestUserCount();
     }, 10000); // A cada 10 segundos
   }
 
-  // Limpa o timer de refresh da contagem
+  // Limpa o timer de refresh da contagem (Mantido)
   private clearUserCountRefreshTimer(): void {
     if (this.userCountRefreshTimer) {
       clearInterval(this.userCountRefreshTimer);
@@ -231,10 +293,12 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
+  // ALTERADO: sendMessage() agora inclui o receiverId
   sendMessage(): void {
     const messageContent = this.newMessage.trim();
 
-    if (!messageContent || !this.isConnected) {
+    // Requer que o chat esteja conectado E um usuário selecionado
+    if (!messageContent || !this.isConnected || !this.selectedUser) {
       return;
     }
 
@@ -242,14 +306,20 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       content: messageContent,
       senderId: this.currentUserId,
       senderName: this.currentUserName,
+      receiverId: String(this.selectedUser.id), // CHAVE: ID do destinatário
       timestamp: new Date(),
       type: 'MESSAGE',
     };
 
     try {
-      this.chatService.sendTyping(false); // Envia indicador de digitação como falso
-
+      if (this.selectedUser && this.selectedUser.id) {
+        this.chatService.sendTyping(false, this.selectedUser.id); // Envia o indicador de digitação
+      }
       this.chatService.sendMessage(message);
+
+      // Adiciona a mensagem imediatamente à lista local para visualização
+      this.messages.push(message);
+
       this.newMessage = '';
       this.shouldScrollToBottom = true;
       this.clearTypingTimer();
@@ -258,15 +328,28 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
+  // ALTERADO: onTyping() agora deve enviar o ID do destinatário
   onTyping(): void {
-    if (!this.isConnected) return;
+    // Requer que o chat esteja conectado E UM usuário selecionado
+    // O "!this.isConnected || !this.selectedUser" está correto para early return.
+    if (!this.isConnected || !this.selectedUser) {
+      return;
+    }
 
     try {
-      this.chatService.sendTyping(true);
+      // 1. O TypeScript agora sabe que selectedUser NÃO É NULO aqui.
+      // 2. Converta o ID para string, conforme necessário para o protocolo STOMP,
+      //    e porque o ChatService aceita string | number.
+      const receiverId = String(this.selectedUser.id);
+
+      // Envia indicador para o usuário selecionado
+      this.chatService.sendTyping(true, receiverId);
+
       this.clearTypingTimer();
 
       this.typingTimer = setTimeout(() => {
-        this.chatService.sendTyping(false);
+        // Para de digitar para o usuário selecionado
+        this.chatService.sendTyping(false, receiverId);
       }, 2000);
     } catch (error) {
       console.error('Erro ao enviar indicador de digitação:', error);
@@ -277,7 +360,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (!this.messagesContainer) return;
 
     const container = this.messagesContainer.nativeElement;
-    const threshold = 100; // pixels do fundo
+    const threshold = 100;
 
     this.userScrolledUp =
       container.scrollTop + container.clientHeight + threshold <
@@ -326,7 +409,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   private handleError(message: string): void {
     this.lastError = message;
-    console.error('Chat Error:', message);
     this.cdr.detectChanges();
   }
 
@@ -339,7 +421,12 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   // Getters para template
   get canSendMessage(): boolean {
-    return this.newMessage.trim().length > 0 && this.isConnected;
+    // NOVO: Só permite enviar se houver um usuário selecionado
+    return (
+      this.newMessage.trim().length > 0 &&
+      this.isConnected &&
+      !!this.selectedUser
+    );
   }
 
   get statusClass(): string {

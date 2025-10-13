@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, BehaviorSubject, map, catchError, of, timer } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ChatMessage } from '../app/chat/chat.component';
+import { ChatMessage } from '../app/chat/chat.component'; // Garante que a interface ChatMessage está importada
 import { Client } from '@stomp/stompjs';
 
 interface ConnectionConfig {
@@ -39,6 +39,8 @@ export class ChatService implements OnDestroy {
     userId: string;
     userName: string;
     isTyping: boolean;
+    // Adicionado receiverId para identificar quem está digitando em um chat privado
+    receiverId?: string;
   } | null>(null);
   private readonly errorSubject = new BehaviorSubject<Error | null>(null);
 
@@ -193,16 +195,25 @@ export class ChatService implements OnDestroy {
         this.userCountSubject.next(count); // ou qualquer lógica sua
       });
 
-      // Indicador de digitação
+      // Indicador de digitação GERAL (Fallback)
       this.stompClient.subscribe('/topic/typing', (message) => {
         this.handleTyping(message);
       });
 
-      // Mensagens privadas
+      // Mensagens e indicadores de digitação privados
+      // Este é o tópico CHAVE para receber mensagens PRIVADAS.
       this.stompClient.subscribe(
         `/user/${this.currentUserId}/queue/private`,
         (message) => {
           this.handleMessage(message, 'private');
+        }
+      );
+
+      // Indicador de digitação PRIVADO
+      this.stompClient.subscribe(
+        `/user/${this.currentUserId}/queue/typing`,
+        (message) => {
+          this.handleTyping(message);
         }
       );
 
@@ -320,9 +331,14 @@ export class ChatService implements OnDestroy {
   }
 
   // Métodos públicos
+
+  // ALTERADO: sendMessage agora verifica se a mensagem é pública ou privada
   sendMessage(message: ChatMessage): void {
+    // Tenta enviar via WebSocket primeiro
     if (!this.stompClient?.connected) {
-      console.error('❌ Não conectado para enviar mensagem');
+      console.error(
+        '❌ Não conectado para enviar mensagem. Tentando REST fallback...'
+      );
       this.sendMessageViaRest(message).subscribe({
         next: () => console.log('✅ Mensagem enviada via REST'),
         error: (error) => this.errorSubject.next(error),
@@ -338,12 +354,17 @@ export class ChatService implements OnDestroy {
         timestamp: new Date().toISOString(),
       };
 
+      // CHAVE: Se houver receiverId, usa o destino privado
+      const destination = message.receiverId
+        ? `/app/chat.sendPrivateMessage/${message.receiverId}`
+        : '/app/chat.sendMessage';
+
       this.stompClient.publish({
-        destination: '/app/chat.sendMessage',
+        destination: destination,
         body: JSON.stringify(messagePayload),
       });
 
-      console.log('✅ Mensagem enviada via WebSocket');
+      console.log(`✅ Mensagem enviada via WebSocket para: ${destination}`);
     } catch (error) {
       console.error('❌ Erro ao enviar mensagem:', error);
       this.errorSubject.next(
@@ -352,7 +373,8 @@ export class ChatService implements OnDestroy {
     }
   }
 
-  sendTyping(isTyping: boolean): void {
+  // ALTERADO: sendTyping agora aceita o receiverId opcional (string)
+  sendTyping(isTyping: boolean, receiverId?: string | number): void {
     if (!this.stompClient?.connected) return;
 
     try {
@@ -360,12 +382,20 @@ export class ChatService implements OnDestroy {
         userId: this.currentUserId,
         userName: this.currentUserName,
         isTyping,
+        receiverId, // Inclui o receiverId no payload, se existir
       };
 
+      // CHAVE: Define o destino. Se houver receiverId, envia para o tópico privado.
+      const destination = receiverId
+        ? `/app/chat.typing.private/${receiverId}`
+        : '/app/chat.typing'; // Fallback para tópico público
+
       this.stompClient.publish({
-        destination: '/app/chat.typing',
+        destination: destination,
         body: JSON.stringify(typingData),
       });
+
+      console.log(`✅ Indicador de digitação enviado para: ${destination}`);
     } catch (error) {
       console.error('❌ Erro ao enviar indicador de digitação:', error);
     }
@@ -377,6 +407,20 @@ export class ChatService implements OnDestroy {
       .get<ChatMessage[]>(`${this.apiUrl}/chat/messages`)
       .pipe(
         catchError(this.handleHttpError<ChatMessage[]>('getChatHistory', []))
+      );
+  }
+
+  // NOVO: Implementação do método para buscar o histórico de mensagens privadas
+  getMessagesHistory(receiverId: string): Observable<ChatMessage[]> {
+    const url = `${this.apiUrl}/chat/history/private/${receiverId}`; // Endpoint REST para histórico privado
+    console.log(`📡 Solicitando histórico privado: ${url}`);
+
+    return this.http
+      .get<ChatMessage[]>(url)
+      .pipe(
+        catchError(
+          this.handleHttpError<ChatMessage[]>('getMessagesHistory', [])
+        )
       );
   }
 
@@ -423,6 +467,7 @@ export class ChatService implements OnDestroy {
     userId: string;
     userName: string;
     isTyping: boolean;
+    receiverId?: string; // Incluído para refletir o payload completo
   } | null> {
     return this.typingSubject.asObservable();
   }

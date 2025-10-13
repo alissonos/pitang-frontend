@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { ChatService } from '../../../services/chat.service';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
@@ -19,6 +27,7 @@ export class UsersOnlineComponent implements OnInit, OnDestroy {
   connectedUsers: number = 0;
   private destroy$ = new Subject<void>();
   lastError: string = '';
+  @Output() userSelected = new EventEmitter<any>(); // Emite o usuário clicado
 
   constructor(
     private chatService: ChatService,
@@ -35,6 +44,11 @@ export class UsersOnlineComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.connectToChat();
     this.loadUsers();
+  }
+
+  selectUser(user: any) {
+    // Aqui você pode adicionar lógica para destacar o usuário selecionado
+    this.userSelected.emit(user);
   }
 
   loadUsers(): void {

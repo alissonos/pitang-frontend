@@ -1,14 +1,10 @@
 <div class="chat-layout">
-  <!-- Lista de usuários online -->
-  <app-users-online class="users-sidebar"></app-users-online>
+  <app-users-online class="users-sidebar" (userSelected)="onUserSelected($event)"></app-users-online>
 
-  <!-- Área do chat -->
   <div class="chat-container">
     <div class="chat-header">
-      <!-- <h2>Chat</h2> -->
-      <div class="online-users">
-        <!-- <span>{{ connectedUsers }} usuários online</span> -->
-      </div>
+      <h2 *ngIf="selectedUser">{{ selectedUser.username }}</h2>
+      <h2 *ngIf="!selectedUser">Selecione um usuário para conversar</h2>
     </div>
 
     <div class="chat-messages" #messagesContainer>

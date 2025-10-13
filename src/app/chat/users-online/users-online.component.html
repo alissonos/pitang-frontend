@@ -14,7 +14,7 @@
   </div>
 
   <div class="users-list">
-    <div *ngFor="let user of users" class="user-item">
+    <div *ngFor="let user of users" class="user-item" (click)="selectUser(user)">
       <div class="user-avatar">
         <div class="avatar-circle">
           {{ getInitials(user.username) }}

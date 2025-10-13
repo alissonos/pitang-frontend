@@ -5,6 +5,7 @@ export interface Role {
 }
 
 export interface User {
+  name: string;
   status: 'ONLINE' | 'OFFLINE' | 'AWAY' | 'BUSY';
   id: number;
   username: string;
